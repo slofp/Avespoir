@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvespoirTest.Test", "AvespoirTest.Test\AvespoirTest.Test.csproj", "{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvespoirTest.Core", "AvespoirTest.Core\AvespoirTest.Core.csproj", "{D6C6B60E-F056-425B-9AD9-54D160F6AC88}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F3580E31-89BA-4E28-B03D-F7D6ABEC48C3}
+	EndGlobalSection
+EndGlobal

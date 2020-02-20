@@ -1,2 +1,9 @@
-# Visual Studio files
 .vs/
+
+build/
+
+bin/
+
+obj/
+
+AvespoirTest.Test/Configs/config.json
