@@ -10,6 +10,8 @@
 
 		internal static string BotownerPrefixTag { get; set; } = ">";
 
+
+		// おそらくもう使わない
 		internal static string PublicPrefix {
 			get {
 				return MainPrefix + PublicPrefixTag;

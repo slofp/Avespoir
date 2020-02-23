@@ -14,30 +14,12 @@ namespace AvespoirTest.Core {
 
 		internal static DiscordClient Bot = new DiscordClient(ClientConfig.DiscordConfig());
 
-		internal static CommandsNextModule Public_Commands = Bot.UseCommandsNext(new CommandsNextConfiguration {
-			StringPrefix = CommandConfig.PublicPrefix
-		});
-
-		//internal static CommandsNextModule Moderator_Commands = Bot.UseCommandsNext(new CommandsNextConfiguration {
-		//	StringPrefix = CommandConfig.ModeratorPrefix
-		//});
-
-		//internal static CommandsNextModule Botowner_Commands = Bot.UseCommandsNext(new CommandsNextConfiguration {
-		//	StringPrefix = CommandConfig.BotownerPrefix
-		//});
-
 		async Task MainAsync(string[] args) {
 			new ClientLog();
 
-			new MessageCreated();
+			Bot.MessageCreated += async Message_Objects => await MessageEvent.MainEvent(Message_Objects);
 
 			await Bot.ConnectAsync();
-
-			CommandRegister.PublicCommands();
-
-			//CommandRegister.ModeratorCommands();
-
-			//CommandRegister.BotownerCommands();
 
 			await Task.Delay(-1, CancellationToken.None);
 		}

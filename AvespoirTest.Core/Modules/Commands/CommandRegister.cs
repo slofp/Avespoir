@@ -1,16 +1,31 @@
-﻿using DSharpPlus;
+﻿using AvespoirTest.Core.Configs;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.EventArgs;
 
 namespace AvespoirTest.Core.Modules.Commands {
 
 	class CommandRegister {
 
-		internal static void PublicCommands() => Client.Public_Commands.RegisterCommands<PublicCommands>();
+		static DiscordClient Bot = Client.Bot;
 
-		// 何故か複数のPrefixが反応しない
+		static CommandsNextModule CommandMainPrefix = Bot.UseCommandsNext(new CommandsNextConfiguration {
+			//現時点で代替を模索中
+			StringPrefix = CommandConfig.PublicPrefix,
+			EnableDms = false,
+			EnableMentionPrefix = false
+		});
 
-		//internal static void ModeratorCommands() => Client.Moderator_Commands.RegisterCommands<ModeratorCommands>();
+		internal static void PublicCommands(MessageCreateEventArgs Message_Objects) {
+			CommandMainPrefix.RegisterCommands<PublicCommands>();
+		}
 
-		//internal static void BotownerCommands() => Client.Botowner_Commands.RegisterCommands<BotownerCommands>();
+		internal static void ModeratorCommands(MessageCreateEventArgs Message_Objects) {
+			CommandMainPrefix.RegisterCommands<ModeratorCommands>();
+		}
+
+		internal static void BotownerCommands(MessageCreateEventArgs Message_Objects) {
+			CommandMainPrefix.RegisterCommands<BotownerCommands>();
+		}
 	}
 }
