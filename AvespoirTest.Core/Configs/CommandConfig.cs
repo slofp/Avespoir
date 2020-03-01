@@ -11,7 +11,7 @@
 		internal static string BotownerPrefixTag { get; set; } = ">";
 
 
-		// おそらくもう使わない
+		#region おそらくもう使わない...?
 		internal static string PublicPrefix {
 			get {
 				return MainPrefix + PublicPrefixTag;
@@ -29,5 +29,6 @@
 				return MainPrefix + BotownerPrefixTag;
 			}
 		}
+		#endregion
 	}
 }

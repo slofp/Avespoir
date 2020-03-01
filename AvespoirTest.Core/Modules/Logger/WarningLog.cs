@@ -1,12 +1,13 @@
 ﻿using DSharpPlus;
 using System;
+using static AvespoirTest.Core.Modules.Logger.LoggerProperties;
 
 namespace AvespoirTest.Core.Modules.Logger {
 
 	class WarningLog {
 
 		internal WarningLog(string Message) {
-			LoggerProperties.Debug_Logger.LogMessage(LogLevel.Warning, LoggerProperties.Username, Message, DateTime.Now);
+			Debug_Logger.LogMessage(LogLevel.Warning, Username, Message, DateTime.Now);
 		}
 	}
 }

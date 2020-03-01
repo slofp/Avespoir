@@ -1,12 +1,13 @@
 ﻿using DSharpPlus.EventArgs;
+using System.Threading.Tasks;
 
 namespace AvespoirTest.Core.Modules.Logger {
 
 	class HeartbeatLog {
 
-		internal HeartbeatLog(HeartbeatEventArgs HeartbeatObjects) {
+		internal static async Task ExportHeartbeatLog(HeartbeatEventArgs HeartbeatObjects) {
 			string Ping = HeartbeatObjects.Ping.ToString();
-			new InfoLog($"Ping: {Ping}ms");
+			await Task.Run(() => new InfoLog($"Ping: {Ping}ms"));
 		}
 	}
 }

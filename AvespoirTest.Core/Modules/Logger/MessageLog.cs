@@ -1,5 +1,5 @@
-﻿using DSharpPlus.EventArgs;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using System.Collections.Generic;
 
 namespace AvespoirTest.Core.Modules.Logger {
@@ -75,7 +75,6 @@ namespace AvespoirTest.Core.Modules.Logger {
 
 				string MessageAttachments_Log = "\n[MessageAttachments] ";
 				bool MessageAttachment_Next = MessageAttachments.MoveNext();
-				// おそらく省略可能
 				while (MessageAttachment_Next) {
 					DiscordAttachment MessageAttachment = MessageAttachments.Current;
 					string MessageAttachment_Log = $"Url: {MessageAttachment.Url} ProxyUrl: {MessageAttachment.ProxyUrl}";

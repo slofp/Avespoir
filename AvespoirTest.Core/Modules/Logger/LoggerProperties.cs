@@ -1,24 +1,27 @@
 ﻿using DSharpPlus;
+using System;
 
 namespace AvespoirTest.Core.Modules.Logger {
 
 	class LoggerProperties {
-		
-		static DiscordClient Bot {
-			get {
-				return Client.Bot;
-			}
-		}
+
+		static DiscordClient Bot = Client.Bot;
 
 		internal static DebugLogger Debug_Logger {
 			get {
 				return Bot.DebugLogger;
 			}
 		}
-
+		
 		internal static string Username {
 			get {
-				return Bot.CurrentUser.Username ?? "Bot";
+				try {
+					if (Bot.CurrentUser.Username == "" || Bot.CurrentUser.Username == null) return "Bot";
+					return Bot.CurrentUser.Username;
+				}
+				catch (NullReferenceException) {
+					return "Bot";
+				}
 			}
 		}
 	}

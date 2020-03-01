@@ -1,14 +1,13 @@
 ﻿using DSharpPlus;
 using System;
+using static AvespoirTest.Core.Modules.Logger.LoggerProperties;
 
 namespace AvespoirTest.Core.Modules.Logger {
 
 	class DebugLog {
 
 		internal DebugLog(string Message) {
-			#if DEBUG 
-			LoggerProperties.Debug_Logger.LogMessage(LogLevel.Debug, LoggerProperties.Username, Message, DateTime.Now);
-			#endif
+			Debug_Logger.LogMessage(LogLevel.Debug, Username, Message, DateTime.Now);
 		}
 	}
 }

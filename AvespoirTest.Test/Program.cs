@@ -1,27 +1,29 @@
 ﻿using AvespoirTest.Core;
 using System.IO;
 using AvespoirTest.Core.Configs;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System;
+using System.Threading.Tasks;
 
 namespace AvespoirTest {
 
 	class Program {
 		static void Main(string[] args) {
 			// gitignoreで削除しているため事前に用意する必要性あり
-			// exeがBinにあるため3つのパスバックが必要※要検証
-			string FilePath = @"../../../Configs/config.json";
+			// Projectプロパティから作業ディレクトリを変更してください
+			string ClientConfigPath = @"./Configs/ClientConfig.json";
+			string DBConfigPath = @"./Configs/DBConfig.json";
 
 			try {
-				if (File.Exists(FilePath)) {
-					var FileData = new StreamReader(FilePath);
-					string JsonData = FileData.ReadToEnd();
-					FileData.Close();
+				if (File.Exists(ClientConfigPath) && File.Exists(DBConfigPath)) {
+					string ClientConfigJsonData = File.ReadAllText(ClientConfigPath);
+					string DBConfigJsonData = File.ReadAllText(DBConfigPath);
 
-					GetConfigJson ConfigJson = new GetConfigJson();
+					GetClientConfigJson ClientConfigJson = new GetClientConfigJson();
+					GetDBConfigJson DBConfigJson = new GetDBConfigJson();
 
-					ConfigJson = JsonConvert.DeserializeObject<GetConfigJson>(JsonData);
-
+					ClientConfigJson = JsonSerializer.Deserialize<GetClientConfigJson>(ClientConfigJsonData);
+					DBConfigJson = JsonSerializer.Deserialize<GetDBConfigJson>(DBConfigJsonData);
 				}
 				else {
 					throw new FileNotFoundException();
@@ -29,7 +31,7 @@ namespace AvespoirTest {
 
 				new StartClient(args);
 			}
-			catch(Exception Error) {
+			catch(FileNotFoundException Error) {
 				Console.Error.WriteLine(Error);
 			}
 		}

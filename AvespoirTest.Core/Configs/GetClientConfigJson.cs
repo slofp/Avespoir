@@ -1,11 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿namespace AvespoirTest.Core.Configs {
 
-namespace AvespoirTest.Core.Configs {
+	public class GetClientConfigJson {
 
-	[JsonObject("Config")]
-	public class GetConfigJson {
-
-		[JsonProperty("Token")]
 		public string Token {
 			get {
 				return ClientConfig.Token;
@@ -15,7 +11,6 @@ namespace AvespoirTest.Core.Configs {
 			}
 		}
 
-		[JsonProperty("MainPrefix")]
 		public string MainPrefix {
 			get {
 				return CommandConfig.MainPrefix;
@@ -25,7 +20,6 @@ namespace AvespoirTest.Core.Configs {
 			}
 		}
 
-		[JsonProperty("PublicPrefixTag")]
 		public string PublicPrefixTag {
 			get {
 				return CommandConfig.PublicPrefixTag;
@@ -35,7 +29,6 @@ namespace AvespoirTest.Core.Configs {
 			}
 		}
 
-		[JsonProperty("ModeratorPrefixTag")]
 		public string ModeratorPrefixTag {
 			get {
 				return CommandConfig.ModeratorPrefixTag;
@@ -45,7 +38,6 @@ namespace AvespoirTest.Core.Configs {
 			}
 		}
 
-		[JsonProperty("BotownerPrefixTag")]
 		public string BotownerPrefixTag {
 			get {
 				return CommandConfig.BotownerPrefixTag;

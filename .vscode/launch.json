@@ -13,7 +13,7 @@
             "program": "${workspaceFolder}/AvespoirTest.Test/bin/Debug/netcoreapp3.1/AvespoirTest.Test.dll",
             "args": [],
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
-            "cwd": "${workspaceFolder}/AvespoirTest.Test/bin/Debug/netcoreapp3.1",
+            "cwd": "${workspaceFolder}/AvespoirTest.Test/",
             "console": "internalConsole",
             "stopAtEntry": false
         },

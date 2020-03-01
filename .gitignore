@@ -6,4 +6,6 @@ bin/
 
 obj/
 
-AvespoirTest.Test/Configs/config.json
+AvespoirTest.Test/Configs/*.json
+
+AvespoirTest.Test/Log
