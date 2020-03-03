@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AvespoirTest.Test": {
+      "commandName": "Project",
+      "workingDirectory": "F:\\Developfiles\\Avespoir_Test\\AvespoirTest.Test"
+    }
+  }
+}

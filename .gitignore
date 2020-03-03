@@ -1,0 +1,11 @@
+.vs/
+
+build/
+
+bin/
+
+obj/
+
+AvespoirTest.Test/Configs/*.json
+
+AvespoirTest.Test/Log
