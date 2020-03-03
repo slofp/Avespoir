@@ -4,13 +4,12 @@ using System.Threading.Tasks;
 namespace AvespoirTest.Core {
 
 	public class StartClient {
-
 		public StartClient(string[] args) {
-			ClientLog.InitlogFile().Wait();
-			Task<MongoDBClient> DBClient = Task.Run(() => new MongoDBClient());
-			Task<Client> BotClient = Task.Run(() => new Client(args));
-			BotClient.Wait();
-			DBClient.Wait();
+			ClientLog.InitlogFile().ConfigureAwait(false).GetAwaiter().GetResult();
+
+			Task DBClient = Task.Factory.StartNew(() => MongoDBClient.Main());
+			Task<Client> BotClient = Task.Factory.StartNew(() => new Client(args));
+			Task.WaitAll(DBClient, BotClient);
 		}
 	}
 }

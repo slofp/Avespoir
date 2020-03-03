@@ -4,10 +4,12 @@ using AvespoirTest.Core.Configs;
 using System.Text.Json;
 using System;
 using System.Threading.Tasks;
+using MongoDB.Driver;
 
 namespace AvespoirTest {
 
 	class Program {
+		
 		static void Main(string[] args) {
 			// gitignoreで削除しているため事前に用意する必要性あり
 			// Projectプロパティから作業ディレクトリを変更してください

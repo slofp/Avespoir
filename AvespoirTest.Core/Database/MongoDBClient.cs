@@ -11,25 +11,42 @@ namespace AvespoirTest.Core.Database {
 
 	class MongoDBClient {
 
-		MongoClientSettings MongoConfig = new MongoDBConfigs().ClientSettings;
+		static MongoClientSettings MongoConfig = new MongoDBConfigs().ClientSettings;
 
-		internal static MongoClient Client;
+		internal static string MainDatabase { get; set; } = "DiscordBot";
 
-		internal static IMongoDatabase Database;
+		internal static MongoClient Client { get; private set; }
 
-		internal MongoDBClient() {
-			ConnectDB();
-		}
+		internal static IMongoDatabase Database { get; private set; }
 
-		void ConnectDB(int TimeoutCount = 0) {
+		internal static bool Connectcheck { get; private set; } = false;
+
+		internal static async Task Main(int TimeoutCount = 0) {
 			try {
 				new InfoLog("Connecting to database...");
-				Client = new MongoClient(MongoConfig);
-				Database = Client.GetDatabase("TestDiscordBot");
-				IMongoCollection<AllowUsers> Collection = Database.GetCollection<AllowUsers>("AllowUsers");
-				List<AllowUsers> users = Collection.Find(new BsonDocument()).ToList();
-				foreach (AllowUsers x in users) {
-					Console.WriteLine(x.id);
+
+				MongoClient PingTest = new MongoClient(MongoConfig);
+
+				bool CheckPing = false;
+				while (!CheckPing) {
+					Task<BsonDocument> PingTask = PingTest.GetDatabase(MainDatabase).RunCommandAsync((Command<BsonDocument>)"{ ping: 1 }");
+					
+					bool Ping = false;
+					if (!PingTask.IsCompleted) {
+						await PingTask;
+						Ping = true;
+					}
+
+					if (Ping) {
+						Client = new MongoClient(MongoConfig);
+						Database = Client.GetDatabase(MainDatabase);
+
+						Connectcheck = true;
+						new InfoLog("Connected to database!");
+
+						CheckPing = true;
+					}
+					else continue;
 				}
 			}
 			catch (TimeoutException Error) {
@@ -38,8 +55,9 @@ namespace AvespoirTest.Core.Database {
 				// Max 1 Day
 				int Second = TimeoutCount > 17280 - 1 ? 17280 * 5 : (TimeoutCount + 1) * 5;
 				new InfoLog($"Reconnect after {Second} seconds");
-				Task.Delay(Second * 1000).Wait();
-				ConnectDB(TimeoutCount + 1);
+
+				Task.Delay(Second * 1000).ConfigureAwait(false).GetAwaiter().GetResult();
+				await Main(TimeoutCount + 1);
 			}
 		}
 	}

@@ -1,4 +1,6 @@
-﻿namespace AvespoirTest.Core.Configs {
+﻿using AvespoirTest.Core.Database;
+
+namespace AvespoirTest.Core.Configs {
 
 	public class GetDBConfigJson {
 
@@ -53,6 +55,15 @@
 			}
 			set {
 				MongoDBConfigs.Mechanism = value;
+			}
+		}
+
+		public string MainDatabase {
+			get {
+				return MongoDBClient.MainDatabase;
+			}
+			set {
+				MongoDBClient.MainDatabase = value;
 			}
 		}
 	}

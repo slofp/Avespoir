@@ -16,7 +16,7 @@ namespace AvespoirTest.Core.Modules.Commands {
 		public async Task Name(CommandContext Context) {
 			try {
 				string[] msgs = Context.Message.Content.Substring(CommandConfig.MainPrefix.Length + Context.Command.Name.Length).Trim().Split(" ");
-				return;
+				await Task.Delay(0);
 			}
 			catch (Exception Error) {
 				new ErrorLog(Error.Message);
