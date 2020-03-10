@@ -2,6 +2,8 @@
 
 	public class GetClientConfigJson {
 
+		#region Bot Config
+
 		public string Token {
 			get {
 				return ClientConfig.Token;
@@ -10,6 +12,9 @@
 				ClientConfig.Token = value;
 			}
 		}
+		#endregion
+
+		#region Prefix Config
 
 		public string MainPrefix {
 			get {
@@ -46,5 +51,6 @@
 				CommandConfig.BotownerPrefixTag = value;
 			}
 		}
+		#endregion
 	}
 }

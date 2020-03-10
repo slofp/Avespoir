@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="DSharpPlus" Version="3.2.3" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="3.2.3" />
     <PackageReference Include="MongoDB.Driver" Version="2.10.2" />
   </ItemGroup>
 

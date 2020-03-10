@@ -16,8 +16,8 @@ namespace AvespoirTest.Core.Modules.Logger {
 		internal static string Username {
 			get {
 				try {
-					if (Bot.CurrentUser.Username == "" || Bot.CurrentUser.Username == null) return "Bot";
-					return Bot.CurrentUser.Username;
+					if (string.IsNullOrWhiteSpace(Bot.CurrentUser.Username)) return "Bot";
+					else return Bot.CurrentUser.Username;
 				}
 				catch (NullReferenceException) {
 					return "Bot";
