@@ -2,6 +2,8 @@
 
 	class CommandConfig {
 
+		#region Prefix Configs
+
 		internal static string MainPrefix { get; set; } = "";
 
 		internal static string PublicPrefixTag { get; set; } = "$";
@@ -10,8 +12,9 @@
 
 		internal static string BotownerPrefixTag { get; set; } = ">";
 
+		#endregion
 
-		#region おそらくもう使わない...?
+		#region MixPrefixs
 		internal static string PublicPrefix {
 			get {
 				return MainPrefix + PublicPrefixTag;

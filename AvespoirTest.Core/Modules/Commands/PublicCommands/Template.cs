@@ -1,5 +1,4 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
+﻿using AvespoirTest.Core.Attributes;
 using System.Threading.Tasks;
 using System;
 using DSharpPlus.Entities;
@@ -7,15 +6,16 @@ using DSharpPlus.Exceptions;
 using AvespoirTest.Core.Configs;
 using AvespoirTest.Core.Modules.Logger;
 using AvespoirTest.Core.Exceptions;
+using AvespoirTest.Core.Modules.Utils;
 
 namespace AvespoirTest.Core.Modules.Commands {
 
 	partial class PublicCommands {
 
-		[Command("$")]
-		public async Task Name(CommandContext Context) {
+		[Command()]
+		public async Task Name(CommandObjects CommandObject) {
 			try {
-				string[] msgs = Context.Message.Content.Substring(CommandConfig.MainPrefix.Length + Context.Command.Name.Length).Trim().Split(" ");
+				string[] msgs = CommandObject.CommandArgs.Remove(0);
 				await Task.Delay(0);
 			}
 			catch (Exception Error) {

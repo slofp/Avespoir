@@ -16,6 +16,10 @@ namespace AvespoirTest.Core.Modules.Events {
 			Name = "Starting...",
 		};
 
+		static DiscordGame ReadyStatus = new DiscordGame() {
+			Name = "Bot Ready!",
+		};
+
 		internal static async Task Main(ReadyEventArgs ReadyEventObjects) {
 			new DebugLog("ReadyEvent " + "Start...");
 			BaseDiscordClient ClientBase = ReadyEventObjects.Client;
@@ -39,8 +43,12 @@ namespace AvespoirTest.Core.Modules.Events {
 				}
 			}
 
-			await Client.Bot.UpdateStatusAsync(null, UserStatus.Online);
+			await Client.Bot.UpdateStatusAsync(ReadyStatus, UserStatus.Online);
+
 			new InfoLog($"{ClientBase.CurrentUser.Username} Bot Ready!");
+			await Task.Delay(5000).ConfigureAwait(false);
+
+			await Client.Bot.UpdateStatusAsync(null, UserStatus.Online);
 			new DebugLog("ReadyEvent " + "End...");
 		}
 	}

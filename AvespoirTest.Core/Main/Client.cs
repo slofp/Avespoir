@@ -1,8 +1,6 @@
 ﻿using AvespoirTest.Core.Configs;
-using AvespoirTest.Core.Modules.Commands;
 using AvespoirTest.Core.Modules.Events;
 using DSharpPlus;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace AvespoirTest.Core {
@@ -24,15 +22,11 @@ namespace AvespoirTest.Core {
 
 			Bot.GuildMemberRemoved += GuildMemberRemoveEvent.Main;
 
-			CommandRegister.PublicCommands();
-
-			CommandRegister.ModeratorCommands();
-
-			CommandRegister.BotownerCommands();
+			
 
 			await Bot.ConnectAsync();
 
-			await Task.Delay(-1, CancellationToken.None);
+			await Task.Delay(-1);
 		}
 	}
 }

@@ -4,6 +4,8 @@ namespace AvespoirTest.Core.Configs {
 
 	public class GetDBConfigJson {
 
+		#region Database Config
+
 		public string Url {
 			get {
 				return MongoDBConfigs.Url;
@@ -57,6 +59,9 @@ namespace AvespoirTest.Core.Configs {
 				MongoDBConfigs.Mechanism = value;
 			}
 		}
+		#endregion
+
+		#region Database Options
 
 		public string MainDatabase {
 			get {
@@ -66,5 +71,6 @@ namespace AvespoirTest.Core.Configs {
 				MongoDBClient.MainDatabase = value;
 			}
 		}
+		#endregion
 	}
 }

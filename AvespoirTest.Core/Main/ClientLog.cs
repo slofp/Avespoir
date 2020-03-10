@@ -50,11 +50,14 @@ namespace AvespoirTest.Core {
 		}
 
 		internal static async Task InitlogFile() {
+			Console.Write("Log File Creating");
+			Console.Write(".");
 			FileStream LogFile;
 			DirectoryInfo LogDirInfo;
 			FileInfo LogFileInfo;
 
 			try {
+				Console.Write(".");
 				LogDirInfo = new DirectoryInfo(LogDirPath);
 				if (!LogDirInfo.Exists) {
 					new WarningLog("Log Directory is not found. Createing Log Directory.");
@@ -65,6 +68,7 @@ namespace AvespoirTest.Core {
 					if (!LogDirInfo.Exists) throw new DirectoryCouldNotCreatedException("Log directory could not created.");
 				}
 
+				Console.Write(".");
 				LogFileInfo = new FileInfo(LogFilePath);
 				if (!LogFileInfo.Exists) {
 					LogFile = await Task.Factory.StartNew(() => LogFileInfo.Create()).ConfigureAwait(false);

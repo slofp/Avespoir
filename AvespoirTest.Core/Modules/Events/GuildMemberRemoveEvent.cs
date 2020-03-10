@@ -1,6 +1,5 @@
 ﻿using AvespoirTest.Core.Modules.Logger;
 using DSharpPlus.EventArgs;
-using System;
 using System.Threading.Tasks;
 
 namespace AvespoirTest.Core.Modules.Events {
