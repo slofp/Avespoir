@@ -1,7 +1,10 @@
 ﻿using AvespoirTest.Core.Attributes;
 using AvespoirTest.Core.Configs;
+using AvespoirTest.Core.Database;
+using AvespoirTest.Core.Database.Schemas;
 using AvespoirTest.Core.Modules.Logger;
 using DSharpPlus.EventArgs;
+using MongoDB.Driver;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -71,7 +74,7 @@ namespace AvespoirTest.Core.Modules.Commands {
 			if (Message_Objects.Author.IsBot) return;
 			if (Message_Objects.Channel.IsPrivate) return;
 
-
+			
 
 			await ExcuteCommands<ModeratorCommands>(CommandObject, CommandText).ConfigureAwait(false);
 		}

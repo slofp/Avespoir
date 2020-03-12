@@ -7,9 +7,8 @@ namespace AvespoirTest.Core {
 		public StartClient(string[] args) {
 			ClientLog.InitlogFile().ConfigureAwait(false).GetAwaiter().GetResult();
 
-			Task DBClient = Task.Factory.StartNew(() => MongoDBClient.Main());
-			Task<Client> BotClient = Task.Factory.StartNew(() => new Client(args));
-			Task.WaitAll(DBClient, BotClient);
+			MongoDBClient.Main().ConfigureAwait(false).GetAwaiter().GetResult();
+			Client.Main(args).ConfigureAwait(false).GetAwaiter().GetResult();
 		}
 	}
 }

@@ -18,18 +18,8 @@ namespace AvespoirTest.Core {
 
 		static string LogFilePath = $@"{LogDirPath}/{LogDate}.log";
 
-		internal ClientLog() {}
-		
-		internal void StartClientLogEvents() {
-			#if !DEBUG
-			Bot.DebugLogger.LogMessageReceived += (Sender, Log) => Console.WriteLine(Log);
-			Bot.Heartbeated += HeartbeatLog.ExportHeartbeatLog;
-			#endif
-			Bot.DebugLogger.LogMessageReceived += ExportLog;
-		}
-
 		#nullable enable
-		internal void ExportLog(object? Sender, DebugLogMessageEventArgs Log) {
+		internal static void ExportLog(object? Sender, DebugLogMessageEventArgs Log) {
 			FileStream LogFile;
 			StreamWriter LogWriter;
 			FileInfo LogFileInfo;
@@ -79,7 +69,7 @@ namespace AvespoirTest.Core {
 				}
 				else {
 					new WarningLog("Log file you are trying to create exist. This is automatically overwritten.");
-					await Task.Run(() => LogFileInfo.Delete());
+					await Task.Factory.StartNew(() => LogFileInfo.Delete()).ConfigureAwait(false);
 					
 					LogFile = await Task.Factory.StartNew(() => LogFileInfo.Create()).ConfigureAwait(false);
 					LogFile.Dispose();
