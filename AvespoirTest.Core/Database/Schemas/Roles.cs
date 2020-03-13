@@ -14,7 +14,10 @@ namespace AvespoirTest.Core.Database.Schemas {
 		[BsonElement("uuid")]
 		public ulong uuid { get; set; }
 
-		[BsonElement("RoleDef")]
-		public uint RoleDef { get; set; }
+		[BsonElement("RoleNum")]
+		public uint RoleNum { get; set; }
+
+		[BsonElement("RoleLevel")]
+		public string RoleLevel { get; set; }
 	}
 }
