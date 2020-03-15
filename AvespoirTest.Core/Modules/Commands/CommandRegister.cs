@@ -1,17 +1,17 @@
-﻿using System.Linq;
-using System.Collections.Generic;
-using AvespoirTest.Core.Attributes;
+﻿using AvespoirTest.Core.Attributes;
 using AvespoirTest.Core.Configs;
 using AvespoirTest.Core.Database;
 using AvespoirTest.Core.Database.Enums;
 using AvespoirTest.Core.Database.Schemas;
 using AvespoirTest.Core.Modules.Logger;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using DSharpPlus.Entities;
 
 namespace AvespoirTest.Core.Modules.Commands {
 
@@ -79,11 +79,17 @@ namespace AvespoirTest.Core.Modules.Commands {
 			if (Message_Objects.Channel.IsPrivate) return;
 
 			bool ModCheck = false;
+			#if DEBUG
+			ModCheck = true;
+			goto SKIP_DB_CHECK;
+			#endif
+
+			#pragma warning disable
+
 			IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
 			FilterDefinition<Roles> DBRoleFilter = Builders<Roles>.Filter.Eq(Role => Role.RoleLevel, Enum.GetName(typeof(RoleLevel), RoleLevel.Moderator));
-			IAsyncCursor<Roles> GetDBRole = await DBRolesCollection.FindAsync(DBRoleFilter).ConfigureAwait(false);
 
-			List<Roles> DBRoleList = await GetDBRole.ToListAsync().ConfigureAwait(false);
+			List<Roles> DBRoleList = await (await DBRolesCollection.FindAsync(DBRoleFilter).ConfigureAwait(false)).ToListAsync().ConfigureAwait(false);
 			foreach (Roles DBRole in DBRoleList) {
 				DiscordMember GuildMember = await Message_Objects.Guild.GetMemberAsync(Message_Objects.Message.Author.Id);
 
@@ -100,8 +106,14 @@ namespace AvespoirTest.Core.Modules.Commands {
 				else continue;
 			}
 
-			if (ModCheck) await ExcuteCommands<ModeratorCommands>(CommandObject, CommandText).ConfigureAwait(false);
-			else new InfoLog("The member who has not been granted moderator roles registered in the database tried to access the moderator command.");
+			SKIP_DB_CHECK:
+			#pragma warning restore
+				if (!ModCheck) {
+					new InfoLog("The member who has not been granted moderator roles registered in the database tried to access the moderator command.");
+					return;
+				}
+
+			await ExcuteCommands<ModeratorCommands>(CommandObject, CommandText).ConfigureAwait(false);
 		}
 
 		internal static async Task BotownerCommands(MessageCreateEventArgs Message_Objects) {
@@ -114,6 +126,11 @@ namespace AvespoirTest.Core.Modules.Commands {
 			if (CommandPrefix != CommandConfig.BotownerPrefix) return;
 			if (Message_Objects.Author.IsBot) return;
 			if (!Message_Objects.Channel.IsPrivate) return;
+
+			if (Message_Objects.Message.Author.Id != ClientConfig.BotownerId) {
+				new InfoLog("Not bot owner user tried to access the bot owner command.");
+				return;
+			}
 
 			await ExcuteCommands<BotownerCommands>(CommandObject, CommandText).ConfigureAwait(false);
 		}

@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 namespace AvespoirTest.Core {
 
 	public class StartClient {
-		public StartClient(string[] args) {
+		public StartClient() {
 			ClientLog.InitlogFile().ConfigureAwait(false).GetAwaiter().GetResult();
 
 			MongoDBClient.Main().ConfigureAwait(false).GetAwaiter().GetResult();
-			Client.Main(args).ConfigureAwait(false).GetAwaiter().GetResult();
+			Client.Main().ConfigureAwait(false).GetAwaiter().GetResult();
 		}
 	}
 }

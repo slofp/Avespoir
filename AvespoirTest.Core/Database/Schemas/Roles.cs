@@ -8,9 +8,6 @@ namespace AvespoirTest.Core.Database.Schemas {
 		[BsonId]
 		public ObjectId id { get; set; }
 
-		[BsonElement("Name")]
-		public string Name { get; set; }
-
 		[BsonElement("uuid")]
 		public ulong uuid { get; set; }
 

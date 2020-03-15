@@ -9,13 +9,8 @@ namespace AvespoirTest.Core.Modules.Commands {
 
 		[Command("help")]
 		public async Task Help(CommandObjects CommandObject) {
-			try {
-				await CommandObject.Channel.SendMessageAsync($"{CommandObject.Member.Mention} DMをご確認ください！");
-				await CommandObject.Member.SendMessageAsync("テストだよ");
-			}
-			catch (Exception Error) {
-				new ErrorLog(Error.Message);
-			}
+			await CommandObject.Channel.SendMessageAsync($"{CommandObject.Member.Mention} DMをご確認ください！");
+			await CommandObject.Member.SendMessageAsync("テストだよ");
 		}
 	}
 }

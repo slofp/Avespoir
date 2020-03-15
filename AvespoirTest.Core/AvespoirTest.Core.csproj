@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="DSharpPlus" Version="3.2.3" />
     <PackageReference Include="MongoDB.Driver" Version="2.10.2" />
+    <PackageReference Include="Tababular" Version="3.0.1" />
   </ItemGroup>
 
 </Project>

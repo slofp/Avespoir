@@ -10,7 +10,7 @@ namespace AvespoirTest.Core {
 	class Client {
 		internal static DiscordClient Bot = new DiscordClient(ClientConfig.DiscordConfig());
 
-		internal static async Task Main(string[] args) {
+		internal static async Task Main() {
 
 			Bot.Ready += ReadyEvent.Main;
 
@@ -19,6 +19,8 @@ namespace AvespoirTest.Core {
 			Bot.GuildMemberAdded += GuildMemberAddEvent.Main;
 
 			Bot.GuildMemberRemoved += GuildMemberRemoveEvent.Main;
+
+			Bot.ClientErrored += ClientErroredEvent.Main;
 
 			#if !DEBUG
 			Bot.DebugLogger.LogMessageReceived += (Sender, Log) => Console.WriteLine(Log);

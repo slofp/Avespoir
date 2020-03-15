@@ -39,9 +39,6 @@ namespace AvespoirTest.Core.Modules.Commands {
 			catch (UrlNotFoundException) {
 				await CommandObject.Channel.SendMessageAsync("画像が指定されていません！");
 			}
-			catch (Exception Error) {
-				new ErrorLog(Error.Message);
-			}
 		}
 	}
 }

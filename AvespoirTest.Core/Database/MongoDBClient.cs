@@ -18,6 +18,11 @@ namespace AvespoirTest.Core.Database {
 
 		internal static IMongoDatabase Database { get; private set; }
 
+		internal static void DeleteDBAccess() {
+			Client = default;
+			Database = default;
+		}
+
 		internal static async Task Main(int TimeoutCount = 0) {
 			try {
 				new InfoLog("Connecting to database...");

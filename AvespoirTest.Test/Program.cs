@@ -28,7 +28,7 @@ namespace AvespoirTest {
 					throw new FileNotFoundException();
 				}
 
-				new StartClient(args);
+				new StartClient();
 			}
 			catch(FileNotFoundException Error) {
 				Console.Error.WriteLine(Error);

@@ -40,6 +40,7 @@ namespace AvespoirTest.Core {
 		}
 
 		internal static async Task InitlogFile() {
+			Console.Clear();
 			Console.Write("Log File Creating");
 			Console.Write(".");
 			FileStream LogFile;

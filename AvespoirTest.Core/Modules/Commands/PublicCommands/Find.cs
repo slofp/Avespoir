@@ -26,9 +26,6 @@ namespace AvespoirTest.Core.Modules.Commands {
 				if (msgs[0] == null || msgs[0] == "") await CommandObject.Channel.SendMessageAsync("入力してください！");
 				else await CommandObject.Channel.SendMessageAsync("数字で入力してください！");
 			}
-			catch (Exception Error) {
-				new ErrorLog(Error.Message);
-			}
 		}
 	}
 }
