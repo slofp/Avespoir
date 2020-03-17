@@ -1,10 +1,8 @@
 ﻿using AvespoirTest.Core;
-using System.IO;
 using AvespoirTest.Core.Configs;
-using System.Text.Json;
 using System;
-using System.Threading.Tasks;
-using MongoDB.Driver;
+using System.IO;
+using System.Text.Json;
 
 namespace AvespoirTest {
 

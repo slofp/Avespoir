@@ -75,11 +75,6 @@ namespace AvespoirTest.Core.Modules.Commands {
 						return;
 					}
 					catch (InvalidOperationException) {
-						if (!await Authentication.Confirmation(CommandObject)) {
-							await CommandObject.Message.Channel.SendMessageAsync("はじめからやり直してください");
-							return;
-						}
-
 						Roles InsertRoleData = new Roles { 
 							uuid = msgs_ID,
 							RoleNum = msgs_RoleNum,
@@ -96,9 +91,6 @@ namespace AvespoirTest.Core.Modules.Commands {
 			}
 			catch (IndexOutOfRangeException) {
 				await CommandObject.Message.Channel.SendMessageAsync("必要箇所が入力されていません");
-			}
-			catch (Exception Error) {
-				Console.WriteLine(Error);
 			}
 		}
 	}

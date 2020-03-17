@@ -5,7 +5,50 @@ If it changes slightly, the first digit of the decimal point moves.
 
 If it changes significantly or very much, the first digit will move.
 
-## Alpha 3.0 - 2020-03-11
+## [Alpha 4.0 (Final Update)](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-4.0) - 2020-03-17
+
+Alpha version final update.
+
+### Added
+
+* LogChannels schema
+* Schemas BsonElement
+* Role level
+* Moderator command role check
+* Botowner command id check
+* Botownerid config
+* Public Commands
+  * Help command
+  * Version command
+* Moderator commands
+  * DBUserAdd command
+  * DBUserDelete command
+  * DBUserList command
+  * DBRoleAdd command
+  * DBRoleDelete command
+  * DBRoleList command
+* Botowner commands
+  * DBLogChannelAdd command
+  * Restart command
+  * Logout command
+* ClientErroredEvent
+* GuildMemberAddEvent
+* GuildMemberRemoveEvent
+
+### Changed
+
+* Advance database connection
+* Client constructer start bot -> method start
+* ClientLog.StartClientLogEvents moved Client.Main method
+* Async ReadyEvent and MessageEvent
+
+### Removed
+
+* Ready event get database data
+* Client.Main args
+* Test command(send check)
+
+## [Alpha 3.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-3.0) - 2020-03-11
 
 ### Added
 
@@ -25,7 +68,7 @@ If it changes significantly or very much, the first digit will move.
 
 * DSharpPlus.CommandNext
 
-## Alpha 2.2(3.2.2 commit) - 2020-03-03
+## [Alpha 2.2(3.2.2 commit)](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-2.2) - 2020-03-03
 
 The version name in the commit is incorrect.
 
@@ -44,7 +87,7 @@ The version name in the commit is incorrect.
 * Message.MessageEvent -> Events.MessageEvent
 * Avoid deadlock(?)
 
-## Alpha 2.0 - 2020-03-02
+## [Alpha 2.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-2.0) - 2020-03-02
 
 ### Added
 
@@ -72,7 +115,7 @@ The version name in the commit is incorrect.
 
 * DSharpPlus.CommandNextModule RegisterCommands
 
-## Alpha 1.1 - 2020-02-23
+## [Alpha 1.1](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-1.1) - 2020-02-23
 
 ### Added
 
@@ -87,7 +130,7 @@ The version name in the commit is incorrect.
 * CommandModuleNext method move CommandRegister class
 * MessageCreated -> MessageEvent
 
-## Alpha 1.0 - 2020-02-21
+## [Alpha 1.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-1.0) - 2020-02-21
 
 ### Added
 

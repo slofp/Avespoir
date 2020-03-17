@@ -70,11 +70,6 @@ namespace AvespoirTest.Core.Modules.Commands {
 							Roles DBRolesNum = await (await DBRolesCollection.FindAsync(DBRolesNumFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
 							// if DBRolesNum is null, processes will not be executed from here.
 
-							if (!await Authentication.Confirmation(CommandObject)) {
-								await CommandObject.Message.Channel.SendMessageAsync("はじめからやり直してください");
-								return;
-							}
-
 							AllowUsers InsertAllowUserData = new AllowUsers {
 								Name = msgs_Name,
 								uuid = msgs_ID,

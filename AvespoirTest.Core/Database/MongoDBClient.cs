@@ -3,7 +3,6 @@ using AvespoirTest.Core.Modules.Logger;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AvespoirTest.Core.Database {

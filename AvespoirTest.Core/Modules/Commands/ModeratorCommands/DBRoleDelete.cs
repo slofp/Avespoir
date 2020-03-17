@@ -12,8 +12,8 @@ namespace AvespoirTest.Core.Modules.Commands {
 
 	partial class ModeratorCommands {
 
-		[Command("db-userdel")]
-		public async Task DBUserDelete(CommandObjects CommandObject) {
+		[Command("db-roledel")]
+		public async Task DBRoleDelete(CommandObjects CommandObject) {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
 				ulong msgs_ID;
@@ -27,19 +27,17 @@ namespace AvespoirTest.Core.Modules.Commands {
 					return;
 				}
 
-				IMongoCollection<AllowUsers> DBAllowUsersCollection = MongoDBClient.Database.GetCollection<AllowUsers>(typeof(AllowUsers).Name);
+				IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
 
 				try {
-					FilterDefinition<AllowUsers> DBAllowUsersIDFilter = Builders<AllowUsers>.Filter.Eq(AllowUser => AllowUser.uuid, msgs_ID);
-					AllowUsers DBAllowUsersID = await (await DBAllowUsersCollection.FindAsync(DBAllowUsersIDFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
-					// if DBAllowUsersID is null, processes will not be executed from here.
+					FilterDefinition<Roles> DBRolesIDFilter = Builders<Roles>.Filter.Eq(Role => Role.uuid, msgs_ID);
+					Roles DBRolesID = await (await DBRolesCollection.FindAsync(DBRolesIDFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
+					// if DBRolesID is null, processes will not be executed from here.
 
-					await DBAllowUsersCollection.DeleteOneAsync(DBAllowUsersIDFilter).ConfigureAwait(false);
-					DiscordMember DeleteGuildMember = await CommandObject.Guild.GetMemberAsync(DBAllowUsersID.uuid);
-					string KickReason = string.Format("{0}によってUserデータベースから削除されたため", CommandObject.Member.Username + "#" + CommandObject.Member.Discriminator);
-					await DeleteGuildMember.RemoveAsync(KickReason);
+					await DBRolesCollection.DeleteOneAsync(DBRolesIDFilter).ConfigureAwait(false);
 
-					string ResultText = string.Format("名前: {0}\nID: {1}\nをUserデータベースから削除しました", DBAllowUsersID.Name, DBAllowUsersID.uuid);
+					DiscordRole GuildRole = CommandObject.Guild.GetRole(DBRolesID.uuid);
+					string ResultText = string.Format("名前: {0}\nID: {1}\nをRoleデータベースから削除しました", GuildRole.Name, DBRolesID.uuid);
 					await CommandObject.Message.Channel.SendMessageAsync(ResultText);
 				}
 				catch (InvalidOperationException) {

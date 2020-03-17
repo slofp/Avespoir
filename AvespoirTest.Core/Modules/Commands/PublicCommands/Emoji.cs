@@ -1,6 +1,5 @@
 ﻿using AvespoirTest.Core.Attributes;
 using AvespoirTest.Core.Exceptions;
-using AvespoirTest.Core.Modules.Logger;
 using AvespoirTest.Core.Modules.Utils;
 using DSharpPlus.Entities;
 using System;

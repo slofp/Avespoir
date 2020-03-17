@@ -12,13 +12,7 @@ namespace AvespoirTest.Core.Modules.Commands {
 			await CommandObject.Member.SendMessageAsync(AuthCode);
 			DiscordMessage BotSendMessage = await CommandObject.Message.Channel.SendMessageAsync("処理を実行する前に確認のためDMに送信した6文字のコードを入力してください");
 
-			bool check = false;
-			while (!check) {
-				DiscordMessage LastMessage = await CommandObject.Channel.GetMessageAsync(CommandObject.Channel.LastMessageId);
-				if (BotSendMessage.Id == LastMessage.Id) check = true;
-			};
-
-			DiscordMessage AuthSend = await BotSendMessage.AwaitMessage(CommandObject.Message.Author.Id, 2 * 60 * 1000);
+			DiscordMessage AuthSend = await BotSendMessage.AwaitMessage(CommandObject.Message.Author.Id, 1 * 60 * 1000);
 
 			if (AuthSend.Content != AuthCode) {
 				await CommandObject.Message.Channel.SendMessageAsync("コードが違います");

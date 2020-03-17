@@ -1,11 +1,8 @@
 ﻿using AvespoirTest.Core.Attributes;
 using AvespoirTest.Core.Database;
 using AvespoirTest.Core.Database.Schemas;
-using AvespoirTest.Core.Modules.Logger;
 using AvespoirTest.Core.Modules.Utils;
-using DSharpPlus.Entities;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tababular;

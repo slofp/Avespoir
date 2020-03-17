@@ -4,6 +4,8 @@ namespace AvespoirTest.Core.Database.Enums {
 
 		Public = 0,
 
-		Moderator = 1
+		Moderator = 1,
+
+		Bot = 2
 	}
 }

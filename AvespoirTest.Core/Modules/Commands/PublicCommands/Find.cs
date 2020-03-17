@@ -1,5 +1,4 @@
 ﻿using AvespoirTest.Core.Attributes;
-using AvespoirTest.Core.Modules.Logger;
 using AvespoirTest.Core.Modules.Utils;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
@@ -17,7 +16,8 @@ namespace AvespoirTest.Core.Modules.Commands {
 				ulong Userid = ulong.Parse(msgs[0]);
 
 				DiscordMember FoundMember = await CommandObject.Guild.GetMemberAsync(Userid);
-				await CommandObject.Channel.SendMessageAsync($"{FoundMember.Username}#{FoundMember.Discriminator}");
+				string ResultString = string.Format("Username: {0}\nJoinAt: {1}\nGuildOwner: {2}\nAvaterURL: {3}", FoundMember.Username + "#" + FoundMember.Discriminator, FoundMember.JoinedAt, FoundMember.IsOwner ? "yes" : "no", FoundMember.AvatarUrl);
+				await CommandObject.Channel.SendMessageAsync(ResultString);
 			}
 			catch (NotFoundException) {
 				await CommandObject.Channel.SendMessageAsync("見つかりませんでした！");

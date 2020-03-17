@@ -1,13 +1,13 @@
 ﻿using AvespoirTest.Core.Configs;
 using AvespoirTest.Core.Modules.Events;
-using AvespoirTest.Core.Modules.Logger;
 using DSharpPlus;
-using System;
 using System.Threading.Tasks;
 
 namespace AvespoirTest.Core {
 
 	class Client {
+		internal static readonly string Version = "Alpha 4.0 (Final Update)";
+
 		internal static DiscordClient Bot = new DiscordClient(ClientConfig.DiscordConfig());
 
 		internal static async Task Main() {

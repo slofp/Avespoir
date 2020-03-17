@@ -7,20 +7,20 @@ namespace AvespoirTest.Core.Modules.Events {
 
 	class MessageEvent {
 
-		internal static async Task Main(MessageCreateEventArgs Message_Objects) {
+		internal static Task Main(MessageCreateEventArgs Message_Objects) {
 			new DebugLog("MessageEvent " + "Start...");
 			
-			await Task.Run(() => new MessageLog(Message_Objects));
+			Task.Factory.StartNew(() => new MessageLog(Message_Objects)).ConfigureAwait(false);
 
-			Task PublicCommandTask = CommandRegister.PublicCommands(Message_Objects);
+			CommandRegister.PublicCommands(Message_Objects).ConfigureAwait(false);
 
-			Task ModeratorCommandTask = CommandRegister.ModeratorCommands(Message_Objects);
+			CommandRegister.ModeratorCommands(Message_Objects).ConfigureAwait(false);
 
-			Task BotownerCommandTask = CommandRegister.BotownerCommands(Message_Objects);
-
-			await Task.WhenAll(PublicCommandTask, ModeratorCommandTask, BotownerCommandTask);
+			CommandRegister.BotownerCommands(Message_Objects).ConfigureAwait(false);
 
 			new DebugLog("MessageEvent " + "End...");
+
+			return Task.CompletedTask;
 		}
 	}
 }
