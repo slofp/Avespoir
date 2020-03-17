@@ -1,6 +1,8 @@
 ﻿using AvespoirTest.Core.Configs;
 using AvespoirTest.Core.Modules.Events;
+using AvespoirTest.Core.Modules.Logger;
 using DSharpPlus;
+using System;
 using System.Threading.Tasks;
 
 namespace AvespoirTest.Core {
