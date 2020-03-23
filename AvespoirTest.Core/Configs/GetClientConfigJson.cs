@@ -1,4 +1,6 @@
-﻿namespace AvespoirTest.Core.Configs {
+﻿using System;
+
+namespace AvespoirTest.Core.Configs {
 
 	public class GetClientConfigJson {
 
@@ -10,6 +12,15 @@
 			}
 			set {
 				ClientConfig.Token = value;
+			}
+		}
+
+		public string BotownerId {
+			get {
+				return Convert.ToString(ClientConfig.BotownerId);
+			}
+			set {
+				ClientConfig.BotownerId = Convert.ToUInt64(value);
 			}
 		}
 		#endregion
