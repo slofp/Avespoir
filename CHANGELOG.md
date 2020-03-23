@@ -7,7 +7,7 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
-## [Beta 1.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-1.0) - 2020-03-**
+## [Beta 1.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-1.0) - 2020-03-24
 
 Start Beta version!
 
