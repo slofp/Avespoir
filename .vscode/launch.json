@@ -5,15 +5,14 @@
    "version": "0.2.0",
    "configurations": [
         {
-            "name": "AvespoirTest Debug",
+            "name": "Avespoir Debug",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/AvespoirTest.Test/bin/Debug/netcoreapp3.1/AvespoirTest.Test.dll",
+            "program": "${workspaceFolder}/Builds/netcoreapp3.1/Avespoir.dll",
             "args": [],
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
-            "cwd": "${workspaceFolder}/AvespoirTest.Test/",
             "console": "internalConsole",
             "stopAtEntry": false
         },

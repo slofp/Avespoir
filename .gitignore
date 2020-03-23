@@ -8,6 +8,8 @@ obj/
 
 Properties/
 
-AvespoirTest.Test/Configs/*.json
+Builds/
 
-AvespoirTest.Test/Log
+Configs/ClientConfig.json
+
+Configs/DBConfig.json
