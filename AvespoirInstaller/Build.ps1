@@ -181,6 +181,7 @@ function CombiningFiles {
 	Global
 	Global_After
 	Windows
+	Linux
 	Index
 
 	return
