@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/AvespoirTest.Test/AvespoirTest.Test.csproj",
+                "${workspaceFolder}/Avespoir/Avespoir.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/AvespoirTest.Test/AvespoirTest.Test.csproj",
+                "${workspaceFolder}/Avespoir/Avespoir.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +32,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/AvespoirTest.Test/AvespoirTest.Test.csproj",
+                "${workspaceFolder}/Avespoir/Avespoir.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

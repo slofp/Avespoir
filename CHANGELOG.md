@@ -5,6 +5,20 @@ If it changes slightly, the first digit of the decimal point moves.
 
 If it changes significantly or very much, the first digit will move.
 
+***
+
+## [Beta 1.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-1.0) - 2020-03-**
+
+Start Beta version!
+
+### Added
+
+* Avespoir installer(Incomplete)
+
+### Changed
+
+* Test Code -> Production specification
+
 ## [Alpha 4.0 (Final Update)](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-4.0) - 2020-03-17
 
 Alpha version final update.
