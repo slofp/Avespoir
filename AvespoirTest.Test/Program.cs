@@ -1,14 +1,12 @@
 ﻿using AvespoirTest.Core;
-using System.IO;
 using AvespoirTest.Core.Configs;
-using System.Text.Json;
 using System;
-using System.Threading.Tasks;
-using MongoDB.Driver;
+using System.IO;
+using System.Text.Json;
 
 namespace AvespoirTest {
 
-	class Program {
+	static class Program {
 		
 		static void Main(string[] args) {
 			// gitignoreで削除しているため事前に用意する必要性あり
@@ -21,17 +19,14 @@ namespace AvespoirTest {
 					string ClientConfigJsonData = File.ReadAllText(ClientConfigPath);
 					string DBConfigJsonData = File.ReadAllText(DBConfigPath);
 
-					GetClientConfigJson ClientConfigJson = new GetClientConfigJson();
-					GetDBConfigJson DBConfigJson = new GetDBConfigJson();
-
-					ClientConfigJson = JsonSerializer.Deserialize<GetClientConfigJson>(ClientConfigJsonData);
-					DBConfigJson = JsonSerializer.Deserialize<GetDBConfigJson>(DBConfigJsonData);
+					JsonSerializer.Deserialize<GetClientConfigJson>(ClientConfigJsonData);
+					JsonSerializer.Deserialize<GetDBConfigJson>(DBConfigJsonData);
 				}
 				else {
 					throw new FileNotFoundException();
 				}
 
-				new StartClient(args);
+				new StartClient();
 			}
 			catch(FileNotFoundException Error) {
 				Console.Error.WriteLine(Error);

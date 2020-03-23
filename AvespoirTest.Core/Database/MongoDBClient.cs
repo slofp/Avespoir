@@ -17,7 +17,10 @@ namespace AvespoirTest.Core.Database {
 
 		internal static IMongoDatabase Database { get; private set; }
 
-		internal static bool Connectcheck { get; private set; } = false;
+		internal static void DeleteDBAccess() {
+			Client = default;
+			Database = default;
+		}
 
 		internal static async Task Main(int TimeoutCount = 0) {
 			try {
@@ -39,7 +42,6 @@ namespace AvespoirTest.Core.Database {
 						Client = new MongoClient(MongoConfig);
 						Database = Client.GetDatabase(MainDatabase);
 
-						Connectcheck = true;
 						new InfoLog("Connected to database!");
 
 						CheckPing = true;
