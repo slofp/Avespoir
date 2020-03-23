@@ -1,0 +1,38 @@
+{
+    "MainMenu": {
+        "Welcome": "Avespoirへようこそ！",
+        "CurrentVersion": "現在のバージョン",
+        "Update": "新しいバージョンがあります！",
+        "1": "Avespoirをダウンロードします",
+        "2": "Avespoirを起動します",
+        "3": "起動に必要なソフトをインストールします",
+        "4": "ClientConfig.jsonの設定をします",
+        "5": "MongoDBConfig.jsonの設定をします",
+        "6": "終了します",
+        "ReadLineWindows": "1から6の中で選んでください",
+        "ReadLineLinux": "1から5の中で選んでください"
+    },
+    "CCS": {
+        "Token": "DiscordBotのトークンを入力してください",
+        "BotownerId": "あなたのDiscordユーザーIDを入力してください",
+        "MainPrefix": "Botで使うプレフィックスを入力してください",
+        "PublicPrefixTag": "公開用プレフィックスタグを入力してください",
+        "ModeratorPrefixTag": "モデレーター用プレフィックスタグを入力してください",
+        "BotownerPrefixTag": "Botオーナー用プレフィックスタグを入力してください"
+    },
+    "DCS": {
+        "DBSetupped": "入力する前にMongoDBの設定がすでに完了していることを確認してください！",
+        "ConfirmDBSetup": "設定は完了していますか？",
+        "UseDatabase": "ログインに使用するデータベースを入力してください",
+        "Url": "データベースのURlを入力してください",
+        "Port": "データベースのポート番号を入力してください",
+        "Username": "ログインに使用するユーザーネームを入力してください",
+        "Password": "ログインに使用するユーザーのパスワードを入力してください",
+        "Mechanism": "ログインの認証メカニズムを入力してください",
+        "MainDatabase": "使用するデータベース名を入力してください"
+    },
+    "Confirm": "これでよろしいですか？",
+    "Cancel": "中断しました",
+    "ReturnMainMenu": "メインメニューに戻ります...",
+    "Exit": "終了します..."
+}

@@ -1,0 +1,15 @@
+{
+  "UseDatabase": "",
+
+  "Url": "",
+
+  "Port": 0,
+
+  "Username": "",
+
+  "Password": "",
+
+  "Mechanism": "SCRAM-SHA-256",
+
+  "MainDatabase": ""
+}
