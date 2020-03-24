@@ -78,42 +78,44 @@ namespace Avespoir.Core.Modules.Commands {
 			if (Message_Objects.Author.IsBot) return;
 			if (Message_Objects.Channel.IsPrivate) return;
 
-			bool ModCheck = false;
+			bool DebugCheck = false;
 			#if DEBUG
-			ModCheck = true;
-			goto SKIP_DB_CHECK;
+			DebugCheck = true;
 			#endif
 
-			#pragma warning disable
+			if (DebugCheck || Message_Objects.Message.Author.Id != ClientConfig.BotownerId) {
+				await ExcuteCommands<ModeratorCommands>(CommandObject, CommandText).ConfigureAwait(false);
+			}
+			else {
+				bool ModCheck = false;
 
-			IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
-			FilterDefinition<Roles> DBRoleFilter = Builders<Roles>.Filter.Eq(Role => Role.RoleLevel, Enum.GetName(typeof(RoleLevel), RoleLevel.Moderator));
+				IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
+				FilterDefinition<Roles> DBRoleFilter = Builders<Roles>.Filter.Eq(Role => Role.RoleLevel, Enum.GetName(typeof(RoleLevel), RoleLevel.Moderator));
 
-			List<Roles> DBRoleList = await (await DBRolesCollection.FindAsync(DBRoleFilter).ConfigureAwait(false)).ToListAsync().ConfigureAwait(false);
-			foreach (Roles DBRole in DBRoleList) {
-				DiscordMember GuildMember = await Message_Objects.Guild.GetMemberAsync(Message_Objects.Message.Author.Id);
+				List<Roles> DBRoleList = await (await DBRolesCollection.FindAsync(DBRoleFilter).ConfigureAwait(false)).ToListAsync().ConfigureAwait(false);
+				foreach (Roles DBRole in DBRoleList) {
+					DiscordMember GuildMember = await Message_Objects.Guild.GetMemberAsync(Message_Objects.Message.Author.Id);
 
-				List<DiscordRole> GuildRoleList = GuildMember.Roles.ToList();
-				foreach (DiscordRole GuildRole in GuildRoleList) {
-					if (GuildRole.Id == DBRole.uuid) {
-						ModCheck = true;
-						break;
+					List<DiscordRole> GuildRoleList = GuildMember.Roles.ToList();
+					foreach (DiscordRole GuildRole in GuildRoleList) {
+						if (GuildRole.Id == DBRole.uuid) {
+							ModCheck = true;
+							break;
+						}
+						else continue;
 					}
+
+					if (ModCheck) break;
 					else continue;
 				}
 
-				if (ModCheck) break;
-				else continue;
-			}
-
-			SKIP_DB_CHECK:
-			#pragma warning restore
 				if (!ModCheck) {
 					new InfoLog("The member who has not been granted moderator roles registered in the database tried to access the moderator command.");
 					return;
 				}
 
-			await ExcuteCommands<ModeratorCommands>(CommandObject, CommandText).ConfigureAwait(false);
+				await ExcuteCommands<ModeratorCommands>(CommandObject, CommandText).ConfigureAwait(false);
+			}
 		}
 
 		internal static async Task BotownerCommands(MessageCreateEventArgs Message_Objects) {

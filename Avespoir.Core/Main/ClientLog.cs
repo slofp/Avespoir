@@ -88,6 +88,7 @@ namespace Avespoir.Core {
 				Console.SetCursorPosition(ConsoleString.Length + 2, 0);
 				Console.ForegroundColor = ConsoleColor.Green;
 				Console.WriteLine("OK");
+				Console.ForegroundColor = ConsoleColor.White;
 			}
 			catch (Exception Error) {
 				new ErrorLog(Error);

@@ -20,6 +20,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
+		WindowsRepo|Any CPU = WindowsRepo|Any CPU
+		WindowsRepo|x64 = WindowsRepo|x64
+		WindowsRepo|x86 = WindowsRepo|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -34,6 +37,12 @@ Global
 		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.Release|x64.Build.0 = Release|x64
 		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.Release|x86.ActiveCfg = Release|x86
 		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.Release|x86.Build.0 = Release|x86
+		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.WindowsRepo|Any CPU.ActiveCfg = WindowsRepo|Any CPU
+		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.WindowsRepo|Any CPU.Build.0 = WindowsRepo|Any CPU
+		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.WindowsRepo|x64.ActiveCfg = Release|x64
+		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.WindowsRepo|x64.Build.0 = Release|x64
+		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.WindowsRepo|x86.ActiveCfg = Release|x86
+		{ACA4165C-A917-4BAC-9594-0CA14EFAE46B}.WindowsRepo|x86.Build.0 = Release|x86
 		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.Debug|x64.ActiveCfg = Debug|x64
@@ -46,18 +55,12 @@ Global
 		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.Release|x64.Build.0 = Release|x64
 		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.Release|x86.ActiveCfg = Release|x86
 		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.Release|x86.Build.0 = Release|x86
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Debug|x64.Build.0 = Debug|Any CPU
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Debug|x86.Build.0 = Debug|Any CPU
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Release|x64.ActiveCfg = Release|Any CPU
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Release|x64.Build.0 = Release|Any CPU
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Release|x86.ActiveCfg = Release|Any CPU
-		{787421AF-3BAD-4F54-8399-99A939229EC2}.Release|x86.Build.0 = Release|Any CPU
+		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.WindowsRepo|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.WindowsRepo|Any CPU.Build.0 = Debug|Any CPU
+		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.WindowsRepo|x64.ActiveCfg = Release|x64
+		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.WindowsRepo|x64.Build.0 = Release|x64
+		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.WindowsRepo|x86.ActiveCfg = Release|x86
+		{D6C6B60E-F056-425B-9AD9-54D160F6AC88}.WindowsRepo|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
