@@ -10,8 +10,13 @@ namespace Avespoir {
 		
 		static void Main(string[] args) {
 			// Need to be prepared in advance because it is deleted by gitignore
+			#if REPO
+			string ClientConfigPath = @"../../Configs/ClientConfig.json";
+			string DBConfigPath = @"../../Configs/DBConfig.json";
+			#else
 			string ClientConfigPath = @"./Configs/ClientConfig.json";
 			string DBConfigPath = @"./Configs/DBConfig.json";
+			#endif
 
 			if (File.Exists(ClientConfigPath) && File.Exists(DBConfigPath)) {
 				string ClientConfigJsonData = File.ReadAllText(ClientConfigPath);
