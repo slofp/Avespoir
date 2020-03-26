@@ -7,6 +7,12 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
+## [Beta 1.1.1](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-1.1.1) - 2020-03-26
+
+### Fixed
+
+* Moderator Command Allow Botowner
+
 ## [Beta 1.1](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-1.1) - 2020-03-25
 
 ### Added
