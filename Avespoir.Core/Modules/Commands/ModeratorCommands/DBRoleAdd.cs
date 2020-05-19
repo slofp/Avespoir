@@ -75,6 +75,11 @@ namespace Avespoir.Core.Modules.Commands {
 						return;
 					}
 					catch (InvalidOperationException) {
+						if (!await Authentication.Confirmation(CommandObject)) {
+							await CommandObject.Channel.SendMessageAsync("認証に失敗しました、初めからやり直してください");
+							return;
+						}
+
 						Roles InsertRoleData = new Roles { 
 							uuid = msgs_ID,
 							RoleNum = msgs_RoleNum,

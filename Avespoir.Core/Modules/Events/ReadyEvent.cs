@@ -24,7 +24,6 @@ namespace Avespoir.Core.Modules.Events {
 			Client.Bot.UpdateStatusAsync(StartingStatus, UserStatus.DoNotDisturb).ConfigureAwait(false);
 
 			new InfoLog($"{ClientBase.CurrentUser.Username} Bot Ready!");
-			Task.Delay(5000).ConfigureAwait(false).GetAwaiter().GetResult();
 
 			DBCount().ConfigureAwait(false);
 			new DebugLog("ReadyEvent " + "End...");
