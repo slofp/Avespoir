@@ -2,7 +2,6 @@
 using Avespoir.Core.Database;
 using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Modules.Utils;
-using DSharpPlus.Entities;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -12,41 +11,42 @@ namespace Avespoir.Core.Modules.Commands {
 
 	partial class ModeratorCommands {
 
-		[Command("db-roledel")]
-		public async Task DBRoleDelete(CommandObjects CommandObject) {
+		[Command("db-clogch")]
+		public async Task DBLogChannelChange(CommandObjects CommandObject) {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
-				ulong msgs_ID;
+				ulong msgs_ChannelID;
 
 				if (string.IsNullOrWhiteSpace(msgs[0])) {
 					await CommandObject.Message.Channel.SendMessageAsync("IDが空白またはNullです");
 					return;
 				}
-				if (!ulong.TryParse(msgs[0], out msgs_ID)) {
+				if (!ulong.TryParse(msgs[0], out msgs_ChannelID)) {
 					await CommandObject.Message.Channel.SendMessageAsync("IDは数字でなければいけません");
 					return;
 				}
 
-				IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
+				ulong msgs_GuildID = CommandObject.Guild.Id;
+
+				IMongoCollection<LogChannels> DBLogChannelsCollection = MongoDBClient.Database.GetCollection<LogChannels>(typeof(LogChannels).Name);
 
 				try {
-					FilterDefinition<Roles> DBRolesIDFilter = Builders<Roles>.Filter.Eq(Role => Role.uuid, msgs_ID);
-					Roles DBRolesID = await (await DBRolesCollection.FindAsync(DBRolesIDFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
-					// if DBRolesID is null, processes will not be executed from here.
+					FilterDefinition<LogChannels> DBLogChannelsGuildIDFilter = Builders<LogChannels>.Filter.Eq(LogChannel => LogChannel.GuildID, msgs_GuildID);
+					LogChannels DBLogChannelsGuildID = await (await DBLogChannelsCollection.FindAsync(DBLogChannelsGuildIDFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
 
 					if (!await Authentication.Confirmation(CommandObject)) {
 						await CommandObject.Channel.SendMessageAsync("認証に失敗しました、初めからやり直してください");
 						return;
 					}
 
-					await DBRolesCollection.DeleteOneAsync(DBRolesIDFilter).ConfigureAwait(false);
+					UpdateDefinition<LogChannels> UpdateLogChannel = Builders<LogChannels>.Update.Set(LogChannel => LogChannel.ChannelID, msgs_ChannelID);
+					await DBLogChannelsCollection.UpdateOneAsync(DBLogChannelsGuildIDFilter, UpdateLogChannel).ConfigureAwait(false);
 
-					DiscordRole GuildRole = CommandObject.Guild.GetRole(DBRolesID.uuid);
-					string ResultText = string.Format("名前: {0}\nID: {1}\nをRoleデータベースから削除しました", GuildRole.Name, DBRolesID.uuid);
+					string ResultText = string.Format("LogChannelを{0}に変更しました！", msgs_ChannelID);
 					await CommandObject.Message.Channel.SendMessageAsync(ResultText);
 				}
 				catch (InvalidOperationException) {
-					await CommandObject.Message.Channel.SendMessageAsync("そのIDは登録されていません");
+					await CommandObject.Message.Channel.SendMessageAsync("サーバーに登録されていません");
 					return;
 				}
 			}

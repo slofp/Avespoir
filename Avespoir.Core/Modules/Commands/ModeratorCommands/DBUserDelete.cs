@@ -34,6 +34,11 @@ namespace Avespoir.Core.Modules.Commands {
 					AllowUsers DBAllowUsersID = await (await DBAllowUsersCollection.FindAsync(DBAllowUsersIDFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
 					// if DBAllowUsersID is null, processes will not be executed from here.
 
+					if (!await Authentication.Confirmation(CommandObject)) {
+						await CommandObject.Channel.SendMessageAsync("認証に失敗しました、初めからやり直してください");
+						return;
+					}
+
 					await DBAllowUsersCollection.DeleteOneAsync(DBAllowUsersIDFilter).ConfigureAwait(false);
 					DiscordMember DeleteGuildMember = await CommandObject.Guild.GetMemberAsync(DBAllowUsersID.uuid);
 					string KickReason = string.Format("{0}によってUserデータベースから削除されたため", CommandObject.Member.Username + "#" + CommandObject.Member.Discriminator);
