@@ -11,6 +11,8 @@ If it changes significantly or very much, the first digit will move.
 
 ### Added
 
+* One-time Authentication
+
 * Moderator Commands
   * DBLogChannelAdd
   * DBLogChannelChange
