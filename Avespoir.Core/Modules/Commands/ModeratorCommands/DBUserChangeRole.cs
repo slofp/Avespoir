@@ -56,6 +56,11 @@ namespace Avespoir.Core.Modules.Commands {
 							Roles DBBeforeRolesNum = await (await DBRolesCollection.FindAsync(DBBeforeRolesNumFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
 							// if DBBeforeRolesNum is null, processes will not be executed from here.
 
+							if (!await Authentication.Confirmation(CommandObject)) {
+								await CommandObject.Channel.SendMessageAsync("認証に失敗しました、初めからやり直してください");
+								return;
+							}
+
 							UpdateDefinition<AllowUsers> UpdateAllowUserRole = Builders<AllowUsers>.Update.Set(AllowUser => AllowUser.RoleNum, msgs_RoleNum);
 							await DBAllowUsersCollection.UpdateOneAsync(DBAllowUsersIDFilter, UpdateAllowUserRole).ConfigureAwait(false);
 

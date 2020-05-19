@@ -22,26 +22,44 @@ namespace Avespoir.Core.Modules.Commands {
 
 			DiscordEmbed PublicEmbed = new DiscordEmbedBuilder()
 				.WithTitle("一般コマンド")
+				/*
+				 	string.Format("プレフィックスは {0} です", CommandConfig.PublicPrefix) + "\n" +
+					"\n" +
+					CommandConfig.PublicPrefix + "ping" + "\n" +
+					"Pingを測ります" + "\n" +
+					"\n" +
+					CommandConfig.PublicPrefix + "ver" + "\n" +
+					"Botのバージョンを表示します" + "\n" +
+					"\n" +
+					CommandConfig.PublicPrefix + "help" + "\n" +
+					"コマンド一覧を表示します" + "\n" +
+					"\n" +
+					CommandConfig.PublicPrefix + "find" + " " + "[ユーザーID]" + "\n" +
+					"ユーザーの情報を表示します" + "\n" +
+					"\n" +
+					CommandConfig.PublicPrefix + "emoji" + " " + "[名前]" + " " + "(画像アップロード)" + "\n" +
+					"画像をもとに絵文字を作成します"
+				 */
 				.WithDescription(string.Format("プレフィックスは {0} です", CommandConfig.PublicPrefix))
 				.AddField(
-					CommandConfig.PublicPrefix + "ping",
-					"Pingを測ります"
+					"Pingを測ります",
+					"`" + CommandConfig.PublicPrefix + "ping" + "`"
 				)
 				.AddField(
-					CommandConfig.PublicPrefix + "ver",
-					"Botのバージョンを表示します"
+					"Botのバージョンを表示します",
+					"`" + CommandConfig.PublicPrefix + "ver" + "`"
 				)
 				.AddField(
-					CommandConfig.PublicPrefix + "help",
-					"コマンド一覧を表示します"
+					"コマンド一覧を表示します",
+					"`" + CommandConfig.PublicPrefix + "help" + "`"
 				)
 				.AddField(
-					CommandConfig.PublicPrefix + "find" + " " + "[ユーザーID]",
-					"ユーザーの情報を表示します"
+					"ユーザーの情報を表示します",
+					"`" + CommandConfig.PublicPrefix + "find" + " " + "[ユーザーID]" + "`"
 				)
 				.AddField(
-					CommandConfig.PublicPrefix + "emoji" + " " + "[名前]" + " " + "(画像アップロード)",
-					"画像をもとに絵文字を作成します"
+					"画像をもとに絵文字を作成します",
+					"`" + CommandConfig.PublicPrefix + "emoji" + " " + "[名前]" + " " + "(画像アップロード)" + "`"
 				)
 				.WithColor(new DiscordColor(0x00B06B));
 			await CommandObject.Member.SendMessageAsync(default, default, PublicEmbed);
@@ -60,32 +78,40 @@ namespace Avespoir.Core.Modules.Commands {
 						.WithTitle("モデレーターコマンド")
 						.WithDescription(string.Format("プレフィックスは {0} です", CommandConfig.ModeratorPrefix))
 						.AddField(
-							CommandConfig.ModeratorPrefix + "db-userlist",
-							"Userデータベースに登録されているユーザー情報をリストにして表示します"
+							"Userデータベースに登録されているユーザー情報をリストにして表示します",
+							"`" + CommandConfig.ModeratorPrefix + "db-userlist" + "`"
 						)
 						.AddField(
-							CommandConfig.ModeratorPrefix + "db-rolelist",
-							"Roleデータベースに登録されているユーザー情報をリストにして表示します"
+							"Roleデータベースに登録されているユーザー情報をリストにして表示します",
+							"`" + CommandConfig.ModeratorPrefix + "db-rolelist" + "`"
 						)
 						.AddField(
-							CommandConfig.ModeratorPrefix + "db-useradd" + " " + "[名前]" + " " + "[ユーザーID]" + " " + "[役職登録番号]",
-							"Userデータベースにユーザーを追加します"
+							"Userデータベースにユーザーを追加します",
+							"`" + CommandConfig.ModeratorPrefix + "db-useradd" + " " + "[名前]" + " " + "[ユーザーID]" + " " + "[役職登録番号]" + "`"
 						)
 						.AddField(
-							CommandConfig.ModeratorPrefix + "db-roleadd" + " " + "[役職ID]" + " " + "[役職登録番号]" + " " + "[役職レベル(一般: 0, モデレーター: 1, Bot: 2)]",
-							"Roleデータベースに役職を追加します"
+							"Roleデータベースに役職を追加します",
+							"`" + CommandConfig.ModeratorPrefix + "db-roleadd" + " " + "[役職ID]" + " " + "[役職登録番号]" + " " + "[役職レベル(一般: 0, モデレーター: 1, Bot: 2)]" + "`"
 						)
 						.AddField(
-							CommandConfig.ModeratorPrefix + "db-usercrole" + " " + "[ユーザーID]" + " " + "[役職登録番号]",
-							"Userデータベースに登録されているユーザーの役職を変更します"
+							"Userデータベースに登録されているユーザーの役職を変更します",
+							"`" + CommandConfig.ModeratorPrefix + "db-usercrole" + " " + "[ユーザーID]" + " " + "[役職登録番号]" + "`"
 						)
 						.AddField(
-							CommandConfig.ModeratorPrefix + "db-userdel" + " " + "[ユーザーID]",
-							"Userデータベースからユーザーを削除します"
+							"Userデータベースからユーザーを削除します",
+							"`" + CommandConfig.ModeratorPrefix + "db-userdel" + " " + "[ユーザーID]" + "`"
 						)
 						.AddField(
-							CommandConfig.ModeratorPrefix + "db-roledel" + " " + "[役職ID]",
-							"Roleデータベースから役職を削除します"
+							"Roleデータベースから役職を削除します",
+							"`" + CommandConfig.ModeratorPrefix + "db-roledel" + " " + "[役職ID]" + "`"
+						)
+						.AddField(
+							"LogChannelデータベースにログ送信用のチャンネル設定を追加します",
+							"`" + CommandConfig.ModeratorPrefix + "db-logchadd" + " " + "[チャンネルID]" + "`"
+						)
+						.AddField(
+							"LogChannelデータベースにログ送信用のチャンネル設定を変更します",
+							"`" + CommandConfig.ModeratorPrefix + "db-clogch" + " " + "[チャンネルID]" + "`"
 						)
 						.WithColor(new DiscordColor(0xF6AA00));
 					await CommandObject.Member.SendMessageAsync(default, default, ModeratorEmbed);
@@ -95,16 +121,12 @@ namespace Avespoir.Core.Modules.Commands {
 						.WithTitle("Bot管理者コマンド")
 						.WithDescription(string.Format("プレフィックスは {0} です", CommandConfig.BotownerPrefix))
 						.AddField(
-							CommandConfig.BotownerPrefix + "db-logchanneladd" + " " + "[サーバーID]" + " " + "[チャンネルID]",
-							"LogChannelデータベースにログ送信用のチャンネル設定を追加します"
+							"Botを再接続します",
+							"`" + CommandConfig.BotownerPrefix + "restart" + "`"
 						)
 						.AddField(
-							CommandConfig.BotownerPrefix + "restart",
-							"Botを再接続します"
-						)
-						.AddField(
-							CommandConfig.BotownerPrefix + "logout",
-							"Botを終了します"
+							"Botを終了します",
+							"`" + CommandConfig.BotownerPrefix + "logout" + "`"
 						)
 						.WithColor(new DiscordColor(0x1971FF));
 					await CommandObject.Member.SendMessageAsync(default, default, BotownerEmbed);
