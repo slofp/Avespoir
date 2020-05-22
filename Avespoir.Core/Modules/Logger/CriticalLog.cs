@@ -1,13 +1,7 @@
-﻿using DSharpPlus;
-using System;
-using static Avespoir.Core.Modules.Logger.LoggerProperties;
+﻿namespace Avespoir.Core.Modules.Logger {
 
-namespace Avespoir.Core.Modules.Logger {
+	partial class Log {
 
-	class CriticalLog {
-
-		internal CriticalLog(string Message) {
-			Debug_Logger.LogMessage(LogLevel.Critical, Username, Message, DateTime.Now);
-		}
+		internal static void Critical(object Message) => LoggerProperties.Log.Fatal(Message);
 	}
 }

@@ -15,11 +15,19 @@ namespace Avespoir.Core.Modules.Commands {
 
 		[Command("emoji")]
 		public async Task Emoji(CommandObjects CommandObject) {
-			try {
-				string[] msgs = CommandObject.CommandArgs.Remove(0);
-				if (msgs[0] == "" || msgs[0] == null) throw new ArgumentNullException();
-				string EmojiName = msgs[0];
+			string[] msgs = CommandObject.CommandArgs.Remove(0);
+			if (msgs.Length == 0) {
+				await CommandObject.Message.Channel.SendMessageAsync("何も入力されていません");
+				return;
+			}
 
+			if (string.IsNullOrWhiteSpace(msgs[0])) {
+				await CommandObject.Message.Channel.SendMessageAsync("名前が空白またはNullです");
+				return;
+			}
+			string EmojiName = msgs[0];
+
+			try {
 				IEnumerator<DiscordAttachment> Attachment = CommandObject.Message.Attachments.GetEnumerator();
 				Uri ImageUrl;
 				if (Attachment.MoveNext()) ImageUrl = new Uri(Attachment.Current.Url);
@@ -31,9 +39,6 @@ namespace Avespoir.Core.Modules.Commands {
 
 				DiscordGuildEmoji Emoji = await CommandObject.Guild.CreateEmojiAsync(EmojiName, Image);
 				await CommandObject.Channel.SendMessageAsync(ConvertEmoji(Emoji) + $"を{Emoji.Name}で登録しました");
-			}
-			catch (ArgumentNullException) {
-				await CommandObject.Channel.SendMessageAsync("名前が指定されていない、または空白です！");
 			}
 			catch (UrlNotFoundException) {
 				await CommandObject.Channel.SendMessageAsync("画像が指定されていません！");

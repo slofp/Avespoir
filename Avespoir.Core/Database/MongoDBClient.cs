@@ -24,7 +24,7 @@ namespace Avespoir.Core.Database {
 
 		internal static async Task Main(int TimeoutCount = 0) {
 			try {
-				new InfoLog("Connecting to database...");
+				Log.Info("Connecting to database...");
 
 				MongoClient PingTest = new MongoClient(MongoConfig);
 
@@ -42,7 +42,7 @@ namespace Avespoir.Core.Database {
 						Client = new MongoClient(MongoConfig);
 						Database = Client.GetDatabase(MainDatabase);
 
-						new InfoLog("Connected to database!");
+						Log.Info("Connected to database!");
 
 						CheckPing = true;
 					}
@@ -50,11 +50,11 @@ namespace Avespoir.Core.Database {
 				}
 			}
 			catch (TimeoutException Error) {
-				new ErrorLog(Error);
+				Log.Error(Error);
 
 				// Max 1 Day
 				int Second = TimeoutCount > 17280 - 1 ? 17280 * 5 : (TimeoutCount + 1) * 5;
-				new InfoLog($"Reconnect after {Second} seconds");
+				Log.Info($"Reconnect after {Second} seconds");
 
 				Task.Delay(Second * 1000).ConfigureAwait(false).GetAwaiter().GetResult();
 				await Main(TimeoutCount + 1);

@@ -10,7 +10,7 @@ namespace Avespoir.Core.Modules.Commands {
 		[Command("logout")]
 		public async Task Logout(CommandObjects CommandObject) {
 			await CommandObject.Message.RespondAsync("終了します...");
-			new InfoLog("Logging out...");
+			Log.Info("Logging out...");
 
 			await Client.Bot.DisconnectAsync();
 			Client.Bot.Dispose();

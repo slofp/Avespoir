@@ -22,24 +22,6 @@ namespace Avespoir.Core.Modules.Commands {
 
 			DiscordEmbed PublicEmbed = new DiscordEmbedBuilder()
 				.WithTitle("一般コマンド")
-				/*
-				 	string.Format("プレフィックスは {0} です", CommandConfig.PublicPrefix) + "\n" +
-					"\n" +
-					CommandConfig.PublicPrefix + "ping" + "\n" +
-					"Pingを測ります" + "\n" +
-					"\n" +
-					CommandConfig.PublicPrefix + "ver" + "\n" +
-					"Botのバージョンを表示します" + "\n" +
-					"\n" +
-					CommandConfig.PublicPrefix + "help" + "\n" +
-					"コマンド一覧を表示します" + "\n" +
-					"\n" +
-					CommandConfig.PublicPrefix + "find" + " " + "[ユーザーID]" + "\n" +
-					"ユーザーの情報を表示します" + "\n" +
-					"\n" +
-					CommandConfig.PublicPrefix + "emoji" + " " + "[名前]" + " " + "(画像アップロード)" + "\n" +
-					"画像をもとに絵文字を作成します"
-				 */
 				.WithDescription(string.Format("プレフィックスは {0} です", CommandConfig.PublicPrefix))
 				.AddField(
 					"Pingを測ります",
@@ -60,6 +42,10 @@ namespace Avespoir.Core.Modules.Commands {
 				.AddField(
 					"画像をもとに絵文字を作成します",
 					"`" + CommandConfig.PublicPrefix + "emoji" + " " + "[名前]" + " " + "(画像アップロード)" + "`"
+				)
+				.AddField(
+					"招待URLを作成します",
+					"`" + CommandConfig.PublicPrefix + "invite" + " " + "(チャンネル)" + "`"
 				)
 				.WithColor(new DiscordColor(0x00B06B));
 			await CommandObject.Member.SendMessageAsync(default, default, PublicEmbed);
@@ -133,7 +119,7 @@ namespace Avespoir.Core.Modules.Commands {
 				}
 			}
 			catch (InvalidOperationException) {
-				new ErrorLog("Invalid database element");
+				Log.Error("Invalid database element");
 			}
 		}
 	}

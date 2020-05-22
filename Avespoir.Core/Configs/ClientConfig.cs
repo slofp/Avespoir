@@ -11,7 +11,6 @@ namespace Avespoir.Core.Configs {
 		internal static DiscordConfiguration DiscordConfig() => new DiscordConfiguration {
 			Token = Token,
 			#if DEBUG
-			UseInternalLogHandler = true,
 			LogLevel = LogLevel.Debug
 			#endif
 		};

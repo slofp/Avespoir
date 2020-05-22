@@ -10,7 +10,7 @@ namespace Avespoir.Core.Modules.Commands {
 		[Command("restart")]
 		public async Task Restart(CommandObjects CommandObject) {
 			await CommandObject.Message.RespondAsync("再起動します...");
-			new InfoLog("Restarting...");
+			Log.Info("Restarting...");
 
 			await Client.Bot.DisconnectAsync();
 

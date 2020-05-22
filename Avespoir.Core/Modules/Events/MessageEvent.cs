@@ -8,7 +8,7 @@ namespace Avespoir.Core.Modules.Events {
 	class MessageEvent {
 
 		internal static Task Main(MessageCreateEventArgs Message_Objects) {
-			new DebugLog("MessageEvent " + "Start...");
+			Log.Debug("MessageEvent " + "Start...");
 			
 			Task.Factory.StartNew(() => new MessageLog(Message_Objects)).ConfigureAwait(false);
 
@@ -18,7 +18,7 @@ namespace Avespoir.Core.Modules.Events {
 
 			CommandRegister.BotownerCommands(Message_Objects).ConfigureAwait(false);
 
-			new DebugLog("MessageEvent " + "End...");
+			Log.Debug("MessageEvent " + "End...");
 
 			return Task.CompletedTask;
 		}

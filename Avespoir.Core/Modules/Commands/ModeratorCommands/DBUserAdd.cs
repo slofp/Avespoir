@@ -16,6 +16,11 @@ namespace Avespoir.Core.Modules.Commands {
 		public async Task DBUserAdd(CommandObjects CommandObject) {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
+				if (msgs.Length == 0) {
+					await CommandObject.Message.Channel.SendMessageAsync("何も入力されていません");
+					return;
+				}
+
 				string msgs_Name;
 				ulong msgs_ID;
 				uint msgs_RoleNum;

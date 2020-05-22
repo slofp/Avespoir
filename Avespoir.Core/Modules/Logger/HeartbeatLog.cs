@@ -5,9 +5,11 @@ namespace Avespoir.Core.Modules.Logger {
 
 	class HeartbeatLog {
 
-		internal static async Task ExportHeartbeatLog(HeartbeatEventArgs HeartbeatObjects) {
+		internal static Task ExportHeartbeatLog(HeartbeatEventArgs HeartbeatObjects) {
 			string Ping = HeartbeatObjects.Ping.ToString();
-			await Task.Run(() => new InfoLog($"Ping: {Ping}ms"));
+			Log.Info($"Ping: {Ping}ms");
+
+			return Task.CompletedTask;
 		}
 	}
 }
