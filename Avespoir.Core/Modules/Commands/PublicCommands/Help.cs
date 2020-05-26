@@ -47,7 +47,9 @@ namespace Avespoir.Core.Modules.Commands {
 					"招待URLを作成します",
 					"`" + CommandConfig.PublicPrefix + "invite" + " " + "(チャンネル)" + "`"
 				)
-				.WithColor(new DiscordColor(0x00B06B));
+				.WithColor(new DiscordColor(0x00B06B))
+				.WithTimestamp(DateTime.Now)
+				.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
 			await CommandObject.Member.SendMessageAsync(default, default, PublicEmbed);
 
 			try {
@@ -99,7 +101,9 @@ namespace Avespoir.Core.Modules.Commands {
 							"LogChannelデータベースにログ送信用のチャンネル設定を変更します",
 							"`" + CommandConfig.ModeratorPrefix + "db-clogch" + " " + "[チャンネルID]" + "`"
 						)
-						.WithColor(new DiscordColor(0xF6AA00));
+						.WithColor(new DiscordColor(0xF6AA00))
+						.WithTimestamp(DateTime.Now)
+						.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
 					await CommandObject.Member.SendMessageAsync(default, default, ModeratorEmbed);
 				}
 				if (CommandObject.Message.Author.Id == ClientConfig.BotownerId) {
@@ -114,7 +118,9 @@ namespace Avespoir.Core.Modules.Commands {
 							"Botを終了します",
 							"`" + CommandConfig.BotownerPrefix + "logout" + "`"
 						)
-						.WithColor(new DiscordColor(0x1971FF));
+						.WithColor(new DiscordColor(0x1971FF))
+						.WithTimestamp(DateTime.Now)
+						.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
 					await CommandObject.Member.SendMessageAsync(default, default, BotownerEmbed);
 				}
 			}

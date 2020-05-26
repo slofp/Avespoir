@@ -30,6 +30,5 @@ namespace Avespoir.Core.Modules.Commands {
 			if (string.IsNullOrWhiteSpace(DBRolesTableText)) await CommandObject.Member.SendMessageAsync("何も登録されていません");
 			else await CommandObject.Member.SendMessageAsync(DBRolesTableText);
 		}
-
 	}
 }

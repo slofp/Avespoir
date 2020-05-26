@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Avespoir.Core {
 
 	class Client {
-		internal static readonly string Version = "Beta 1.3";
+		internal static readonly string Version = "Beta Dev Pre2.0";
 
 		internal static DiscordClient Bot = new DiscordClient(ClientConfig.DiscordConfig());
 

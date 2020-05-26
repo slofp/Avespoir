@@ -20,12 +20,9 @@ namespace Avespoir.Core.Modules.Logger {
 
 		internal static ILog Log {
 			get {
-				Assembly GetAssembly = Assembly.GetExecutingAssembly();
-				string ConfigName = GetAssembly.GetManifes‌​tResourceNames().FirstOrDefault(ListStr => ListStr.EndsWith("log4net.config"));
-				if (ConfigName != null) {
-					using Stream ConfigData = GetAssembly.GetManifestResourceStream(ConfigName);
-					log4net.Config.XmlConfigurator.Configure(Repository, ConfigData);
-				}
+				using Stream ConfigData = Assembly.GetExecutingAssembly().GetManifestResourceStream("Avespoir.Core.Modules.Logger.log4net.config");
+
+				if (ConfigData != null) log4net.Config.XmlConfigurator.Configure(Repository, ConfigData);
 				return Log_;
 			}
 		}

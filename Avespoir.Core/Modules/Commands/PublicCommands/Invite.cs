@@ -22,7 +22,8 @@ namespace Avespoir.Core.Modules.Commands {
 				DiscordInvite Invite = await DefaultChannel.CreateInviteAsync();
 
 				string InviteUrl = "https://discord.gg/" + Invite.Code;
-				await CommandObject.Message.Channel.SendMessageAsync(InviteUrl);
+				string Message = string.Format("作成しました。24時間有効です\n{0}", InviteUrl);
+				await CommandObject.Message.Channel.SendMessageAsync(Message);
 				return;
 			}
 
@@ -38,7 +39,8 @@ namespace Avespoir.Core.Modules.Commands {
 				DiscordInvite Invite = await GetChannel.CreateInviteAsync();
 
 				string InviteUrl = "https://discord.gg/" + Invite.Code;
-				await CommandObject.Message.Channel.SendMessageAsync(InviteUrl);
+				string Message = string.Format("作成しました。24時間有効です\n{0}", InviteUrl);
+				await CommandObject.Message.Channel.SendMessageAsync(Message);
 			}
 			catch (NullReferenceException) {
 				Log.Warning("Channel ID is not found");

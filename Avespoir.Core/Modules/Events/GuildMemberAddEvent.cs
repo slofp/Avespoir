@@ -49,7 +49,7 @@ namespace Avespoir.Core.Modules.Events {
 								)
 							)
 							.WithColor(new DiscordColor(0x1971FF))
-							.WithTimestamp(new DateTime())
+							.WithTimestamp(DateTime.Now)
 							.WithFooter(
 								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 							)
@@ -91,7 +91,7 @@ namespace Avespoir.Core.Modules.Events {
 								)
 							)
 							.WithColor(new DiscordColor(0x00B06B))
-							.WithTimestamp(new DateTime())
+							.WithTimestamp(DateTime.Now)
 							.WithFooter(
 								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 							)
@@ -120,6 +120,7 @@ namespace Avespoir.Core.Modules.Events {
 								string.Format("現在{0}は抜けたらBANされます", GuildRole.Name)
 							)
 							.WithColor(new DiscordColor(0x00B06B))
+							.WithTimestamp(DateTime.Now)
 							.WithFooter(
 								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 							);
@@ -146,6 +147,7 @@ namespace Avespoir.Core.Modules.Events {
 								string.Format("現在{0}は抜けたらBANされます", GuildRole.Name)
 							)
 							.WithColor(new DiscordColor(0x00B06B))
+							.WithTimestamp(DateTime.Now)
 							.WithFooter(
 								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 							);
@@ -179,7 +181,7 @@ namespace Avespoir.Core.Modules.Events {
 							)
 						)
 						.WithColor(new DiscordColor(0xFF4B00))
-						.WithTimestamp(new DateTime())
+						.WithTimestamp(DateTime.Now)
 						.WithFooter(
 							string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 						)

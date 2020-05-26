@@ -2,15 +2,16 @@
 using DSharpPlus.EventArgs;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Logger {
 
 	class MessageLog {
 
-		string Message_Log = "Message Log";
-		
 		// Debug only
-		internal MessageLog(MessageCreateEventArgs Message_Objects) {
+		internal static Task Main(MessageCreateEventArgs Message_Objects) {
+			string Message_Log = "Message Log";
+
 			if (Message_Objects.Channel.IsPrivate) {
 				string ChannelName = Message_Objects.Channel.Name != null ? Message_Objects.Channel.Name : "Direct Message";
 				Message_Log +=
@@ -157,6 +158,8 @@ namespace Avespoir.Core.Modules.Logger {
 			}
 
 			Log.Debug(Message_Log);
+
+			return Task.CompletedTask;
 		}
 	}
 }
