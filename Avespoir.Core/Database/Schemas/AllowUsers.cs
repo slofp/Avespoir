@@ -8,9 +8,6 @@ namespace Avespoir.Core.Database.Schemas {
 		[BsonId]
 		public ObjectId id { get; set; }
 
-		[BsonElement("Guildid")]
-		public ulong GuildID { get; set; }
-
 		[BsonElement("Name")]
 		public string Name { get; set; }
 

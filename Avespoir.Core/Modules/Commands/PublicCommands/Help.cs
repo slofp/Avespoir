@@ -47,6 +47,10 @@ namespace Avespoir.Core.Modules.Commands {
 					"招待URLを作成します",
 					"`" + CommandConfig.PublicPrefix + "invite" + " " + "(チャンネル)" + "`"
 				)
+				.AddField(
+					"ステータスを表示します",
+					"`" + CommandConfig.PublicPrefix + "status" + " " + "(メンションかユーザーID)" + "`"
+				)
 				.WithColor(new DiscordColor(0x00B06B))
 				.WithTimestamp(DateTime.Now)
 				.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));

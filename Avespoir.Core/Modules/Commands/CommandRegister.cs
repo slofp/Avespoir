@@ -83,7 +83,7 @@ namespace Avespoir.Core.Modules.Commands {
 			DebugCheck = true;
 			#endif
 
-			if (DebugCheck || Message_Objects.Message.Author.Id == ClientConfig.BotownerId) {
+			if (DebugCheck || Message_Objects.Message.Author.Id == ClientConfig.BotownerId || Message_Objects.Message.Author.Id == Message_Objects.Guild.Owner.Id) {
 				await ExcuteCommands<ModeratorCommands>(CommandObject, CommandText).ConfigureAwait(false);
 			}
 			else {
