@@ -19,14 +19,14 @@ namespace Avespoir.Core.Modules.Events {
 		};
 
 		internal static Task Main(ReadyEventArgs ReadyEventObjects) {
-			new DebugLog("ReadyEvent " + "Start...");
+			Log.Debug("ReadyEvent " + "Start...");
 			BaseDiscordClient ClientBase = ReadyEventObjects.Client;
 			Client.Bot.UpdateStatusAsync(StartingStatus, UserStatus.DoNotDisturb).ConfigureAwait(false);
 
-			new InfoLog($"{ClientBase.CurrentUser.Username} Bot Ready!");
+			Log.Info($"{ClientBase.CurrentUser.Username} Bot Ready!");
 
 			DBCount().ConfigureAwait(false);
-			new DebugLog("ReadyEvent " + "End...");
+			Log.Debug("ReadyEvent " + "End...");
 			return Task.CompletedTask;
 		}
 

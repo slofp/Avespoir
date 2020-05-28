@@ -35,7 +35,7 @@ namespace Avespoir.Core.Modules.Commands {
 					continue;
 				}
 				if (CommandMethodInfo.ReturnType != typeof(Task)) {
-					new ErrorLog("Return value is not regular expression.");
+					Log.Error("Return value is not regular expression.");
 					continue;
 				}
 
@@ -47,14 +47,14 @@ namespace Avespoir.Core.Modules.Commands {
 				await Command_Delegate.Invoke(CommandObject);
 			}
 			else {
-				new ErrorLog("Commnad Not Found.");
+				Log.Error("Commnad Not Found.");
 			}
 		}
 
 		#region Command checker
 
 		internal static async Task PublicCommands(MessageCreateEventArgs Message_Objects) {
-			new DebugLog("PublicCommand check");
+			Log.Debug("PublicCommand check");
 			CommandObjects CommandObject = new CommandObjects(Message_Objects);
 
 			string CommandPrefix = CommandObject.CommandArgs[0].Substring(0, CommandConfig.PublicPrefix.Length);
@@ -68,7 +68,7 @@ namespace Avespoir.Core.Modules.Commands {
 		}
 
 		internal static async Task ModeratorCommands(MessageCreateEventArgs Message_Objects) {
-			new DebugLog("ModeratorCommand check");
+			Log.Debug("ModeratorCommand check");
 			CommandObjects CommandObject = new CommandObjects(Message_Objects);
 
 			string CommandPrefix = CommandObject.CommandArgs[0].Substring(0, CommandConfig.ModeratorPrefix.Length);
@@ -83,7 +83,7 @@ namespace Avespoir.Core.Modules.Commands {
 			DebugCheck = true;
 			#endif
 
-			if (DebugCheck || Message_Objects.Message.Author.Id == ClientConfig.BotownerId) {
+			if (DebugCheck || Message_Objects.Message.Author.Id == ClientConfig.BotownerId || Message_Objects.Message.Author.Id == Message_Objects.Guild.Owner.Id) {
 				await ExcuteCommands<ModeratorCommands>(CommandObject, CommandText).ConfigureAwait(false);
 			}
 			else {
@@ -110,7 +110,7 @@ namespace Avespoir.Core.Modules.Commands {
 				}
 
 				if (!ModCheck) {
-					new InfoLog("The member who has not been granted moderator roles registered in the database tried to access the moderator command.");
+					Log.Info("The member who has not been granted moderator roles registered in the database tried to access the moderator command.");
 					return;
 				}
 
@@ -119,7 +119,7 @@ namespace Avespoir.Core.Modules.Commands {
 		}
 
 		internal static async Task BotownerCommands(MessageCreateEventArgs Message_Objects) {
-			new DebugLog("BotownerCommand check");
+			Log.Debug("BotownerCommand check");
 			CommandObjects CommandObject = new CommandObjects(Message_Objects);
 
 			string CommandPrefix = CommandObject.CommandArgs[0].Substring(0, CommandConfig.BotownerPrefix.Length);
@@ -130,7 +130,7 @@ namespace Avespoir.Core.Modules.Commands {
 			if (!Message_Objects.Channel.IsPrivate) return;
 
 			if (Message_Objects.Message.Author.Id != ClientConfig.BotownerId) {
-				new InfoLog("Not bot owner user tried to access the bot owner command.");
+				Log.Info("Not bot owner user tried to access the bot owner command.");
 				return;
 			}
 

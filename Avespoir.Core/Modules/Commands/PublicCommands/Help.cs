@@ -22,24 +22,6 @@ namespace Avespoir.Core.Modules.Commands {
 
 			DiscordEmbed PublicEmbed = new DiscordEmbedBuilder()
 				.WithTitle("一般コマンド")
-				/*
-				 	string.Format("プレフィックスは {0} です", CommandConfig.PublicPrefix) + "\n" +
-					"\n" +
-					CommandConfig.PublicPrefix + "ping" + "\n" +
-					"Pingを測ります" + "\n" +
-					"\n" +
-					CommandConfig.PublicPrefix + "ver" + "\n" +
-					"Botのバージョンを表示します" + "\n" +
-					"\n" +
-					CommandConfig.PublicPrefix + "help" + "\n" +
-					"コマンド一覧を表示します" + "\n" +
-					"\n" +
-					CommandConfig.PublicPrefix + "find" + " " + "[ユーザーID]" + "\n" +
-					"ユーザーの情報を表示します" + "\n" +
-					"\n" +
-					CommandConfig.PublicPrefix + "emoji" + " " + "[名前]" + " " + "(画像アップロード)" + "\n" +
-					"画像をもとに絵文字を作成します"
-				 */
 				.WithDescription(string.Format("プレフィックスは {0} です", CommandConfig.PublicPrefix))
 				.AddField(
 					"Pingを測ります",
@@ -61,7 +43,17 @@ namespace Avespoir.Core.Modules.Commands {
 					"画像をもとに絵文字を作成します",
 					"`" + CommandConfig.PublicPrefix + "emoji" + " " + "[名前]" + " " + "(画像アップロード)" + "`"
 				)
-				.WithColor(new DiscordColor(0x00B06B));
+				.AddField(
+					"招待URLを作成します",
+					"`" + CommandConfig.PublicPrefix + "invite" + " " + "(チャンネル)" + "`"
+				)
+				.AddField(
+					"ステータスを表示します",
+					"`" + CommandConfig.PublicPrefix + "status" + " " + "(メンションかユーザーID)" + "`"
+				)
+				.WithColor(new DiscordColor(0x00B06B))
+				.WithTimestamp(DateTime.Now)
+				.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
 			await CommandObject.Member.SendMessageAsync(default, default, PublicEmbed);
 
 			try {
@@ -113,7 +105,9 @@ namespace Avespoir.Core.Modules.Commands {
 							"LogChannelデータベースにログ送信用のチャンネル設定を変更します",
 							"`" + CommandConfig.ModeratorPrefix + "db-clogch" + " " + "[チャンネルID]" + "`"
 						)
-						.WithColor(new DiscordColor(0xF6AA00));
+						.WithColor(new DiscordColor(0xF6AA00))
+						.WithTimestamp(DateTime.Now)
+						.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
 					await CommandObject.Member.SendMessageAsync(default, default, ModeratorEmbed);
 				}
 				if (CommandObject.Message.Author.Id == ClientConfig.BotownerId) {
@@ -128,12 +122,14 @@ namespace Avespoir.Core.Modules.Commands {
 							"Botを終了します",
 							"`" + CommandConfig.BotownerPrefix + "logout" + "`"
 						)
-						.WithColor(new DiscordColor(0x1971FF));
+						.WithColor(new DiscordColor(0x1971FF))
+						.WithTimestamp(DateTime.Now)
+						.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
 					await CommandObject.Member.SendMessageAsync(default, default, BotownerEmbed);
 				}
 			}
 			catch (InvalidOperationException) {
-				new ErrorLog("Invalid database element");
+				Log.Error("Invalid database element");
 			}
 		}
 	}

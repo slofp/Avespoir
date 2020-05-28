@@ -14,6 +14,10 @@ namespace Avespoir.Core.Modules.Commands {
 
 			DiscordMessage AuthSend = await BotSendMessage.AwaitMessage(CommandObject.Message.Author.Id, 1 * 60 * 1000);
 
+			if (AuthSend == null) {
+				return false;
+			}
+
 			if (AuthSend.Content != AuthCode) {
 				await CommandObject.Message.Channel.SendMessageAsync("コードが違います");
 				return false;

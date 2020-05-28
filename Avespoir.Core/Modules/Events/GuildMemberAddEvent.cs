@@ -13,7 +13,7 @@ namespace Avespoir.Core.Modules.Events {
 	class GuildMemberAddEvent {
 
 		internal static async Task Main(GuildMemberAddEventArgs MemberObjects) {
-			new DebugLog("GuildMemberAddEvent " + "Start...");
+			Log.Debug("GuildMemberAddEvent " + "Start...");
 
 			IMongoCollection<AllowUsers> DBAllowUsersCollection = MongoDBClient.Database.GetCollection<AllowUsers>(typeof(AllowUsers).Name);
 			IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
@@ -30,7 +30,7 @@ namespace Avespoir.Core.Modules.Events {
 						await MemberObjects.Member.GrantRoleAsync(GuildRole);
 					}
 					catch (InvalidOperationException) {
-						new WarningLog("Could not grant role");
+						Log.Warning("Could not grant role");
 					}
 
 					try {
@@ -49,7 +49,7 @@ namespace Avespoir.Core.Modules.Events {
 								)
 							)
 							.WithColor(new DiscordColor(0x1971FF))
-							.WithTimestamp(new DateTime())
+							.WithTimestamp(DateTime.Now)
 							.WithFooter(
 								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 							)
@@ -57,10 +57,10 @@ namespace Avespoir.Core.Modules.Events {
 						await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
 					}
 					catch (InvalidOperationException) {
-						new WarningLog("Could not send from log channel");
+						Log.Warning("Could not send from log channel");
 					}
 
-					new DebugLog($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} is Bot");
+					Log.Debug($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} is Bot");
 					return;
 				}
 
@@ -91,7 +91,7 @@ namespace Avespoir.Core.Modules.Events {
 								)
 							)
 							.WithColor(new DiscordColor(0x00B06B))
-							.WithTimestamp(new DateTime())
+							.WithTimestamp(DateTime.Now)
 							.WithFooter(
 								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 							)
@@ -99,7 +99,7 @@ namespace Avespoir.Core.Modules.Events {
 						await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
 					}
 					catch (InvalidOperationException) {
-						new WarningLog("Could not send from log channel");
+						Log.Warning("Could not send from log channel");
 					}
 
 					RoleLevel DBRoleLevel = Enum.Parse<RoleLevel>(DBRoleRoleNum.RoleLevel);
@@ -120,6 +120,7 @@ namespace Avespoir.Core.Modules.Events {
 								string.Format("現在{0}は抜けたらBANされます", GuildRole.Name)
 							)
 							.WithColor(new DiscordColor(0x00B06B))
+							.WithTimestamp(DateTime.Now)
 							.WithFooter(
 								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 							);
@@ -146,13 +147,14 @@ namespace Avespoir.Core.Modules.Events {
 								string.Format("現在{0}は抜けたらBANされます", GuildRole.Name)
 							)
 							.WithColor(new DiscordColor(0x00B06B))
+							.WithTimestamp(DateTime.Now)
 							.WithFooter(
 								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 							);
 						await MemberObjects.Member.SendMessageAsync(default, default, WelcomeEmbed);
 					}
 
-					new DebugLog($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} is allowed join");
+					Log.Debug($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} is allowed join");
 					return;
 				}
 				catch (InvalidOperationException) {
@@ -179,7 +181,7 @@ namespace Avespoir.Core.Modules.Events {
 							)
 						)
 						.WithColor(new DiscordColor(0xFF4B00))
-						.WithTimestamp(new DateTime())
+						.WithTimestamp(DateTime.Now)
 						.WithFooter(
 							string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 						)
@@ -187,14 +189,14 @@ namespace Avespoir.Core.Modules.Events {
 					await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
 				}
 				catch (InvalidOperationException) {
-					new WarningLog("Could not send from log channel");
+					Log.Warning("Could not send from log channel");
 				}
 
-				new DebugLog($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} is not allowed join");
+				Log.Debug($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} is not allowed join");
 				return;
 			}
 			finally {
-				new DebugLog("GuildMemberAddEvent " + "End...");
+				Log.Debug("GuildMemberAddEvent " + "End...");
 			}
 		}
 	}

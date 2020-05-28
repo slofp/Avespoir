@@ -9,13 +9,17 @@ namespace Avespoir.Core.Modules.Commands {
 	partial class PublicCommands {
 
 		[Command()]
-		public async Task Name(CommandObjects CommandObject) {
+		public async Task Status(CommandObjects CommandObject) {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
+				if (msgs.Length == 0) {
+					await CommandObject.Message.Channel.SendMessageAsync("何も入力されていません");
+					return;
+				}
 				await Task.Delay(0);
 			}
 			catch (Exception Error) {
-				new ErrorLog(Error.Message);
+				Log.Error(Error);
 			}
 		}
 	}

@@ -1,13 +1,11 @@
-﻿using DSharpPlus;
-using System;
-using static Avespoir.Core.Modules.Logger.LoggerProperties;
+﻿namespace Avespoir.Core.Modules.Logger {
 
-namespace Avespoir.Core.Modules.Logger {
+	partial class Log {
 
-	class DebugLog {
-
-		internal DebugLog(string Message) {
-			Debug_Logger.LogMessage(LogLevel.Debug, Username, Message, DateTime.Now);
+		internal static void Debug(object Message) {
+			#if DEBUG
+			LoggerProperties.Log.Debug(Message);
+			#endif
 		}
 	}
 }

@@ -1,15 +1,17 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Logger {
 
 	class MessageLog {
 
-		string Message_Log = "Message Log";
-		
 		// Debug only
-		internal MessageLog(MessageCreateEventArgs Message_Objects) {
+		internal static Task Main(MessageCreateEventArgs Message_Objects) {
+			string Message_Log = "Message Log";
+
 			if (Message_Objects.Channel.IsPrivate) {
 				string ChannelName = Message_Objects.Channel.Name != null ? Message_Objects.Channel.Name : "Direct Message";
 				Message_Log +=
@@ -30,14 +32,33 @@ namespace Avespoir.Core.Modules.Logger {
 
 					string MentionedUsers_Log = "\n[MentionedUsers] ";
 					bool MentionedUser_Next = MentionedUsers.MoveNext();
+					int UserCount = 0;
 					while (MentionedUser_Next) {
-						DiscordUser MentionedUser = MentionedUsers.Current;
-						string MentionedUser_Log = $"{MentionedUser.Username}#{MentionedUser.Discriminator}";
+						try {
+							DiscordUser MentionedUser = MentionedUsers.Current;
+							string MentionedUser_Log = $"{MentionedUser.Username}#{MentionedUser.Discriminator}";
 
-						MentionedUser_Next = MentionedUsers.MoveNext();
-						if (MentionedUser_Next) MentionedUser_Log += ", ";
+							MentionedUser_Next = MentionedUsers.MoveNext();
+							if (MentionedUser_Next) {
+								MentionedUser_Log += ", ";
+								UserCount++;
+							}
 
-						MentionedUsers_Log += MentionedUser_Log;
+							MentionedUsers_Log += MentionedUser_Log;
+						}
+						catch (NullReferenceException) {
+							Log.Warning($"MentionedUser {UserCount} is null");
+
+							string MentionedUser_Log = $"unknown-user";
+
+							MentionedUser_Next = MentionedUsers.MoveNext();
+							if (MentionedUser_Next) {
+								MentionedUser_Log += ", ";
+								UserCount++;
+							}
+
+							MentionedUsers_Log += MentionedUser_Log;
+						}
 					}
 
 					Message_Log += MentionedUsers_Log;
@@ -48,14 +69,34 @@ namespace Avespoir.Core.Modules.Logger {
 
 					string MentionedRoles_Log = "\n[MentionedRoles] ";
 					bool MentionedRole_Next = MentionedRoles.MoveNext();
+					int RoleCount = 0;
 					while (MentionedRole_Next) {
-						DiscordRole MentionedRole = MentionedRoles.Current;
-						string MentionedRole_Log = $"{MentionedRole.Name}";
+						try {
+							DiscordRole MentionedRole = MentionedRoles.Current;
+							string MentionedRole_Log = $"{MentionedRole.Name}";
 
-						MentionedRole_Next = MentionedRoles.MoveNext();
-						if (MentionedRole_Next) MentionedRole_Log += ", ";
+							MentionedRole_Next = MentionedRoles.MoveNext();
+							if (MentionedRole_Next) {
+								MentionedRole_Log += ", ";
+								RoleCount++;
+							}
 
-						MentionedRoles_Log += MentionedRole_Log;
+							MentionedRoles_Log += MentionedRole_Log;
+						}
+						catch (NullReferenceException) {
+							Log.Warning($"MentionedRole {RoleCount} is null");
+
+							string MentionedRole_Log = "deleted-role";
+
+							MentionedRole_Next = MentionedRoles.MoveNext();
+							if (MentionedRole_Next) {
+								MentionedRole_Log += ", ";
+								RoleCount++;
+							}
+
+							MentionedRoles_Log += MentionedRole_Log;
+						}
+						
 					}
 
 					Message_Log += MentionedRoles_Log;
@@ -66,14 +107,33 @@ namespace Avespoir.Core.Modules.Logger {
 
 					string MentionedChannels_Log = "\n[MentionedChannels] ";
 					bool MentionedChannel_Next = MentionedChannels.MoveNext();
+					int ChannelCount = 0;
 					while (MentionedChannel_Next) {
-						DiscordChannel MentionedChannel = MentionedChannels.Current;
-						string MentionedChannel_Log = $"{MentionedChannel.Name}";
+						try {
+							DiscordChannel MentionedChannel = MentionedChannels.Current;
+							string MentionedChannel_Log = MentionedChannel.Name;
 
-						MentionedChannel_Next = MentionedChannels.MoveNext();
-						if (MentionedChannel_Next) MentionedChannel_Log += ", ";
+							MentionedChannel_Next = MentionedChannels.MoveNext();
+							if (MentionedChannel_Next) {
+								MentionedChannel_Log += ", ";
+								ChannelCount++;
+							}
 
-						MentionedChannels_Log += MentionedChannel_Log;
+							MentionedChannels_Log += MentionedChannel_Log;
+						}
+						catch (NullReferenceException) {
+							Log.Warning($"MentionedChannel {ChannelCount} is null");
+
+							string MentionedChannel_Log = "deleted-channel";
+
+							MentionedChannel_Next = MentionedChannels.MoveNext();
+							if (MentionedChannel_Next) {
+								MentionedChannel_Log += ", ";
+								ChannelCount++;
+							}
+
+							MentionedChannels_Log += MentionedChannel_Log;
+						}
 					}
 
 					Message_Log += MentionedChannels_Log;
@@ -97,7 +157,9 @@ namespace Avespoir.Core.Modules.Logger {
 				Message_Log += MessageAttachments_Log;
 			}
 
-			new DebugLog(Message_Log);
+			Log.Debug(Message_Log);
+
+			return Task.CompletedTask;
 		}
 	}
 }

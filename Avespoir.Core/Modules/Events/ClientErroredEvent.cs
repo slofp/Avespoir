@@ -8,7 +8,7 @@ namespace Avespoir.Core.Modules.Events {
 
 		internal static Task Main(ClientErrorEventArgs ClientError) {
 			string Errorstring = string.Format("EventName: {0}\nException: {1}", ClientError.EventName, ClientError.Exception);
-			new ErrorLog(Errorstring);
+			Log.Error(Errorstring);
 
 			return Task.CompletedTask;
 		}

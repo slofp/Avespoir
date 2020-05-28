@@ -7,6 +7,25 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
+## [Beta 2.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-2.0) - 2020-05-19
+
+### Fixed
+
+* One-time Authentication bug
+* DateTime Expection(?)
+
+### Added
+
+* Leveling System
+
+* Public Commands
+  * Create Invite url
+  * User Status
+
+### Changed
+
+* self made logger -> log4net
+
 ## [Beta 1.2](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-1.2) - 2020-05-19
 
 ### Added

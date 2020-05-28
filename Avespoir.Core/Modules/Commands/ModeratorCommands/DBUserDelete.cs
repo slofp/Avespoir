@@ -16,6 +16,11 @@ namespace Avespoir.Core.Modules.Commands {
 		public async Task DBUserDelete(CommandObjects CommandObject) {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
+				if (msgs.Length == 0) {
+					await CommandObject.Message.Channel.SendMessageAsync("何も入力されていません");
+					return;
+				}
+
 				ulong msgs_ID;
 
 				if (string.IsNullOrWhiteSpace(msgs[0])) {

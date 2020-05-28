@@ -12,7 +12,7 @@ namespace Avespoir.Core.Modules.Events {
 	class GuildMemberRemoveEvent {
 
 		internal static async Task Main(GuildMemberRemoveEventArgs MemberObjects) {
-			new DebugLog("GuildMemberRemoveEvent " + "Start...");
+			Log.Debug("GuildMemberRemoveEvent " + "Start...");
 
 			IMongoCollection<AllowUsers> DBAllowUsersCollection = MongoDBClient.Database.GetCollection<AllowUsers>(typeof(AllowUsers).Name);
 			IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
@@ -44,10 +44,10 @@ namespace Avespoir.Core.Modules.Events {
 						await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
 					}
 					catch (InvalidOperationException) {
-						new WarningLog("Could not send from log channel");
+						Log.Warning("Could not send from log channel");
 					}
 
-					new DebugLog($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} is Bot");
+					Log.Debug($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} is Bot");
 					return;
 				}
 
@@ -82,10 +82,10 @@ namespace Avespoir.Core.Modules.Events {
 						await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
 					}
 					catch (InvalidOperationException) {
-						new WarningLog("Could not send from log channel");
+						Log.Warning("Could not send from log channel");
 					}
 
-					new DebugLog($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} has leave the server");
+					Log.Debug($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} has leave the server");
 					return;
 				}
 				catch (InvalidOperationException) {
@@ -113,15 +113,15 @@ namespace Avespoir.Core.Modules.Events {
 						await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
 					}
 					catch (InvalidOperationException) {
-						new WarningLog("Could not send from log channel");
+						Log.Warning("Could not send from log channel");
 					}
 
-					new DebugLog($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} has leave the server");
+					Log.Debug($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} has leave the server");
 					return;
 				}
 			}
 			finally {
-				new DebugLog("GuildMemberRemoveEvent " + "End...");
+				Log.Debug("GuildMemberRemoveEvent " + "End...");
 			}
 		}
 	}

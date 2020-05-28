@@ -13,7 +13,6 @@ namespace Avespoir.Core.Modules.Commands {
 
 		[Command("db-rolelist")]
 		public async Task DBRoleList(CommandObjects CommandObject) {
-			string[] msgs = CommandObject.CommandArgs.Remove(0);
 			IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
 
 			FilterDefinition<Roles> DBRolesFilter = Builders<Roles>.Filter.Empty;
@@ -31,6 +30,5 @@ namespace Avespoir.Core.Modules.Commands {
 			if (string.IsNullOrWhiteSpace(DBRolesTableText)) await CommandObject.Member.SendMessageAsync("何も登録されていません");
 			else await CommandObject.Member.SendMessageAsync(DBRolesTableText);
 		}
-
 	}
 }

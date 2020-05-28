@@ -14,7 +14,6 @@ namespace Avespoir.Core.Modules.Commands {
 
 		[Command("db-userlist")]
 		public async Task DBUserList(CommandObjects CommandObject) {
-			string[] msgs = CommandObject.CommandArgs.Remove(0);
 			IMongoCollection<AllowUsers> DBAllowUsersCollection = MongoDBClient.Database.GetCollection<AllowUsers>(typeof(AllowUsers).Name);
 			IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
 

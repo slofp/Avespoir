@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Avespoir.Core {
 
 	class Client {
-		internal static readonly string Version = "Beta 1.2";
+		internal static readonly string Version = "Beta 2.0";
 
 		internal static DiscordClient Bot = new DiscordClient(ClientConfig.DiscordConfig());
 
@@ -24,27 +24,16 @@ namespace Avespoir.Core {
 
 			Bot.ClientErrored += ClientErroredEvent.Main;
 
+			Bot.DebugLogger.LogMessageReceived += (Sender, LogMessage) => Log.Info(LogMessage.Message);
 			#if !DEBUG
-			Bot.DebugLogger.LogMessageReceived += (Sender, Log) => Console.WriteLine(Log);
 			Bot.Heartbeated += Avespoir.Core.Modules.Logger.HeartbeatLog.ExportHeartbeatLog;
 			#endif
 
-			Bot.DebugLogger.LogMessageReceived += ClientLog.ExportLog;
-
 			await Bot.ConnectAsync();
 
-			Console.CancelKeyPress += ConsoleExitEvent;
+			Console.CancelKeyPress += ConsoleExitEvent.Main;
 
 			await Task.Delay(-1);
-		}
-
-		static void ConsoleExitEvent(object Sender, ConsoleCancelEventArgs Args) {
-			new InfoLog("Exit...");
-
-			Bot.DisconnectAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-			Bot.Dispose();
-
-			Environment.Exit(Environment.ExitCode);
 		}
 	}
 }
