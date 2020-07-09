@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 
 namespace Avespoir.Core.Modules.Commands {
-	sealed class CommandObjects {
+	class CommandObjects {
 
 		internal MessageCreateEventArgs MessageObjects { get; }
 

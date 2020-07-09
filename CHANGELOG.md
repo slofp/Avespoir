@@ -7,6 +7,25 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
+## [Beta 2.1](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-2.1) - 2020-05-19
+
+### Fixed
+
+* Level System Bug
+
+### Added
+
+* Lunetrip Project(Experimental)
+
+* Public Commands
+  * Script Line(Experimental)
+  * Script File(Experimental)
+
+### Changed
+
+* Level System Calculation(ExpScale 1.0x -> 0.5x)
+* Level System Check NextMessage System -> Message Stack System
+
 ## [Beta 2.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-2.0) - 2020-05-19
 
 ### Fixed

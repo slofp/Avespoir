@@ -9,7 +9,7 @@ namespace Avespoir.Core.Modules.Commands {
 	partial class PublicCommands {
 
 		[Command()]
-		public async Task Status(CommandObjects CommandObject) {
+		public async Task Name(CommandObjects CommandObject) {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
 				if (msgs.Length == 0) {

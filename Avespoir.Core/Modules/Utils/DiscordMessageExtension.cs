@@ -1,7 +1,4 @@
-﻿using Avespoir.Core.Modules.Logger;
-using DSharpPlus.Entities;
-using System;
-using System.Threading;
+﻿using DSharpPlus.Entities;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Utils {
@@ -15,9 +12,9 @@ namespace Avespoir.Core.Modules.Utils {
 			while (true) {
 				if (TimeoutTask.IsCompletedSuccessfully) return null;
 
-				DiscordMessage LastMessage = await Discord_Message.Channel.GetMessageAsync(Discord_Message.Channel.LastMessageId);
+				DiscordMessage LastMessage = await Discord_Message.Channel.GetMessageAsync(Discord_Message.Channel.LastMessageId).ConfigureAwait(false);
 
-				if (LastMessage.Id != Discord_Message.Id) continue;
+				if (LastMessage.Id == Discord_Message.Id) continue;
 
 				return LastMessage;
 			}
@@ -28,7 +25,7 @@ namespace Avespoir.Core.Modules.Utils {
 			while (true) {
 				if (TimeoutTask.IsCompletedSuccessfully) return null;
 
-				DiscordMessage LastMessage = await Discord_Message.Channel.GetMessageAsync(Discord_Message.Channel.LastMessageId);
+				DiscordMessage LastMessage = await Discord_Message.Channel.GetMessageAsync(Discord_Message.Channel.LastMessageId).ConfigureAwait(false);
 
 				if (LastMessage.Id == Discord_Message.Id) continue;
 				if (LastMessage.Author.Id != AllowAuthorID) continue;
@@ -39,3 +36,4 @@ namespace Avespoir.Core.Modules.Utils {
 		#endregion
 	}
 }
+
