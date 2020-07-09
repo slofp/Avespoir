@@ -1,5 +1,4 @@
 ﻿using Avespoir.Core.Modules.Logger;
-using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
@@ -10,15 +9,23 @@ namespace Avespoir.Core.Modules.LevelSystems {
 	class LevelSystem {
 
 		internal static async Task Main(MessageCreateEventArgs Message_Objects) {
-			DiscordMessage NextMessage = await Message_Objects.Message.AwaitMessage(1 * 60 * 1000);
-			if (NextMessage != null && NextMessage.Author.IsBot) return;
+			Log.Debug("Level System Start");
+			StackMessage Stack_Messages = new StackMessage(Message_Objects.Message);
 
-			string MessageID = Message_Objects.Message.Id.ToString();
-			string MessageContentSource = Message_Objects.Message.Content;
-			ulong UserID = Message_Objects.Message.Author.Id;
+			if (!Stack_Messages.AllowExp) {
+				Log.Debug("Exp Not get");
+				return;
+			}
 
-			(int MessageCount, string MessageIDReplace) = ExpCalculator.ExpConvert(MessageID, MessageContentSource);
-			double Exp = ExpCalculator.ExpCalculate(MessageCount, MessageIDReplace);
+			double Exp = 0.00;
+			ulong UserID = Message_Objects.Author.Id;
+			foreach(DiscordMessage Stack_Message in Stack_Messages.StackDiscordMessages) {
+				string MessageID = Stack_Message.Id.ToString();
+				string MessageContentSource = Stack_Message.Content;
+
+				(int MessageCount, string MessageIDReplace) = ExpCalculator.ExpConvert(MessageID, MessageContentSource);
+				Exp += ExpCalculator.ExpCalculate(MessageCount, MessageIDReplace);
+			}
 
 			Exp += await DatabaseMethods.ExpFind(UserID).ConfigureAwait(false);
 			uint BeforeLevel = await DatabaseMethods.LevelFind(UserID).ConfigureAwait(false);
@@ -38,6 +45,7 @@ namespace Avespoir.Core.Modules.LevelSystems {
 					try {
 						DiscordChannel LogChannel = Message_Objects.Guild.GetChannel(LogChannelID);
 						DiscordEmbed LevelUpEmbed = new DiscordEmbedBuilder()
+						.WithAuthor(Message_Objects.Message.Author.Username + "#" + Message_Objects.Message.Author.Discriminator, default, Message_Objects.Message.Author.AvatarUrl)
 						.WithTitle("レベルが上がりました！")
 						.WithDescription(string.Format("経験値: {0}\nレベル: Lv.{1} -> Lv.{2}", Exp, BeforeLevel, AfterLevel))
 						.WithColor(new DiscordColor(0xFFFF00))
@@ -54,6 +62,7 @@ namespace Avespoir.Core.Modules.LevelSystems {
 			else {
 				Log.Debug("Not Send");
 			}
+			Log.Debug("Level System End");
 		}
 
 		static uint LevelDecision(double Exp, uint BeforeLevel) {

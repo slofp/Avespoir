@@ -12,21 +12,27 @@ namespace Avespoir.Core.Modules.LevelSystems {
 
 		static readonly string IDPattern = @"<(@!|@&|#|a:[\S]+:|:[\S]+:)[0-9]+>";
 
+		static readonly string CodePattern = @"```(.|\s)+```";
+
 		internal static (int MessageCount, string MessageIDReplace) ExpConvert(string MessageID, string MessageContentSource) {
-			string MessageNoURLContent = Regex.Replace(MessageContentSource, URLPattern, "");
+			string MessageCodeContent = Regex.Replace(MessageContentSource, CodePattern, "");
+			string MessageNoURLContent = Regex.Replace(MessageCodeContent, URLPattern, "");
 			string MessageContent = Regex.Replace(MessageNoURLContent, IDPattern, "");
 
+			Log.Debug("MessageCodeContent: " + MessageCodeContent);
 			Log.Debug("MessageNoURLContent: " + MessageNoURLContent);
 			Log.Debug("MessageContent: " + MessageContent);
 			Log.Debug("MessageContentCount: " + MessageContent.Length);
 
-			int MessageURLCount = Regex.Matches(MessageContentSource, URLPattern).Count;
+			int MessageCodeCount = Regex.Matches(MessageContentSource, CodePattern).Count;
+			int MessageURLCount = Regex.Matches(MessageCodeContent, URLPattern).Count;
 			int MessageMentionEmojiCount = Regex.Matches(MessageNoURLContent, IDPattern).Count;
 
+			Log.Debug("MessageCodeCount: " + MessageCodeCount);
 			Log.Debug("MessageURLCount: " + MessageURLCount);
 			Log.Debug("MessageMentionEmojiCount: " + MessageMentionEmojiCount);
 
-			int MessageCount = MessageContent.Length + MessageURLCount + MessageMentionEmojiCount;
+			int MessageCount = MessageContent.Length + MessageCodeCount + MessageURLCount + MessageMentionEmojiCount;
 
 			SHA256 CryptoProvider = new SHA256CryptoServiceProvider();
 
@@ -66,6 +72,8 @@ namespace Avespoir.Core.Modules.LevelSystems {
 			if (MessageCount <= 20) ExpScale = 0.05 * MessageCount;
 			else if (MessageCount < 100) ExpScale = Math.Sin((MessageCount - 20) / 50.93) + 1;
 			else ExpScale = (((MessageCount - 100) * (MessageCount / 2.0)) / 237500.0) + 2;
+
+			ExpScale /= 2.0; // Nerf Final Exp
 
 			Exp *= ExpScale;
 

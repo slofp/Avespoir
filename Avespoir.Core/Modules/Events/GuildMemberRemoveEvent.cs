@@ -36,7 +36,7 @@ namespace Avespoir.Core.Modules.Events {
 								)
 							)
 							.WithColor(new DiscordColor(0x1971FF))
-							.WithTimestamp(new DateTime())
+							.WithTimestamp(DateTime.Now)
 							.WithFooter(
 								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 							)
@@ -74,7 +74,7 @@ namespace Avespoir.Core.Modules.Events {
 								)
 							)
 							.WithColor(new DiscordColor(0xFF4B00))
-							.WithTimestamp(new DateTime())
+							.WithTimestamp(DateTime.Now)
 							.WithFooter(
 								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 							)
@@ -105,7 +105,7 @@ namespace Avespoir.Core.Modules.Events {
 								)
 							)
 							.WithColor(new DiscordColor(0xF6AA00))
-							.WithTimestamp(new DateTime())
+							.WithTimestamp(DateTime.Now)
 							.WithFooter(
 								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
 							)

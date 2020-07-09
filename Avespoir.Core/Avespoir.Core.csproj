@@ -49,6 +49,7 @@
     <PackageReference Include="DSharpPlus" Version="3.2.3" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="MongoDB.Driver" Version="2.10.4" />
+    <PackageReference Include="NLua" Version="1.5.0" />
     <PackageReference Include="Tababular" Version="3.0.1" />
   </ItemGroup>
 
