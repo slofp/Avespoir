@@ -1,6 +1,5 @@
 ﻿using Avespoir.Core.Attributes;
 using Avespoir.Core.Modules.LevelSystems;
-using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
@@ -12,7 +11,7 @@ namespace Avespoir.Core.Modules.Commands {
 	partial class PublicCommands {
 
 		[Command("status")]
-		public async Task Name(CommandObjects CommandObject) {
+		public async Task Status(CommandObjects CommandObject) {
 			string[] msgs = CommandObject.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {
 				uint Level = await DatabaseMethods.LevelFind(CommandObject.Message.Author.Id);
