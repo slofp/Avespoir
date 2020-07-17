@@ -7,7 +7,7 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
-## [Beta 2.1](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-2.1) - 2020-07-09
+## [Beta 2.1](https://github.com/Avespoir-Project/Avespoir/tree/Beta-2.1) - 2020-07-09
 
 ### Fixed
 
@@ -26,7 +26,7 @@ If it changes significantly or very much, the first digit will move.
 * Level System Calculation(ExpScale 1.0x -> 0.5x)
 * Level System Check NextMessage System -> Message Stack System
 
-## [Beta 2.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-2.0) - 2020-05-19
+## [Beta 2.0](https://github.com/Avespoir-Project/Avespoir/tree/Beta-2.0) - 2020-05-19
 
 ### Fixed
 
@@ -45,7 +45,7 @@ If it changes significantly or very much, the first digit will move.
 
 * self made logger -> log4net
 
-## [Beta 1.2](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-1.2) - 2020-05-19
+## [Beta 1.2](https://github.com/Avespoir-Project/Avespoir/tree/Beta-1.2) - 2020-05-19
 
 ### Added
 
@@ -59,13 +59,13 @@ If it changes significantly or very much, the first digit will move.
 
 * Botowner Command: DBChannelAdd
 
-## [Beta 1.1.1](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-1.1.1) - 2020-03-26
+## [Beta 1.1.1](https://github.com/Avespoir-Project/Avespoir/tree/Beta-1.1.1) - 2020-03-26
 
 ### Fixed
 
 * Moderator Command Allow Botowner
 
-## [Beta 1.1](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-1.1) - 2020-03-25
+## [Beta 1.1](https://github.com/Avespoir-Project/Avespoir/tree/Beta-1.1) - 2020-03-25
 
 ### Added
 
@@ -74,7 +74,7 @@ If it changes significantly or very much, the first digit will move.
   * DBUserChangeRole Command
 * Bot status display allow users count
 
-## [Beta 1.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Beta-1.0) - 2020-03-24
+## [Beta 1.0](https://github.com/Avespoir-Project/Avespoir/tree/Beta-1.0) - 2020-03-24
 
 Start Beta version!
 
@@ -86,7 +86,7 @@ Start Beta version!
 
 * Test Code -> Production specification
 
-## [Alpha 4.0 (Final Update)](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-4.0) - 2020-03-17
+## [Alpha 4.0 (Final Update)](https://github.com/Avespoir-Project/Avespoir/tree/Alpha-4.0) - 2020-03-17
 
 Alpha version final update.
 
@@ -129,7 +129,7 @@ Alpha version final update.
 * Client.Main args
 * Test command(send check)
 
-## [Alpha 3.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-3.0) - 2020-03-11
+## [Alpha 3.0](https://github.com/Avespoir-Project/Avespoir/tree/Alpha-3.0) - 2020-03-11
 
 ### Added
 
@@ -149,7 +149,7 @@ Alpha version final update.
 
 * DSharpPlus.CommandNext
 
-## [Alpha 2.2(3.2.2 commit)](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-2.2) - 2020-03-03
+## [Alpha 2.2(3.2.2 commit)](https://github.com/Avespoir-Project/Avespoir/tree/Alpha-2.2) - 2020-03-03
 
 The version name in the commit is incorrect.
 
@@ -168,7 +168,7 @@ The version name in the commit is incorrect.
 * Message.MessageEvent -> Events.MessageEvent
 * Avoid deadlock(?)
 
-## [Alpha 2.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-2.0) - 2020-03-02
+## [Alpha 2.0](https://github.com/Avespoir-Project/Avespoir/tree/Alpha-2.0) - 2020-03-02
 
 ### Added
 
@@ -196,7 +196,7 @@ The version name in the commit is incorrect.
 
 * DSharpPlus.CommandNextModule RegisterCommands
 
-## [Alpha 1.1](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-1.1) - 2020-02-23
+## [Alpha 1.1](https://github.com/Avespoir-Project/Avespoir/tree/Alpha-1.1) - 2020-02-23
 
 ### Added
 
@@ -211,7 +211,7 @@ The version name in the commit is incorrect.
 * CommandModuleNext method move CommandRegister class
 * MessageCreated -> MessageEvent
 
-## [Alpha 1.0](https://gitlab.com/Avespoir_Project/Avespoir/-/tree/Alpha-1.0) - 2020-02-21
+## [Alpha 1.0](https://github.com/Avespoir-Project/Avespoir/tree/Alpha-1.0) - 2020-02-21
 
 ### Added
 

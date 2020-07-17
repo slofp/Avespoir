@@ -1,0 +1,16 @@
+jobs:
+  include:
+    - os: linux
+      dist: bionic
+    - os: osx
+    - os: windows
+
+language: csharp
+mono: none
+dotnet: 3.2
+git:
+  submodules: true
+install:
+  - dotnet restore
+script:
+  - dotnet build
