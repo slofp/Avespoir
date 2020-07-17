@@ -2,8 +2,12 @@ jobs:
   include:
     - os: linux
       dist: bionic
+      before_install:
+        - sudo apt update
     - os: osx
-    - os: windows
+      before_install:
+        - sudo brew update
+    #- os: windows # Not Supported
 
 language: csharp
 mono: none
