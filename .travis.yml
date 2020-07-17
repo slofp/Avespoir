@@ -4,9 +4,13 @@ jobs:
       dist: bionic
       before_install:
         - sudo apt update
+    - os: linux
+      dist: xenial
+      before_install:
+        - sudo apt update
     - os: osx
       before_install:
-        - sudo brew update
+        - brew update
     #- os: windows # Not Supported
 
 language: csharp
