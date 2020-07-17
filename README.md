@@ -1,5 +1,9 @@
 # Avespoir
 
+[![Build Status](https://travis-ci.com/Avespoir-Project/Avespoir.svg?branch=master)](https://travis-ci.com/Avespoir-Project/Avespoir)
+[![CodeFactor](https://www.codefactor.io/repository/github/avespoir-project/avespoir/badge/master)](https://www.codefactor.io/repository/github/avespoir-project/avespoir/overview/master)
+[![Apache 2.0 License](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/Avespoir-Project/Avespoir/blob/master/LICENSE)
+
 Discordbot made in C# based on [Silence](https://github.com/Fairy-Phy/Silence)
 
 ***
