@@ -1,5 +1,9 @@
 # Avespoir
 
+[![Build Status](https://travis-ci.com/Avespoir-Project/Avespoir.svg?branch=master)](https://travis-ci.com/Avespoir-Project/Avespoir)
+[![CodeFactor](https://www.codefactor.io/repository/github/avespoir-project/avespoir/badge/master)](https://www.codefactor.io/repository/github/avespoir-project/avespoir/overview/master)
+[![Apache 2.0 License](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/Avespoir-Project/Avespoir/blob/master/LICENSE)
+
 Discordbot made in C# based on [Silence](https://github.com/Fairy-Phy/Silence)
 
 ***
@@ -22,7 +26,7 @@ Please set up the database in advance.
 Clone Avespoir repository.
 
 ```
-git clone https://gitlab.com/Avespoir_Project/Avespoir.git 
+git clone https://github.com/Avespoir-Project/Avespoir.git
 ```
 
 ### **Step. 2**
@@ -59,4 +63,4 @@ dotnet Avespoir.dll
 ## Licence
 Avespoir is licensed under the Apache License 2.0. Please see the licence file for more information.
 
--> https://gitlab.com/Avespoir_Project/Avespoir/-/blob/master/LICENSE
+-> https://github.com/Avespoir-Project/Avespoir/blob/master/LICENSE

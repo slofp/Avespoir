@@ -1,0 +1,24 @@
+jobs:
+  include:
+    - os: linux
+      dist: bionic
+      before_install:
+        - sudo apt update
+    - os: linux
+      dist: xenial
+      before_install:
+        - sudo apt update
+    - os: osx
+      before_install:
+        - brew update
+    #- os: windows # Not Supported
+
+language: csharp
+mono: none
+dotnet: 3.1.302
+git:
+  submodules: true
+install:
+  - dotnet restore
+script:
+  - dotnet build
