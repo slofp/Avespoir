@@ -6,7 +6,7 @@ namespace Avespoir.Core.Database.Schemas {
 	class UserData {
 
 		[BsonId]
-		public ObjectId id { get; set; }
+		public ObjectId Id { get; set; }
 
 		[BsonElement("User_id")]
 		public ulong UserID { get; set; }

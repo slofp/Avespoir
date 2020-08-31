@@ -1,4 +1,6 @@
-﻿using DSharpPlus;
+﻿using Avespoir.Core.Database;
+using Avespoir.Core.Language;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
@@ -10,6 +12,8 @@ namespace Avespoir.Core.Modules.Commands {
 		internal MessageCreateEventArgs MessageObjects { get; }
 
 		internal string[] CommandArgs { get; }
+
+		internal JsonScheme.Language Language { get; }
 
 		#region Extend MessageCreateEventArgs
 
@@ -46,6 +50,16 @@ namespace Avespoir.Core.Modules.Commands {
 		internal CommandObjects(MessageCreateEventArgs Message_Objects) {
 			MessageObjects = Message_Objects;
 			CommandArgs = MessageObjects.Message.Content.Trim().Split(" ");
+			if (!Message_Objects.Channel.IsPrivate) {
+				string GuildLanguageString = DatabaseMethods.LanguageFind(Message_Objects.Guild.Id).ConfigureAwait(false).GetAwaiter().GetResult();
+				if (GuildLanguageString == null) Language = new GetLanguage(Database.Enums.Language.ja_JP).Language_Data;
+				else {
+					if (!Enum.TryParse(GuildLanguageString, true, out Database.Enums.Language GuildLanguage))
+						Language = new GetLanguage(Database.Enums.Language.ja_JP).Language_Data;
+					else Language = new GetLanguage(GuildLanguage).Language_Data;
+				}
+			}
+			else Language = new GetLanguage(Database.Enums.Language.ja_JP).Language_Data;
 
 			Client = Message_Objects.Client;
 			Message = Message_Objects.Message;

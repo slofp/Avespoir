@@ -13,26 +13,26 @@ namespace Avespoir.Core.Modules.Commands {
 		public async Task Find(CommandObjects CommandObject) {
 			string[] msgs = CommandObject.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {
-				await CommandObject.Message.Channel.SendMessageAsync("何も入力されていません");
+				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyText);
 				return;
 			}
 
 			if (string.IsNullOrWhiteSpace(msgs[0])) {
-				await CommandObject.Message.Channel.SendMessageAsync("IDが空白またはNullです");
+				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyId);
 				return;
 			}
 			if (!ulong.TryParse(msgs[0], out ulong Userid)) {
-				await CommandObject.Message.Channel.SendMessageAsync("IDは数字でなければいけません");
+				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdCouldntParse);
 				return;
 			}
 
 			try {
 				DiscordMember FoundMember = await CommandObject.Guild.GetMemberAsync(Userid);
-				string ResultString = string.Format("Username: {0}\nJoinAt: {1}\nGuildOwner: {2}\nAvaterURL: {3}", FoundMember.Username + "#" + FoundMember.Discriminator, FoundMember.JoinedAt, FoundMember.IsOwner ? "yes" : "no", FoundMember.AvatarUrl);
+				string ResultString = string.Format(CommandObject.Language.FindResult, FoundMember.Username + "#" + FoundMember.Discriminator, FoundMember.JoinedAt, FoundMember.IsOwner ? "yes" : "no", FoundMember.AvatarUrl);
 				await CommandObject.Channel.SendMessageAsync(ResultString);
 			}
 			catch (NotFoundException) {
-				await CommandObject.Channel.SendMessageAsync("見つかりませんでした！");
+				await CommandObject.Channel.SendMessageAsync(CommandObject.Language.FindNotFound);
 			}
 		}
 	}

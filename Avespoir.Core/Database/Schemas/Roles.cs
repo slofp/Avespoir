@@ -6,7 +6,10 @@ namespace Avespoir.Core.Database.Schemas {
 	class Roles {
 
 		[BsonId]
-		public ObjectId id { get; set; }
+		public ObjectId Id { get; set; }
+
+		[BsonElement("Guildid")]
+		public ulong GuildID { get; set; }
 
 		[BsonElement("uuid")]
 		public ulong uuid { get; set; }

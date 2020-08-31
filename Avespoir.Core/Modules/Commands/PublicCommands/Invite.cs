@@ -22,7 +22,7 @@ namespace Avespoir.Core.Modules.Commands {
 				DiscordInvite Invite = await DefaultChannel.CreateInviteAsync();
 
 				string InviteUrl = "https://discord.gg/" + Invite.Code;
-				string Message = string.Format("作成しました。24時間有効です\n{0}", InviteUrl);
+				string Message = string.Format(CommandObject.Language.InviteResult, InviteUrl);
 				await CommandObject.Message.Channel.SendMessageAsync(Message);
 				return;
 			}
@@ -30,7 +30,7 @@ namespace Avespoir.Core.Modules.Commands {
 			string InviteText = msgs[0];
 			string InviteIDString = InviteText.TrimStart('<', '#').TrimEnd('>');
 			if (!ulong.TryParse(InviteIDString, out ulong InviteID)) {
-				await CommandObject.Message.Channel.SendMessageAsync("チャンネルが不正です");
+				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.InviteChannelNotFound);
 				return;
 			}
 
@@ -39,12 +39,12 @@ namespace Avespoir.Core.Modules.Commands {
 				DiscordInvite Invite = await GetChannel.CreateInviteAsync();
 
 				string InviteUrl = "https://discord.gg/" + Invite.Code;
-				string Message = string.Format("作成しました。24時間有効です\n{0}", InviteUrl);
+				string Message = string.Format(CommandObject.Language.InviteResult, InviteUrl);
 				await CommandObject.Message.Channel.SendMessageAsync(Message);
 			}
 			catch (NullReferenceException) {
 				Log.Warning("Channel ID is not found");
-				await CommandObject.Message.Channel.SendMessageAsync("チャンネルIDは存在しません");
+				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.InviteChannelIdNotFound);
 			}
 		}
 	}

@@ -7,7 +7,7 @@ namespace Avespoir.Core.Modules.Commands {
 
 		[Command("ver")]
 		public async Task Version(CommandObjects CommandObject) {
-			string VersionString = string.Format("BotName: {0}\nBotVersion: {1}", Client.Bot.CurrentUser.Username, Client.Version);
+			string VersionString = string.Format(CommandObject.Language.Version, Client.Bot.CurrentUser.Username, Client.Version);
 			await CommandObject.Message.Channel.SendMessageAsync(VersionString);
 		}
 	}

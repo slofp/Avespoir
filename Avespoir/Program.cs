@@ -1,5 +1,5 @@
 ﻿using Avespoir.Core;
-using Avespoir.Core.Configs;
+using Avespoir.Core.JsonScheme;
 using System;
 using System.IO;
 using System.Text.Json;
@@ -22,8 +22,8 @@ namespace Avespoir {
 				string ClientConfigJsonData = File.ReadAllText(ClientConfigPath);
 				string DBConfigJsonData = File.ReadAllText(DBConfigPath);
 
-				JsonSerializer.Deserialize<GetClientConfigJson>(ClientConfigJsonData);
-				JsonSerializer.Deserialize<GetDBConfigJson>(DBConfigJsonData);
+				JsonSerializer.Deserialize<ClientConfig>(ClientConfigJsonData);
+				JsonSerializer.Deserialize<DBConfig>(DBConfigJsonData);
 				
 				new StartClient();
 			}

@@ -1,8 +1,9 @@
 ﻿using Avespoir.Core.Database;
+using Avespoir.Core.Configs;
 
-namespace Avespoir.Core.Configs {
+namespace Avespoir.Core.JsonScheme {
 
-	public class GetDBConfigJson {
+	public class DBConfig {
 
 		#region Database Config
 

@@ -18,7 +18,7 @@ namespace Avespoir.Core.Modules.Commands {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
 				if (msgs.Length == 0) {
-					await CommandObject.Message.Channel.SendMessageAsync("何も入力されていません");
+					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyText);
 					return;
 				}
 
@@ -26,48 +26,53 @@ namespace Avespoir.Core.Modules.Commands {
 				uint msgs_RoleNum;
 
 				if (string.IsNullOrWhiteSpace(msgs[0])) {
-					await CommandObject.Message.Channel.SendMessageAsync("IDが空白またはNullです");
+					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyId);
 					return;
 				}
 				if (!ulong.TryParse(msgs[0], out msgs_ID)) {
-					await CommandObject.Message.Channel.SendMessageAsync("IDは数字でなければいけません");
+					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdCouldntParse);
 					return;
 				}
 
 				if (string.IsNullOrWhiteSpace(msgs[1])) {
-					await CommandObject.Message.Channel.SendMessageAsync("RoleNumberが空白またはNullです");
+					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyRoleNumber);
 					return;
 				}
 				if (!uint.TryParse(msgs[1], out msgs_RoleNum)) {
-					await CommandObject.Message.Channel.SendMessageAsync("RoleNumberは数字でなければいけません");
+					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.RoleNumberNotNumber);
 					return;
 				}
 
 				IMongoCollection<AllowUsers> DBAllowUsersCollection = MongoDBClient.Database.GetCollection<AllowUsers>(typeof(AllowUsers).Name);
 				IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
+				FilterDefinition<AllowUsers> DBAllowUsersGuildIDFilter = Builders<AllowUsers>.Filter.Eq(AllowUser => AllowUser.GuildID, CommandObject.Guild.Id);
+				FilterDefinition<Roles> DBRolesGuildIDFilter = Builders<Roles>.Filter.Eq(Role => Role.GuildID, CommandObject.Guild.Id);
 
 				try {
 					FilterDefinition<AllowUsers> DBAllowUsersIDFilter = Builders<AllowUsers>.Filter.Eq(AllowUser => AllowUser.uuid, msgs_ID);
-					AllowUsers DBAllowUsersID = await (await DBAllowUsersCollection.FindAsync(DBAllowUsersIDFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
+					FilterDefinition<AllowUsers> DBAllowUsersGuildIDIDFilter = Builders<AllowUsers>.Filter.And(DBAllowUsersGuildIDFilter, DBAllowUsersIDFilter);
+					AllowUsers DBAllowUsersID = await (await DBAllowUsersCollection.FindAsync(DBAllowUsersGuildIDIDFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
 					// if DBAllowUsersID is null, processes will not be executed from here.
 
 					try {
 						FilterDefinition<Roles> DBRolesNumFilter = Builders<Roles>.Filter.Eq(Role => Role.RoleNum, msgs_RoleNum);
-						Roles DBRolesNum = await (await DBRolesCollection.FindAsync(DBRolesNumFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
+						FilterDefinition<Roles> DBRolesGuildIDNumFilter = Builders<Roles>.Filter.And(DBRolesGuildIDFilter, DBRolesNumFilter);
+						Roles DBRolesNum = await (await DBRolesCollection.FindAsync(DBRolesGuildIDNumFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
 						// if DBRolesNum is null, processes will not be executed from here.
 
 						try {
 							FilterDefinition<Roles> DBBeforeRolesNumFilter = Builders<Roles>.Filter.Eq(Role => Role.RoleNum, DBAllowUsersID.RoleNum);
-							Roles DBBeforeRolesNum = await (await DBRolesCollection.FindAsync(DBBeforeRolesNumFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
+							FilterDefinition<Roles> DBBeforeRolesGuildIDNumFilter = Builders<Roles>.Filter.And(DBRolesGuildIDFilter, DBBeforeRolesNumFilter);
+							Roles DBBeforeRolesNum = await (await DBRolesCollection.FindAsync(DBBeforeRolesGuildIDNumFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
 							// if DBBeforeRolesNum is null, processes will not be executed from here.
 
 							if (!await Authentication.Confirmation(CommandObject)) {
-								await CommandObject.Channel.SendMessageAsync("認証に失敗しました、初めからやり直してください");
+								await CommandObject.Channel.SendMessageAsync(CommandObject.Language.AuthFailure);
 								return;
 							}
 
 							UpdateDefinition<AllowUsers> UpdateAllowUserRole = Builders<AllowUsers>.Update.Set(AllowUser => AllowUser.RoleNum, msgs_RoleNum);
-							await DBAllowUsersCollection.UpdateOneAsync(DBAllowUsersIDFilter, UpdateAllowUserRole).ConfigureAwait(false);
+							await DBAllowUsersCollection.UpdateOneAsync(DBAllowUsersGuildIDIDFilter, UpdateAllowUserRole).ConfigureAwait(false);
 
 							DiscordMember GuildMember = await CommandObject.Guild.GetMemberAsync(msgs_ID);
 
@@ -77,78 +82,125 @@ namespace Avespoir.Core.Modules.Commands {
 							DiscordRole GuildBeforeRole = CommandObject.Guild.GetRole(DBBeforeRolesNum.uuid);
 							await GuildMember.RevokeRoleAsync(GuildBeforeRole);
 
-							string ResultText = string.Format("{0}のRoleを{1}から{2}に変更しました！", GuildMember.Username + "#" + GuildMember.Discriminator, GuildBeforeRole.Name, GuildAfterRole.Name);
+							string ResultText = string.Format(CommandObject.Language.DBUserChangeRoleSuccess, GuildMember.Username + "#" + GuildMember.Discriminator, GuildBeforeRole.Name, GuildAfterRole.Name);
 							await CommandObject.Message.Channel.SendMessageAsync(ResultText);
 
 							RoleLevel DBRoleLevel = Enum.Parse<RoleLevel>(DBRolesNum.RoleLevel);
-							if (DBRoleLevel == RoleLevel.Public) {
-								DiscordEmbed WelcomeEmbed = new Discord​Embed​Builder()
-									.WithTitle(string.Format("Roleが{0}に変更になりました！ {0}では次のことが許可されています！", GuildAfterRole.Name))
-									.AddField(
-										"サーバーの操作ができます",
-										"ほぼ自由にサーバーを操作できます"
-									)
-									.AddField(
-										"すべてのチャンネルを読んだり送信することができます",
-										"これはあなたが認定された証です"
-									)
-									.AddField(
-										"抜けたらBANされます",
-										string.Format("現在{0}は抜けたらBANされます", GuildAfterRole.Name)
-									)
-									.WithColor(new DiscordColor(0x00B06B))
-									.WithFooter(
-										string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username)
-									);
-								await GuildMember.SendMessageAsync(default, default, WelcomeEmbed);
+							bool GuildLeaveBan = await DatabaseMethods.LeaveBanFind(CommandObject.Guild.Id).ConfigureAwait(false);
+							if (GuildLeaveBan) {
+								if (DBRoleLevel == RoleLevel.Public) {
+									DiscordEmbed WelcomeEmbed = new Discord​Embed​Builder()
+										.WithTitle(string.Format(CommandObject.Language.DBUserChangeRoleEmbedTitle, GuildAfterRole.Name))
+										.AddField(
+											CommandObject.Language.DMEmbed_Public1,
+											CommandObject.Language.DMEmbed_Public2
+										)
+										.AddField(
+											CommandObject.Language.DMEmbed_Public3,
+											CommandObject.Language.DMEmbed_Public4
+										)
+										.AddField(
+											CommandObject.Language.DMEmbed_LeaveBan1,
+											string.Format(CommandObject.Language.DMEmbed_LeaveBan2, GuildAfterRole.Name)
+										)
+										.WithColor(new DiscordColor(0x00B06B))
+										.WithFooter(
+											string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username)
+										);
+									await GuildMember.SendMessageAsync(default, default, WelcomeEmbed);
 
-								return;
+									return;
+								}
+								else if (DBRoleLevel == RoleLevel.Moderator) {
+									DiscordEmbed WelcomeEmbed = new Discord​Embed​Builder()
+										.WithTitle(string.Format(CommandObject.Language.DBUserChangeRoleEmbedTitle, GuildAfterRole.Name))
+										.AddField(
+											CommandObject.Language.DMEmbed_Moderator1,
+											CommandObject.Language.DMEmbed_Moderator2
+										)
+										.AddField(
+											CommandObject.Language.DMEmbed_Moderator3,
+											string.Format(CommandObject.Language.DMEmbed_Moderator4, CommandObject.Client.CurrentUser.Username)
+										)
+										.AddField(
+											CommandObject.Language.DMEmbed_Moderator5,
+											CommandObject.Language.DMEmbed_Moderator6
+										)
+										.AddField(
+											CommandObject.Language.DMEmbed_LeaveBan1,
+											string.Format(CommandObject.Language.DMEmbed_LeaveBan2, GuildAfterRole.Name)
+										)
+										.WithColor(new DiscordColor(0x00B06B))
+										.WithFooter(
+											string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username)
+										);
+									await GuildMember.SendMessageAsync(default, default, WelcomeEmbed);
+
+									return;
+								}
 							}
-							else if (DBRoleLevel == RoleLevel.Moderator) {
-								DiscordEmbed WelcomeEmbed = new Discord​Embed​Builder()
-									.WithTitle(string.Format("Roleが{0}に変更になりました！ {0}では次のことが許可されています！", GuildAfterRole.Name))
-									.AddField(
-										"サーバーの操作ができます",
-										"今日からあなたはここの管理者です"
-									)
-									.AddField(
-										"データベースへの追加、変更、削除等が行えます",
-										string.Format("{0}Botのすべてのコマンドを使うことができます", CommandObject.Client.CurrentUser.Username)
-									)
-									.AddField(
-										"すべてのチャンネルを読んだり送信することができます",
-										"これはあなたが認定された証です"
-									)
-									.AddField(
-										"抜けたらBANされます",
-										string.Format("現在{0}は抜けたらBANされます", GuildAfterRole.Name)
-									)
-									.WithColor(new DiscordColor(0x00B06B))
-									.WithFooter(
-										string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username)
-									);
-								await GuildMember.SendMessageAsync(default, default, WelcomeEmbed);
+							else {
+								if (DBRoleLevel == RoleLevel.Public) {
+									DiscordEmbed WelcomeEmbed = new Discord​Embed​Builder()
+										.WithTitle(string.Format(CommandObject.Language.DBUserChangeRoleEmbedTitle, GuildAfterRole.Name))
+										.AddField(
+											CommandObject.Language.DMEmbed_Public1,
+											CommandObject.Language.DMEmbed_Public2
+										)
+										.AddField(
+											CommandObject.Language.DMEmbed_Public3,
+											CommandObject.Language.DMEmbed_Public4
+										)
+										.WithColor(new DiscordColor(0x00B06B))
+										.WithFooter(
+											string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username)
+										);
+									await GuildMember.SendMessageAsync(default, default, WelcomeEmbed);
 
-								return;
+									return;
+								}
+								else if (DBRoleLevel == RoleLevel.Moderator) {
+									DiscordEmbed WelcomeEmbed = new Discord​Embed​Builder()
+										.WithTitle(string.Format(CommandObject.Language.DBUserChangeRoleEmbedTitle, GuildAfterRole.Name))
+										.AddField(
+											CommandObject.Language.DMEmbed_Moderator1,
+											CommandObject.Language.DMEmbed_Moderator2
+										)
+										.AddField(
+											CommandObject.Language.DMEmbed_Moderator3,
+											string.Format(CommandObject.Language.DMEmbed_Moderator4, CommandObject.Client.CurrentUser.Username)
+										)
+										.AddField(
+											CommandObject.Language.DMEmbed_Moderator5,
+											CommandObject.Language.DMEmbed_Moderator6
+										)
+										.WithColor(new DiscordColor(0x00B06B))
+										.WithFooter(
+											string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username)
+										);
+									await GuildMember.SendMessageAsync(default, default, WelcomeEmbed);
+
+									return;
+								}
 							}
 						}
 						catch (InvalidOperationException) {
-							await CommandObject.Message.Channel.SendMessageAsync("Roleデータベースに元のRoleが存在しません");
+							await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.BeforeRoleNotFound);
 							return;
 						}
 					}
 					catch (InvalidOperationException) {
-						await CommandObject.Message.Channel.SendMessageAsync("RoleNumberがRoleデータベースに存在しません");
+						await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.RoleNumberNotFound);
 						return;
 					}
 				}
 				catch (InvalidOperationException) {
-					await CommandObject.Message.Channel.SendMessageAsync("そのIDは登録されていません");
+					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdNotRegisted);
 					return;
 				}
 			}
 			catch (IndexOutOfRangeException) {
-				await CommandObject.Message.Channel.SendMessageAsync("必要箇所が入力されていません");
+				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.TypingMissed);
 				return;
 			}
 		}

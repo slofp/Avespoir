@@ -29,13 +29,8 @@ namespace Avespoir.Core.Modules.Logger {
 		
 		internal static string Username {
 			get {
-				try {
-					if (string.IsNullOrWhiteSpace(Client.Bot.CurrentUser.Username)) return "Bot";
-					else return Client.Bot.CurrentUser.Username;
-				}
-				catch (NullReferenceException) {
-					return "Bot";
-				}
+				if (string.IsNullOrWhiteSpace(Client.Bot.CurrentUser?.Username)) return "Bot";
+				else return Client.Bot.CurrentUser.Username;
 			}
 		}
 	}
