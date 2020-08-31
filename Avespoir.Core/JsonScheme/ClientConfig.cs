@@ -1,26 +1,27 @@
-﻿using System;
+﻿using Avespoir.Core.Configs;
+using System;
 
-namespace Avespoir.Core.Configs {
+namespace Avespoir.Core.JsonScheme {
 
-	public class GetClientConfigJson {
+	public class ClientConfig {
 
 		#region Bot Config
 
 		public string Token {
 			get {
-				return ClientConfig.Token;
+				return Configs.ClientConfig.Token;
 			}
 			set {
-				ClientConfig.Token = value;
+				Configs.ClientConfig.Token = value;
 			}
 		}
 
 		public string BotownerId {
 			get {
-				return Convert.ToString(ClientConfig.BotownerId);
+				return Convert.ToString(Configs.ClientConfig.BotownerId);
 			}
 			set {
-				ClientConfig.BotownerId = Convert.ToUInt64(value);
+				Configs.ClientConfig.BotownerId = Convert.ToUInt64(value);
 			}
 		}
 		#endregion

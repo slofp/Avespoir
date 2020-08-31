@@ -1,4 +1,6 @@
-﻿using Avespoir.Core.Modules.Logger;
+﻿using Avespoir.Core.Database;
+using Avespoir.Core.Language;
+using Avespoir.Core.Modules.Logger;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
@@ -19,6 +21,7 @@ namespace Avespoir.Core.Modules.LevelSystems {
 
 			double Exp = 0.00;
 			ulong UserID = Message_Objects.Author.Id;
+			ulong EndUserID = Stack_Messages.StackDiscordMessages[Stack_Messages.StackDiscordMessages.Count - 1].Author.Id;
 			foreach(DiscordMessage Stack_Message in Stack_Messages.StackDiscordMessages) {
 				string MessageID = Stack_Message.Id.ToString();
 				string MessageContentSource = Stack_Message.Content;
@@ -27,6 +30,11 @@ namespace Avespoir.Core.Modules.LevelSystems {
 				Exp += ExpCalculator.ExpCalculate(MessageCount, MessageIDReplace);
 			}
 
+			await SendDB(UserID, Exp, Message_Objects).ConfigureAwait(false);
+			await SendDB(EndUserID, Exp, Message_Objects).ConfigureAwait(false);
+		}
+
+		static async Task SendDB(ulong UserID, double Exp, MessageCreateEventArgs Message_Objects) {
 			Exp += await DatabaseMethods.ExpFind(UserID).ConfigureAwait(false);
 			uint BeforeLevel = await DatabaseMethods.LevelFind(UserID).ConfigureAwait(false);
 			uint AfterLevel = LevelDecision(Exp, BeforeLevel);
@@ -43,11 +51,20 @@ namespace Avespoir.Core.Modules.LevelSystems {
 				else {
 					Log.Debug("Send");
 					try {
+						GetLanguage Get_Language;
+						string GuildLanguageString = await DatabaseMethods.LanguageFind(Message_Objects.Guild.Id).ConfigureAwait(false);
+						if (GuildLanguageString == null) Get_Language = new GetLanguage(Database.Enums.Language.ja_JP);
+						else {
+							if (!Enum.TryParse(GuildLanguageString, true, out Database.Enums.Language GuildLanguage))
+								Get_Language = new GetLanguage(Database.Enums.Language.ja_JP);
+							else Get_Language = new GetLanguage(GuildLanguage);
+						}
+
 						DiscordChannel LogChannel = Message_Objects.Guild.GetChannel(LogChannelID);
 						DiscordEmbed LevelUpEmbed = new DiscordEmbedBuilder()
 						.WithAuthor(Message_Objects.Message.Author.Username + "#" + Message_Objects.Message.Author.Discriminator, default, Message_Objects.Message.Author.AvatarUrl)
-						.WithTitle("レベルが上がりました！")
-						.WithDescription(string.Format("経験値: {0}\nレベル: Lv.{1} -> Lv.{2}", Exp, BeforeLevel, AfterLevel))
+						.WithTitle(Get_Language.Language_Data.LevelUpEmbed1)
+						.WithDescription(string.Format(Get_Language.Language_Data.LevelUpEmbed2, Exp, BeforeLevel, AfterLevel))
 						.WithColor(new DiscordColor(0xFFFF00))
 						.WithTimestamp(DateTime.Now)
 						.WithFooter(string.Format("{0} Bot", Message_Objects.Client.CurrentUser.Username));

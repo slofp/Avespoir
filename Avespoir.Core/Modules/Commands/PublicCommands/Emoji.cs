@@ -17,12 +17,12 @@ namespace Avespoir.Core.Modules.Commands {
 		public async Task Emoji(CommandObjects CommandObject) {
 			string[] msgs = CommandObject.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {
-				await CommandObject.Message.Channel.SendMessageAsync("何も入力されていません");
+				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyText);
 				return;
 			}
 
 			if (string.IsNullOrWhiteSpace(msgs[0])) {
-				await CommandObject.Message.Channel.SendMessageAsync("名前が空白またはNullです");
+				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyName);
 				return;
 			}
 			string EmojiName = msgs[0];
@@ -38,10 +38,10 @@ namespace Avespoir.Core.Modules.Commands {
 				Stream Image = new MemoryStream(Imagebyte);
 
 				DiscordGuildEmoji Emoji = await CommandObject.Guild.CreateEmojiAsync(EmojiName, Image);
-				await CommandObject.Channel.SendMessageAsync(ConvertEmoji(Emoji) + $"を{Emoji.Name}で登録しました");
+				await CommandObject.Channel.SendMessageAsync(string.Format(CommandObject.Language.EmojiSuccess, ConvertEmoji(Emoji), Emoji.Name));
 			}
 			catch (UrlNotFoundException) {
-				await CommandObject.Channel.SendMessageAsync("画像が指定されていません！");
+				await CommandObject.Channel.SendMessageAsync(CommandObject.Language.ImageNotFound);
 			}
 		}
 	}

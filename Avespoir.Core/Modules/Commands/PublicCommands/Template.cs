@@ -13,7 +13,7 @@ namespace Avespoir.Core.Modules.Commands {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
 				if (msgs.Length == 0) {
-					await CommandObject.Message.Channel.SendMessageAsync("何も入力されていません");
+					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyText);
 					return;
 				}
 				await Task.Delay(0);

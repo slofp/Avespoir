@@ -10,7 +10,7 @@ namespace Avespoir.Core.Modules.Commands {
 		// コマンドを送信した時間からWaitを送信した時間をPingとして使用
 		[Command("ping")]
 		public async Task Ping(CommandObjects CommandObject) {
-			DiscordMessage BotResponse = await CommandObject.Channel.SendMessageAsync("Wait...");
+			DiscordMessage BotResponse = await CommandObject.Channel.SendMessageAsync(CommandObject.Language.PingWait);
 
 			long MessageTick = CommandObject.Message.CreationTimestamp.Ticks;
 			long ResponseTick = BotResponse.CreationTimestamp.Ticks;

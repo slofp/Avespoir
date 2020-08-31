@@ -18,38 +18,45 @@ namespace Avespoir.Core.Modules.Commands {
 			IMongoCollection<AllowUsers> DBAllowUsersCollection = MongoDBClient.Database.GetCollection<AllowUsers>(typeof(AllowUsers).Name);
 			IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
 
-			await CommandObject.Channel.SendMessageAsync($"{CommandObject.Member.Mention} DMをご確認ください！");
+			await CommandObject.Channel.SendMessageAsync(string.Format(CommandObject.Language.DMMention, CommandObject.Member.Mention));
+
+			string GuildPublicPrefix = await DatabaseMethods.PublicPrefixFind(CommandObject.Guild.Id).ConfigureAwait(false);
+			if (GuildPublicPrefix == null) GuildPublicPrefix = CommandConfig.PublicPrefix;
 
 			DiscordEmbed PublicEmbed = new DiscordEmbedBuilder()
-				.WithTitle("一般コマンド")
-				.WithDescription(string.Format("プレフィックスは {0} です", CommandConfig.PublicPrefix))
+				.WithTitle(CommandObject.Language.HelpPublicCommand)
+				.WithDescription(string.Format(CommandObject.Language.HelpCommandPrefix, GuildPublicPrefix))
 				.AddField(
-					"Pingを測ります",
-					"`" + CommandConfig.PublicPrefix + "ping" + "`"
+					CommandObject.Language.HelpPing,
+					"`" + GuildPublicPrefix + "ping" + "`"
 				)
 				.AddField(
-					"Botのバージョンを表示します",
-					"`" + CommandConfig.PublicPrefix + "ver" + "`"
+					CommandObject.Language.HelpVer,
+					"`" + GuildPublicPrefix + "ver" + "`"
 				)
 				.AddField(
-					"コマンド一覧を表示します",
-					"`" + CommandConfig.PublicPrefix + "help" + "`"
+					CommandObject.Language.HelpHelp,
+					"`" + GuildPublicPrefix + "help" + "`"
 				)
 				.AddField(
-					"ユーザーの情報を表示します",
-					"`" + CommandConfig.PublicPrefix + "find" + " " + "[ユーザーID]" + "`"
+					CommandObject.Language.HelpFind,
+					"`" + GuildPublicPrefix + "find" + " " + CommandObject.Language.HelpFindUserId + "`"
 				)
 				.AddField(
-					"画像をもとに絵文字を作成します",
-					"`" + CommandConfig.PublicPrefix + "emoji" + " " + "[名前]" + " " + "(画像アップロード)" + "`"
+					CommandObject.Language.HelpEmoji,
+					"`" + GuildPublicPrefix + "emoji" + " " + CommandObject.Language.HelpEmojiName + " " + CommandObject.Language.HelpEmojiImage + "`"
 				)
 				.AddField(
-					"招待URLを作成します",
-					"`" + CommandConfig.PublicPrefix + "invite" + " " + "(チャンネル)" + "`"
+					CommandObject.Language.HelpInvite,
+					"`" + GuildPublicPrefix + "invite" + " " + CommandObject.Language.HelpInviteChannel + "`"
 				)
 				.AddField(
-					"ステータスを表示します",
-					"`" + CommandConfig.PublicPrefix + "status" + " " + "(メンションかユーザーID)" + "`"
+					CommandObject.Language.HelpStatus,
+					"`" + GuildPublicPrefix + "status" + " " + CommandObject.Language.HelpStatusMention + "`"
+				)
+				.AddField(
+					CommandObject.Language.HelpRoll,
+					"`" + GuildPublicPrefix + "roll" + " " + CommandObject.Language.HelpRollMaxvalue + " " + CommandObject.Language.HelpRollMinvalue + "`"
 				)
 				.WithColor(new DiscordColor(0x00B06B))
 				.WithTimestamp(DateTime.Now)
@@ -57,79 +64,87 @@ namespace Avespoir.Core.Modules.Commands {
 			await CommandObject.Member.SendMessageAsync(default, default, PublicEmbed);
 
 			try {
-				FilterDefinition<AllowUsers> DBAllowUsersIDFilter = Builders<AllowUsers>.Filter.Eq(AllowUser => AllowUser.uuid, CommandObject.Message.Author.Id);
-				AllowUsers DBAllowUsersID = await (await DBAllowUsersCollection.FindAsync(DBAllowUsersIDFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
+				RoleLevel DBRoleLevel;
+				if (CommandObject.Message.Author.Id == CommandObject.Guild.Owner.Id) DBRoleLevel = RoleLevel.Moderator;
+				else {
+					FilterDefinition<AllowUsers> DBAllowUsersIDFilter = Builders<AllowUsers>.Filter.Eq(AllowUser => AllowUser.uuid, CommandObject.Message.Author.Id);
+					AllowUsers DBAllowUsersID = await (await DBAllowUsersCollection.FindAsync(DBAllowUsersIDFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
 
-				FilterDefinition<Roles> DBRolesNumFilter = Builders<Roles>.Filter.Eq(Role => Role.RoleNum, DBAllowUsersID.RoleNum);
-				Roles DBRolesNum = await (await DBRolesCollection.FindAsync(DBRolesNumFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
+					FilterDefinition<Roles> DBRolesNumFilter = Builders<Roles>.Filter.Eq(Role => Role.RoleNum, DBAllowUsersID.RoleNum);
+					Roles DBRolesNum = await (await DBRolesCollection.FindAsync(DBRolesNumFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
 
-				RoleLevel DBRoleLevel = (RoleLevel) Enum.Parse(typeof(RoleLevel), DBRolesNum.RoleLevel);
+					DBRoleLevel = (RoleLevel) Enum.Parse(typeof(RoleLevel), DBRolesNum.RoleLevel);
+				}
 
-				if (DBRoleLevel == RoleLevel.Moderator) {
+				string GuildModeratorPrefix = await DatabaseMethods.ModeratorPrefixFind(CommandObject.Guild.Id).ConfigureAwait(false);
+				if (GuildModeratorPrefix == null) GuildModeratorPrefix = CommandConfig.ModeratorPrefix;
+
+				if (DBRoleLevel == RoleLevel.Moderator) { // CommandObject.Message.Author.Id == CommandObject.Guild.Owner.Id
 					DiscordEmbed ModeratorEmbed = new DiscordEmbedBuilder()
-						.WithTitle("モデレーターコマンド")
-						.WithDescription(string.Format("プレフィックスは {0} です", CommandConfig.ModeratorPrefix))
+						.WithTitle(CommandObject.Language.HelpModeratorCommand)
+						.WithDescription(string.Format(CommandObject.Language.HelpCommandPrefix, GuildModeratorPrefix))
 						.AddField(
-							"Userデータベースに登録されているユーザー情報をリストにして表示します",
-							"`" + CommandConfig.ModeratorPrefix + "db-userlist" + "`"
+							CommandObject.Language.HelpDBUserList,
+							"`" + GuildModeratorPrefix + "db-userlist" + "`"
 						)
 						.AddField(
-							"Roleデータベースに登録されているユーザー情報をリストにして表示します",
-							"`" + CommandConfig.ModeratorPrefix + "db-rolelist" + "`"
+							CommandObject.Language.HelpDBRoleList,
+							"`" + GuildModeratorPrefix + "db-rolelist" + "`"
 						)
 						.AddField(
-							"Userデータベースにユーザーを追加します",
-							"`" + CommandConfig.ModeratorPrefix + "db-useradd" + " " + "[名前]" + " " + "[ユーザーID]" + " " + "[役職登録番号]" + "`"
+							CommandObject.Language.HelpDBUserAdd,
+							"`" + GuildModeratorPrefix + "db-useradd" + " " + CommandObject.Language.HelpDBUserAddName + " " + CommandObject.Language.HelpDBUserAddUserId + " " + CommandObject.Language.HelpDBUserAddRoleNum + "`"
 						)
 						.AddField(
-							"Roleデータベースに役職を追加します",
-							"`" + CommandConfig.ModeratorPrefix + "db-roleadd" + " " + "[役職ID]" + " " + "[役職登録番号]" + " " + "[役職レベル(一般: 0, モデレーター: 1, Bot: 2)]" + "`"
+							CommandObject.Language.HelpDBRoleAdd,
+							"`" + GuildModeratorPrefix + "db-roleadd" + " " + CommandObject.Language.HelpDBRoleAddRoleId + " " + CommandObject.Language.HelpDBRoleAddRoleNum + " " + CommandObject.Language.HelpDBRoleAddRoleType + "`"
 						)
 						.AddField(
-							"Userデータベースに登録されているユーザーの役職を変更します",
-							"`" + CommandConfig.ModeratorPrefix + "db-usercrole" + " " + "[ユーザーID]" + " " + "[役職登録番号]" + "`"
+							CommandObject.Language.HelpDBUserChangeRole,
+							"`" + GuildModeratorPrefix + "db-usercrole" + " " + CommandObject.Language.HelpDBUserChangeRoleUserId + " " + CommandObject.Language.HelpDBUserChangeRoleRoleNum + "`"
 						)
 						.AddField(
-							"Userデータベースからユーザーを削除します",
-							"`" + CommandConfig.ModeratorPrefix + "db-userdel" + " " + "[ユーザーID]" + "`"
+							CommandObject.Language.HelpDBUserDelete,
+							"`" + GuildModeratorPrefix + "db-userdel" + " " + CommandObject.Language.HelpDBUserDeleteUserId + "`"
 						)
 						.AddField(
-							"Roleデータベースから役職を削除します",
-							"`" + CommandConfig.ModeratorPrefix + "db-roledel" + " " + "[役職ID]" + "`"
+							CommandObject.Language.HelpDBRoleDelete,
+							"`" + GuildModeratorPrefix + "db-roledel" + " " + CommandObject.Language.HelpDBRoleDeleteRoleId + "`"
 						)
 						.AddField(
-							"LogChannelデータベースにログ送信用のチャンネル設定を追加します",
-							"`" + CommandConfig.ModeratorPrefix + "db-logchadd" + " " + "[チャンネルID]" + "`"
+							CommandObject.Language.HelpConfig,
+							"`" + GuildModeratorPrefix + "config" + " " + CommandObject.Language.HelpConfigFirstArgs + " " + CommandObject.Language.HelpConfigValue + "`"
 						)
 						.AddField(
-							"LogChannelデータベースにログ送信用のチャンネル設定を変更します",
-							"`" + CommandConfig.ModeratorPrefix + "db-clogch" + " " + "[チャンネルID]" + "`"
+							CommandObject.Language.HelpConfigArgs,
+							"`" + "whitelist" + " | " + "publicprefix" + " | " + "moderatorprefix" + " | " + "logchannel" + " | " + "language" + "`"
 						)
 						.WithColor(new DiscordColor(0xF6AA00))
 						.WithTimestamp(DateTime.Now)
 						.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
 					await CommandObject.Member.SendMessageAsync(default, default, ModeratorEmbed);
 				}
-				if (CommandObject.Message.Author.Id == ClientConfig.BotownerId) {
-					DiscordEmbed BotownerEmbed = new DiscordEmbedBuilder()
-						.WithTitle("Bot管理者コマンド")
-						.WithDescription(string.Format("プレフィックスは {0} です", CommandConfig.BotownerPrefix))
-						.AddField(
-							"Botを再接続します",
-							"`" + CommandConfig.BotownerPrefix + "restart" + "`"
-						)
-						.AddField(
-							"Botを終了します",
-							"`" + CommandConfig.BotownerPrefix + "logout" + "`"
-						)
-						.WithColor(new DiscordColor(0x1971FF))
-						.WithTimestamp(DateTime.Now)
-						.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
-					await CommandObject.Member.SendMessageAsync(default, default, BotownerEmbed);
-				}
 			}
 			catch (InvalidOperationException) {
 				Log.Error("Invalid database element");
+			}
+
+			if (CommandObject.Message.Author.Id == ClientConfig.BotownerId) {
+				DiscordEmbed BotownerEmbed = new DiscordEmbedBuilder()
+					.WithTitle("Botowner Commands")
+					.WithDescription(string.Format("Prefix is {0}", CommandConfig.BotownerPrefix))
+					.AddField(
+						"Restart This Bot",
+						"`" + CommandConfig.BotownerPrefix + "restart" + "`"
+					)
+					.AddField(
+						"Logout This Bot",
+						"`" + CommandConfig.BotownerPrefix + "logout" + "`"
+					)
+					.WithColor(new DiscordColor(0x1971FF))
+					.WithTimestamp(DateTime.Now)
+					.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
+				await CommandObject.Member.SendMessageAsync(default, default, BotownerEmbed);
 			}
 		}
 	}

@@ -16,14 +16,16 @@ namespace Avespoir.Core.Modules.Commands {
 		public async Task DBUserList(CommandObjects CommandObject) {
 			IMongoCollection<AllowUsers> DBAllowUsersCollection = MongoDBClient.Database.GetCollection<AllowUsers>(typeof(AllowUsers).Name);
 			IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
+			FilterDefinition<Roles> DBRolesGuildIDFilter = Builders<Roles>.Filter.Eq(Role => Role.GuildID, CommandObject.Guild.Id);
 
-			FilterDefinition<AllowUsers> DBAllowUsersFilter = Builders<AllowUsers>.Filter.Empty;
-			List<AllowUsers> DBAllowUsersList = await (await DBAllowUsersCollection.FindAsync(DBAllowUsersFilter).ConfigureAwait(false)).ToListAsync().ConfigureAwait(false);
+			FilterDefinition<AllowUsers> DBAllowUsersGuildIDFilter = Builders<AllowUsers>.Filter.Eq(AllowUser => AllowUser.GuildID, CommandObject.Guild.Id);
+			List<AllowUsers> DBAllowUsersList = await (await DBAllowUsersCollection.FindAsync(DBAllowUsersGuildIDFilter).ConfigureAwait(false)).ToListAsync().ConfigureAwait(false);
 			
 			List<object> DBAllowUsersObjects = new List<object> { };
 			foreach (AllowUsers DBAllowUser in DBAllowUsersList) {
 				FilterDefinition<Roles> DBRolesFilter = Builders<Roles>.Filter.Eq(Role => Role.RoleNum, DBAllowUser.RoleNum);
-				Roles DBRole = await (await DBRolesCollection.FindAsync(DBRolesFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
+				FilterDefinition<Roles> DBRolesGuildID_Filter = Builders<Roles>.Filter.And(DBRolesGuildIDFilter, DBRolesFilter);
+				Roles DBRole = await (await DBRolesCollection.FindAsync(DBRolesGuildID_Filter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
 				
 				DiscordRole GuildRole = CommandObject.Guild.GetRole(DBRole.uuid);
 
@@ -33,8 +35,8 @@ namespace Avespoir.Core.Modules.Commands {
 			object[] DBAllowUsersArray = DBAllowUsersObjects.ToArray();
 			string DBAllowUsersTableText = new TableFormatter().FormatObjects(DBAllowUsersArray);
 
-			await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Message.Author.Mention + "DMをご確認ください！");
-			if (string.IsNullOrWhiteSpace(DBAllowUsersTableText)) await CommandObject.Member.SendMessageAsync("何も登録されていません");
+			await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.DMMention, CommandObject.Message.Author.Mention));
+			if (string.IsNullOrWhiteSpace(DBAllowUsersTableText)) await CommandObject.Member.SendMessageAsync(CommandObject.Language.ListNothing);
 			else await CommandObject.Member.SendMessageAsync(DBAllowUsersTableText);
 		}
 	}

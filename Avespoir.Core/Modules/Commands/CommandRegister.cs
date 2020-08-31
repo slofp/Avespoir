@@ -1,5 +1,5 @@
 ﻿using Avespoir.Core.Attributes;
-using Avespoir.Core.Configs;
+using Avespoir.Core.JsonScheme;
 using Avespoir.Core.Database;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Avespoir.Core.Configs;
 
 namespace Avespoir.Core.Modules.Commands {
 
@@ -55,35 +56,36 @@ namespace Avespoir.Core.Modules.Commands {
 
 		internal static async Task PublicCommands(MessageCreateEventArgs Message_Objects) {
 			Log.Debug("PublicCommand check");
+			if (Message_Objects.Channel.IsPrivate) return;
 			CommandObjects CommandObject = new CommandObjects(Message_Objects);
 
-			string CommandPrefix = CommandObject.CommandArgs[0].Substring(0, CommandConfig.PublicPrefix.Length);
-			string CommandText = CommandObject.CommandArgs[0].Substring(CommandConfig.PublicPrefix.Length);
+			string GuildPublicPrefix = await DatabaseMethods.PublicPrefixFind(CommandObject.Guild.Id).ConfigureAwait(false);
+			if (GuildPublicPrefix == null) GuildPublicPrefix = CommandConfig.PublicPrefix;
 
-			if (CommandPrefix != CommandConfig.PublicPrefix) return;
+			string CommandPrefix = CommandObject.CommandArgs[0].Substring(0, GuildPublicPrefix.Length);
+			string CommandText = CommandObject.CommandArgs[0].Substring(GuildPublicPrefix.Length);
+
+			if (CommandPrefix != GuildPublicPrefix) return;
 			if (Message_Objects.Author.IsBot) return;
-			if (Message_Objects.Channel.IsPrivate) return;
 
 			await ExcuteCommands<PublicCommands>(CommandObject, CommandText).ConfigureAwait(false);
 		}
 
 		internal static async Task ModeratorCommands(MessageCreateEventArgs Message_Objects) {
 			Log.Debug("ModeratorCommand check");
+			if (Message_Objects.Channel.IsPrivate) return;
 			CommandObjects CommandObject = new CommandObjects(Message_Objects);
 
-			string CommandPrefix = CommandObject.CommandArgs[0].Substring(0, CommandConfig.ModeratorPrefix.Length);
-			string CommandText = CommandObject.CommandArgs[0].Substring(CommandConfig.ModeratorPrefix.Length);
+			string GuildModeratorPrefix = await DatabaseMethods.ModeratorPrefixFind(CommandObject.Guild.Id).ConfigureAwait(false);
+			if (GuildModeratorPrefix == null) GuildModeratorPrefix = CommandConfig.ModeratorPrefix;
 
-			if (CommandPrefix != CommandConfig.ModeratorPrefix) return;
+			string CommandPrefix = CommandObject.CommandArgs[0].Substring(0, GuildModeratorPrefix.Length);
+			string CommandText = CommandObject.CommandArgs[0].Substring(GuildModeratorPrefix.Length);
+
+			if (CommandPrefix != GuildModeratorPrefix) return;
 			if (Message_Objects.Author.IsBot) return;
-			if (Message_Objects.Channel.IsPrivate) return;
 
-			bool DebugCheck = false;
-			#if DEBUG
-			DebugCheck = true;
-			#endif
-
-			if (DebugCheck || Message_Objects.Message.Author.Id == ClientConfig.BotownerId || Message_Objects.Message.Author.Id == Message_Objects.Guild.Owner.Id) {
+			if (Message_Objects.Message.Author.Id == Message_Objects.Guild.Owner.Id) {
 				await ExcuteCommands<ModeratorCommands>(CommandObject, CommandText).ConfigureAwait(false);
 			}
 			else {
@@ -129,7 +131,7 @@ namespace Avespoir.Core.Modules.Commands {
 			if (Message_Objects.Author.IsBot) return;
 			if (!Message_Objects.Channel.IsPrivate) return;
 
-			if (Message_Objects.Message.Author.Id != ClientConfig.BotownerId) {
+			if (Message_Objects.Message.Author.Id != Configs.ClientConfig.BotownerId) {
 				Log.Info("Not bot owner user tried to access the bot owner command.");
 				return;
 			}
