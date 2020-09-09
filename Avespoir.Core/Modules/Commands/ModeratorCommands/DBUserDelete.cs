@@ -47,12 +47,15 @@ namespace Avespoir.Core.Modules.Commands {
 					}
 
 					await DBAllowUsersCollection.DeleteOneAsync(DBAllowUsersGuildIDIDFilter).ConfigureAwait(false);
-					DiscordMember DeleteGuildMember = await CommandObject.Guild.GetMemberAsync(DBAllowUsersID.uuid);
-					string KickReason = string.Format(CommandObject.Language.KickReason, CommandObject.Member.Username + "#" + CommandObject.Member.Discriminator);
-					await DeleteGuildMember.RemoveAsync(KickReason);
-
-					string ResultText = string.Format(CommandObject.Language.DBUserDeleteSuccess, DBAllowUsersID.Name, DBAllowUsersID.uuid);
-					await CommandObject.Message.Channel.SendMessageAsync(ResultText);
+					try {
+						DiscordMember DeleteGuildMember = await CommandObject.Guild.GetMemberAsync(DBAllowUsersID.uuid);
+						string KickReason = string.Format(CommandObject.Language.KickReason, CommandObject.Member.Username + "#" + CommandObject.Member.Discriminator);
+						await DeleteGuildMember.RemoveAsync(KickReason);
+					}
+					finally {
+						string ResultText = string.Format(CommandObject.Language.DBUserDeleteSuccess, DBAllowUsersID.Name, DBAllowUsersID.uuid);
+						await CommandObject.Message.Channel.SendMessageAsync(ResultText);
+					}
 				}
 				catch (InvalidOperationException) {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdNotRegisted);

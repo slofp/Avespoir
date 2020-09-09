@@ -27,6 +27,7 @@ namespace Avespoir.Core.Modules.LevelSystems {
 				else if (LastMessage.Author.Id != StackDiscordMessages[0].Author.Id) {
 					Log.Debug("Stack End");
 					if (LastMessage.Author.IsBot) AllowExp = false;
+					AddStackMessage(LastMessage);
 					return;
 				}
 				else {

@@ -1,3 +1,251 @@
 {
-	
+	"EmptyText": "No data entered.",
+
+	"EmptyName": "Name is blank or null.",
+
+	"EmojiSuccess": "Registered {0} with {1}",
+
+	"ImageNotFound": "No image has been specified!",
+
+	"EmptyId": "ID is blank or null.",
+
+	"IdCouldntParse": "ID must be a number.",
+
+	"FindResult": "Username: {0}\nJoined: {1}\nServer owner: {2}\nAvatar URL: {3}",
+
+	"FindNotFound": "I couldn't find it!",
+
+	"InviteResult": "Created, activated for 24 hours.\n{0}",
+
+	"InviteChannelNotFound": "Channel is illegal.",
+
+	"InviteChannelIdNotFound": "Channel ID doesn't exist.",
+
+	"PingWait": "Please wait...",
+
+	"RollMaxCouldntParse": "Maximum value is incorrect or out of range.",
+
+	"RollMinCouldntParse": "Minimum value is incorrect or out of range.",
+
+	"RollMaxMinCouldntParse": "Maximum value or Minimum value is incorrect or out of range.",
+
+	"StatusNotRegisted": "The User's status is not registered.",
+
+	"StatusEmbed1": "{0} Status",
+
+	"StatusEmbed2": "Name: {0}\nUserID: {1}\nExp: {2}\nLevel: Lv.{3}\n\nNext level: {4}",
+
+	"StatusUserCouldntParse": "User designation is incorrect.",
+
+	"Version": "Botname: {0}\nBot version: {1}",
+
+	"DMMention": "{0} Please check your DM!",
+
+	"HelpPublicCommand": "Public Commands",
+
+	"HelpCommandPrefix": "Prefix is {0}",
+
+	"HelpPing": "Pinging",
+
+	"HelpVer": "Show bot version",
+
+	"HelpHelp": "Show command list",
+
+	"HelpFind": "Show user info",
+
+	"HelpFindUserId": "[UserID]",
+
+	"HelpEmoji": "Create a picture based on an image",
+
+	"HelpEmojiName": "[Name]",
+
+	"HelpEmojiImage": "(Upload a picture)",
+
+	"HelpInvite": "Create invite URL",
+
+	"HelpInviteChannel": "(Channel)",
+
+	"HelpStatus": "Show user status",
+
+	"HelpStatusMention": "(Mention or UserID)",
+
+	"HelpRoll": "Generate random numbers",
+
+	"HelpRollMaxvalue": "(Maximum value)",
+
+	"HelpRollMinvalue": "(Minimum value)",
+
+	"HelpModeratorCommand": "Moderator Commands",
+
+	"HelpDBUserList": "Show a list of user information registered in the User database",
+
+	"HelpDBRoleList": "Show a list of role information registered in the Role database",
+
+	"HelpDBUserAdd": "Add a user to the User database",
+
+	"HelpDBUserAddName": "[Name]",
+
+	"HelpDBUserAddUserId": "[UserID]",
+
+	"HelpDBUserAddRoleNum": "[Role Number]",
+
+	"HelpDBRoleAdd": "Add a role to the Role database",
+
+	"HelpDBRoleAddRoleId": "[RoleID]",
+
+	"HelpDBRoleAddRoleNum": "[Role number]",
+
+	"HelpDBRoleAddRoleType": "[Role level(Public: 0, Moderator: 1, Bot: 2)]",
+
+	"HelpDBUserChangeRole": "Change the Role of a user in the User database",
+
+	"HelpDBUserChangeRoleUserId": "[UserID]",
+
+	"HelpDBUserChangeRoleRoleNum": "[Role number]",
+
+	"HelpDBUserDelete": "Remove a user from the User database",
+
+	"HelpDBUserDeleteUserId": "[UserID]",
+
+	"HelpDBRoleDelete": "Removes Role from the Role database",
+
+	"HelpDBRoleDeleteRoleId": "[RoleID]",
+
+	"HelpConfig": "Modify or configure Bot settings",
+
+	"HelpConfigFirstArgs": "<Reference below>",
+
+	"HelpConfigValue": "[Value(Not required for whitelist)]",
+
+	"HelpConfigArgs": "Config first argument",
+
+	"ConfigEmptyValue": "The value of {0} was not entered",
+
+	"ConfigWhitelistFalse": "Whitelist disabled",
+
+	"ConfigWhitelistTrue": "Whitelist enabled",
+
+	"ConfigLeaveBanFalse": "Ban on leaving the site disabled",
+
+	"ConfigLeaveBanTrue": "Ban on leaving the site enabled",
+
+	"ConfigPublicPrefixChange": "Changed PublicPrefix from ``{0}`` to ``{1}``",
+
+	"ConfigModeratorPrefixChange": "Changed ModeratorPrefix from ``{0}`` to ``{1}``",
+
+	"ConfigLogChannelIDSet": "LogChannelID set to ``{0}``",
+
+	"ConfigLogChannelIDChange": "Changed LogChannelID from ``{0}`` to ``{1}``",
+
+	"ConfigLanguageNotFound": "{0} doesn't exist",
+
+	"ConfigLanguageSet": "Language set to ``{0}``",
+
+	"ConfigLanguageChange": "Changed Langage from ``{0}`` to ``{1}``",
+
+	"ConfigArgsNotFound": "I don't have that item",
+
+	"EmptyRoleNumber": "RoleNumber is blank or null.",
+
+	"RoleNumberNotNumber": "RoleNumber must be a number.",
+
+	"EmptyRoleLevel": "RoleLevel is blank or null.",
+
+	"RoleLevelNotNumber": "RoleLevel must be a number.",
+
+	"RoleLevelNotFound": "RoleLevel",
+
+	"RoleNumberRegisted": "That RoleNumber is already registered",
+
+	"IdRegisted": "That ID is already registered",
+
+	"AuthFailure": "Authentication failed, please try again from the beginning",
+
+	"DBRoleAddSuccess": "Added to the Role database with\nID: {0}({1})\nRoleNumber: {2}\nRoleLevel: {3}",
+
+	"TypingMissed": "You have not entered the required fields.",
+
+	"IdNotRegisted": "That ID is not registered",
+
+	"DBRoleDeleteSuccess": "Deleted from Role database\nName: {0}\nID: {1}",
+
+	"ListNothing": "Nothing is registered",
+
+	"NameRegisted": "That name is already registered",
+
+	"DBUserAddSuccess": "Added to the User database with\nName: {0}\nID: {1}\nRoleNumber: {2}({3})",
+
+	"RoleNumberNotFound": "RoleNumber does not exist in the Role database",
+
+	"DBUserChangeRoleSuccess": "Changed {0} Role from {1} to {2}!",
+
+	"DBUserChangeRoleEmbedTitle": "Role has been changed to {0}! The following is allowed in {0}!",
+
+	"BeforeRoleNotFound": "Original Role does not exist in the Role database",
+
+	"KickReason": "Because it was removed from the User database by {0}",
+
+	"DBUserDeleteSuccess": "Removed from User database\n–¼‘O: {0}\nID: {1}\n",
+
+	"IsBot": "It is Bot",
+
+	"Bot_BanDescription": "Name: {0}\nID: {1}",
+
+	"Accessed": "Accessed",
+
+	"JoinPass": "Allowed join",
+
+	"UserDescription": "Name: {0}\nID: {1}\nRole: {2}",
+
+	"AccessPermission": "Checking Permissions",
+
+	"RoleNumNullMessage": "Sorry, Please contact it server administrator ",
+
+	"WelcomeEmbedTitle": "Welcome to {0}! {1} permits the following!",
+
+	"PermissionDenied": "You do not have access, if you have access and cannot join, please contact it server administrator",
+
+	"NotAccessed": "have not access",
+
+	"AccessDenied": "Kicked for not having access",
+
+	"Baned": "Baned",
+
+	"BotRemoved": "Removed from this server",
+
+	"Leaved": "Leaved server",
+
+	"BanReason": "Banned for leaved this server",
+
+	"DBDeleteLeave": "Not registered on this server or removed from the database",
+
+	"DisableLeave": "Leaved server",
+
+	"DMEmbed_Public1": "Can control this server",
+
+	"DMEmbed_Public2": "Can control this server almost at will",
+
+	"DMEmbed_Public3": "Can read and send all channels",
+
+	"DMEmbed_Public4": "This is proof that you are certified",
+
+	"DMEmbed_Moderator1": "Can control this server",
+
+	"DMEmbed_Moderator2": "Today you are the administrator of this server",
+
+	"DMEmbed_Moderator3": "Can add, modify and delete to the database",
+
+	"DMEmbed_Moderator4": "All commands of {0}Bot can be used.",
+
+	"DMEmbed_Moderator5": "Can read and send all channels",
+
+	"DMEmbed_Moderator6": "This is proof that you are certified",
+
+	"DMEmbed_LeaveBan1": "If you leave, you will be banned.",
+
+	"DMEmbed_LeaveBan2": "Now {0} will be banned if you leave.",
+
+	"LevelUpEmbed1": "Level up!",
+
+	"LevelUpEmbed2": "Exp: {0}\nLevel: Lv.{1} -> Lv.{2}"
 }

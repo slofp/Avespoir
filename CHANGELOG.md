@@ -7,6 +7,20 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
+## [Beta 3.1](https://github.com/Fairy-Phy/Avespoir/tree/Beta-3.0) - 2020-08-31
+
+### Added
+
+* Language (en-US)
+
+* Botowner Command (UserData Reset)
+
+### Fixed
+
+* Level stack bug
+
+* User delete command
+
 ## [Beta 3.0](https://github.com/Fairy-Phy/Avespoir/tree/Beta-3.0) - 2020-08-31
 
 ### Added
