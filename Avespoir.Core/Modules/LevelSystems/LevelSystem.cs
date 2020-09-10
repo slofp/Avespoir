@@ -22,7 +22,9 @@ namespace Avespoir.Core.Modules.LevelSystems {
 			double Exp = 0.00;
 			ulong UserID = Message_Objects.Author.Id;
 			ulong EndUserID = Stack_Messages.StackDiscordMessages[Stack_Messages.StackDiscordMessages.Count - 1].Author.Id;
-			foreach(DiscordMessage Stack_Message in Stack_Messages.StackDiscordMessages) {
+			Log.Debug("Sender: " + UserID);
+			Log.Debug("EndSender: " + EndUserID);
+			foreach (DiscordMessage Stack_Message in Stack_Messages.StackDiscordMessages) {
 				string MessageID = Stack_Message.Id.ToString();
 				string MessageContentSource = Stack_Message.Content;
 

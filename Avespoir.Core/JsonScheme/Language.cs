@@ -88,7 +88,7 @@ namespace Avespoir.Core.JsonScheme {
 
 		public string HelpDBUserList { get; set; } = "Userデータベースに登録されているユーザー情報をリストにして表示します";
 
-		public string HelpDBRoleList { get; set; } = "Roleデータベースに登録されているユーザー情報をリストにして表示します";
+		public string HelpDBRoleList { get; set; } = "Roleデータベースに登録されているロール情報をリストにして表示します";
 
 		public string HelpDBUserAdd { get; set; } = "Userデータベースにユーザーを追加します";
 

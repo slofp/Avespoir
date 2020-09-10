@@ -1,6 +1,7 @@
 ﻿using Avespoir.Core.Attributes;
 using Avespoir.Core.Configs;
 using Avespoir.Core.Database;
+using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
 using System;
@@ -115,11 +116,13 @@ namespace Avespoir.Core.Modules.Commands {
 				string BeforeLanguage = await DatabaseMethods.LanguageFind(CommandObject.Guild.Id).ConfigureAwait(false);
 				await DatabaseMethods.LanguageUpsert(CommandObject.Guild.Id, AfterLanguage).ConfigureAwait(false);
 
+				GetLanguage GetAfterLanguage = new GetLanguage(AfterLanguage);
+
 				if (BeforeLanguage == null) {
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigLanguageSet, Enum.GetName(typeof(Database.Enums.Language), AfterLanguage).Replace('_', '-')));
+					await CommandObject.Message.Channel.SendMessageAsync(string.Format(GetAfterLanguage.Language_Data.ConfigLanguageSet, Enum.GetName(typeof(Database.Enums.Language), AfterLanguage).Replace('_', '-')));
 				}
 				else {
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigLanguageChange, BeforeLanguage.Replace('_', '-'), Enum.GetName(typeof(Database.Enums.Language), AfterLanguage).Replace('_', '-')));
+					await CommandObject.Message.Channel.SendMessageAsync(string.Format(GetAfterLanguage.Language_Data.ConfigLanguageChange, BeforeLanguage.Replace('_', '-'), Enum.GetName(typeof(Database.Enums.Language), AfterLanguage).Replace('_', '-')));
 				}
 			}
 			else {
