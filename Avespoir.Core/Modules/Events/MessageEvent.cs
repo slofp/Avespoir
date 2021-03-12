@@ -10,7 +10,7 @@ namespace Avespoir.Core.Modules.Events {
 	class MessageEvent {
 
 		// ulong -> Channel ID
-		private static List<ulong> LevelSystem_Queue = new List<ulong>();
+		private static readonly List<ulong> LevelSystem_Queue = new List<ulong>();
 
 		internal static Task Main(MessageCreateEventArgs Message_Objects) {
 			Log.Debug("MessageEvent " + "Start...");
@@ -19,12 +19,11 @@ namespace Avespoir.Core.Modules.Events {
 
 			bool LevelSystemExist = LevelSystem_Queue.Contains(Message_Objects.Channel.Id);
 
-			if (!Message_Objects.Message.Author.IsBot && !LevelSystemExist) Task.Run(() => {
-				LevelSystem_Queue.Add(Message_Objects.Channel.Id);
-				LevelSystem.Main(Message_Objects).ContinueWith(_ => {
-					LevelSystem_Queue.Remove(Message_Objects.Channel.Id);
-				}).ConfigureAwait(false);
-			}).ConfigureAwait(false);
+			if (!Message_Objects.Message.Author.IsBot &&
+				!Message_Objects.Channel.IsPrivate &&
+				!LevelSystemExist &&
+				Database.DatabaseMethods.GuildConfigMethods.LevelSwitchFind(Message_Objects.Guild.Id))
+				Task.Run(() => LevelSystemInit(Message_Objects)).ConfigureAwait(false);
 			else Log.Debug("Exist Task");
 
 			CommandRegister.PublicCommands(Message_Objects).ConfigureAwait(false);
@@ -36,6 +35,14 @@ namespace Avespoir.Core.Modules.Events {
 			Log.Debug("MessageEvent " + "End...");
 
 			return Task.CompletedTask;
+		}
+
+		private static void LevelSystemInit(MessageCreateEventArgs Message_Objects) {
+			LevelSystem_Queue.Add(Message_Objects.Channel.Id);
+			LevelSystem.Main(Message_Objects).ContinueWith(_ => {
+				Log.Critical(Message_Objects.Channel.Id);
+				LevelSystem_Queue.Remove(Message_Objects.Channel.Id);
+			}).ConfigureAwait(false);
 		}
 	}
 }

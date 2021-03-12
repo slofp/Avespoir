@@ -1,12 +1,11 @@
 ﻿using Avespoir.Core.Attributes;
-using Avespoir.Core.Database;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
-using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Commands {
@@ -22,16 +21,13 @@ namespace Avespoir.Core.Modules.Commands {
 					return;
 				}
 
-				ulong msgs_ID;
-				uint msgs_RoleNum;
-				int msgs_RoleLevel;
 				RoleLevel intRoleLevel;
 
 				if (string.IsNullOrWhiteSpace(msgs[0])) {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyId);
 					return;
 				}
-				if (!ulong.TryParse(msgs[0], out msgs_ID)) {
+				if (!ulong.TryParse(msgs[0], out ulong msgs_ID)) {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdCouldntParse);
 					return;
 				}
@@ -40,7 +36,7 @@ namespace Avespoir.Core.Modules.Commands {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyRoleNumber);
 					return;
 				}
-				if (!uint.TryParse(msgs[1], out msgs_RoleNum)) {
+				if (!uint.TryParse(msgs[1], out uint msgs_RoleNum)) {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.RoleNumberNotNumber);
 					return;
 				}
@@ -49,7 +45,19 @@ namespace Avespoir.Core.Modules.Commands {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyRoleLevel);
 					return;
 				}
-				if (!int.TryParse(msgs[2], out msgs_RoleLevel)) {
+				// Next Update
+				MatchCollection DenyRoleLevels = Regex.Matches(msgs[2], @"\D+");
+				if (DenyRoleLevels.Count != 0) {
+					List<string> DenyStrings = new List<string>();
+					for (int i = 0; i < DenyRoleLevels.Count; i++) {
+						Match DenyRoleLevel = DenyRoleLevels[i];
+						DenyStrings.Add(DenyRoleLevel.Value);
+					}
+
+					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.RoleLevelDenyText, "`" + string.Join(@"` `", DenyStrings) + "`"));
+					return;
+				}
+				if (!int.TryParse(msgs[2], out int msgs_RoleLevel)) {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.RoleLevelNotNumber);
 					return;
 				}
@@ -60,48 +68,26 @@ namespace Avespoir.Core.Modules.Commands {
 					return;
 				}
 
-				IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
-				FilterDefinition<Roles> DBGuildIDFilter = Builders<Roles>.Filter.Eq(Role => Role.GuildID, CommandObject.Guild.Id);
-
-				try {
-					FilterDefinition<Roles> DBRolesNumFilter = Builders<Roles>.Filter.Eq(Role => Role.RoleNum, msgs_RoleNum);
-					FilterDefinition<Roles> DBGuildRoleNumFilter = Builders<Roles>.Filter.And(DBGuildIDFilter, DBRolesNumFilter);
-					Roles DBRolesNum = await (await DBRolesCollection.FindAsync(DBGuildRoleNumFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
-					// if DBRolesNum is null, InvalidOperationException is a normal operation.
-
+				if (Database.DatabaseMethods.RolesMethods.RoleExist(CommandObject.Guild.Id, msgs_RoleNum)) {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.RoleNumberRegisted);
 					return;
 				}
-				catch (InvalidOperationException) {
-					try {
-						FilterDefinition<Roles> DBRolesIDFilter = Builders<Roles>.Filter.Eq(Role => Role.uuid, msgs_ID);
-						FilterDefinition<Roles> DBGuildRoleIDFilter = Builders<Roles>.Filter.And(DBGuildIDFilter, DBRolesIDFilter);
-						Roles DBRolesID = await (await DBRolesCollection.FindAsync(DBGuildRoleIDFilter).ConfigureAwait(false)).FirstAsync().ConfigureAwait(false);
-						// if DBRolesID is null, InvalidOperationException is a normal operation.
 
-						await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdRegisted);
-						return;
-					}
-					catch (InvalidOperationException) {
-						if (!await Authentication.Confirmation(CommandObject)) {
-							await CommandObject.Channel.SendMessageAsync(CommandObject.Language.AuthFailure);
-							return;
-						}
-
-						Roles InsertRoleData = new Roles { 
-							GuildID = CommandObject.Guild.Id,
-							uuid = msgs_ID,
-							RoleNum = msgs_RoleNum,
-							RoleLevel = Enum.GetName(typeof(RoleLevel), intRoleLevel)
-						};
-
-						await DBRolesCollection.InsertOneAsync(InsertRoleData).ConfigureAwait(false);
-
-						DiscordRole GuildRole = CommandObject.Guild.GetRole(InsertRoleData.uuid);
-						string ResultText = string.Format(CommandObject.Language.DBRoleAddSuccess, InsertRoleData.uuid, GuildRole.Name, InsertRoleData.RoleNum, InsertRoleData.RoleLevel);
-						await CommandObject.Message.Channel.SendMessageAsync(ResultText);
-					}
+				if (Database.DatabaseMethods.RolesMethods.RoleExist(CommandObject.Guild.Id, msgs_ID)) {
+					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdRegisted);
+					return;
 				}
+
+				if (!await Authentication.Confirmation(CommandObject)) {
+					await CommandObject.Channel.SendMessageAsync(CommandObject.Language.AuthFailure);
+					return;
+				}
+
+				Roles InsertRoleData = Database.DatabaseMethods.RolesMethods.RoleInsert(CommandObject.Guild.Id, msgs_ID, msgs_RoleNum, Enum.GetName(typeof(RoleLevel), intRoleLevel));
+
+				DiscordRole GuildRole = CommandObject.Guild.GetRole(InsertRoleData.Uuid);
+				string ResultText = string.Format(CommandObject.Language.DBRoleAddSuccess, InsertRoleData.Uuid, GuildRole.Name, InsertRoleData.RoleNum, InsertRoleData.RoleLevel);
+				await CommandObject.Message.Channel.SendMessageAsync(ResultText);
 			}
 			catch (IndexOutOfRangeException) {
 				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.TypingMissed);

@@ -3,12 +3,40 @@ using Avespoir.Core.Modules.Events;
 using Avespoir.Core.Modules.Logger;
 using DSharpPlus;
 using System;
+using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core {
 
 	class Client {
-		internal static readonly string Version = "Beta 3.1";
+
+		private static readonly AssemblyName AssemblyInfo = Assembly.GetExecutingAssembly().GetName();
+
+		private static readonly Version AssemblyVersion = AssemblyInfo.Version;
+
+		private static string ProjectName => AssemblyVersion.Major switch {
+			1 => "Silence",
+			2 => "Avespoir",
+			_ => "Unknown",
+		};
+
+		private static string ReleaseName => AssemblyVersion.Minor switch {
+			0 => "Alpha",
+			1 => "Beta",
+			2 => "Stable",
+			_ => "Unknown",
+		};
+
+		private static string VersionName => string.Format("{0}.{1}", AssemblyVersion.Build, AssemblyVersion.Revision);
+
+		#if DEBUG
+		private const string BuildTypeName = " Dev";
+		#else
+		private const string BuildTypeName = "";
+		#endif
+
+		internal static string Version => string.Format("{0} {1} {2}{3}", ProjectName, ReleaseName, VersionName, BuildTypeName);
 
 		internal static DiscordClient Bot = new DiscordClient(ClientConfig.DiscordConfig());
 
@@ -30,6 +58,8 @@ namespace Avespoir.Core {
 			#endif
 
 			await Bot.ConnectAsync();
+
+			AppDomain.CurrentDomain.ProcessExit += ConsoleExitEvent.Main;
 
 			Console.CancelKeyPress += ConsoleExitEvent.Main;
 

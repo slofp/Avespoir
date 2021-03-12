@@ -1,5 +1,4 @@
-﻿using Avespoir.Core.Database;
-using Avespoir.Core.Language;
+﻿using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -20,8 +19,8 @@ namespace Avespoir.Core.Modules.LevelSystems {
 			}
 
 			double Exp = 0.00;
-			ulong UserID = Message_Objects.Author.Id;
-			ulong EndUserID = Stack_Messages.StackDiscordMessages[Stack_Messages.StackDiscordMessages.Count - 1].Author.Id;
+			ulong UserID = Stack_Messages.StackDiscordMessages[0].Author.Id;
+			ulong EndUserID = Stack_Messages.StackDiscordMessages[^1].Author.Id;
 			Log.Debug("Sender: " + UserID);
 			Log.Debug("EndSender: " + EndUserID);
 			foreach (DiscordMessage Stack_Message in Stack_Messages.StackDiscordMessages) {
@@ -37,15 +36,15 @@ namespace Avespoir.Core.Modules.LevelSystems {
 		}
 
 		static async Task SendDB(ulong UserID, double Exp, MessageCreateEventArgs Message_Objects) {
-			Exp += await DatabaseMethods.ExpFind(UserID).ConfigureAwait(false);
-			uint BeforeLevel = await DatabaseMethods.LevelFind(UserID).ConfigureAwait(false);
+			Exp += Database.DatabaseMethods.UserDataMethods.ExpFind(UserID);
+			uint BeforeLevel = Database.DatabaseMethods.UserDataMethods.LevelFind(UserID);
 			uint AfterLevel = LevelDecision(Exp, BeforeLevel);
 			Log.Debug("BeforeLevel: " + BeforeLevel);
 
-			await DatabaseMethods.DataUpsert(UserID, AfterLevel, Exp).ConfigureAwait(false);
+			Database.DatabaseMethods.UserDataMethods.DataUpsert(UserID, AfterLevel, Exp);
 
 			if (BeforeLevel < AfterLevel) {
-				ulong LogChannelID = await DatabaseMethods.LogChannelFind(Message_Objects.Guild.Id).ConfigureAwait(false);
+				ulong LogChannelID = Database.DatabaseMethods.GuildConfigMethods.LogChannelFind(Message_Objects.Guild.Id);
 				if (LogChannelID == 0) {
 					Log.Debug("LogChannel Not Found");
 					return;
@@ -54,7 +53,7 @@ namespace Avespoir.Core.Modules.LevelSystems {
 					Log.Debug("Send");
 					try {
 						GetLanguage Get_Language;
-						string GuildLanguageString = await DatabaseMethods.LanguageFind(Message_Objects.Guild.Id).ConfigureAwait(false);
+						string GuildLanguageString = Database.DatabaseMethods.GuildConfigMethods.LanguageFind(Message_Objects.Guild.Id);
 						if (GuildLanguageString == null) Get_Language = new GetLanguage(Database.Enums.Language.ja_JP);
 						else {
 							if (!Enum.TryParse(GuildLanguageString, true, out Database.Enums.Language GuildLanguage))
@@ -63,8 +62,9 @@ namespace Avespoir.Core.Modules.LevelSystems {
 						}
 
 						DiscordChannel LogChannel = Message_Objects.Guild.GetChannel(LogChannelID);
+						DiscordMember Member = await Message_Objects.Guild.GetMemberAsync(UserID).ConfigureAwait(false);
 						DiscordEmbed LevelUpEmbed = new DiscordEmbedBuilder()
-						.WithAuthor(Message_Objects.Message.Author.Username + "#" + Message_Objects.Message.Author.Discriminator, default, Message_Objects.Message.Author.AvatarUrl)
+						.WithAuthor(Member.Username + "#" + Member.Discriminator, default, Member.AvatarUrl)
 						.WithTitle(Get_Language.Language_Data.LevelUpEmbed1)
 						.WithDescription(string.Format(Get_Language.Language_Data.LevelUpEmbed2, Exp, BeforeLevel, AfterLevel))
 						.WithColor(new DiscordColor(0xFFFF00))

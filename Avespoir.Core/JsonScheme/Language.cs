@@ -155,6 +155,10 @@ namespace Avespoir.Core.JsonScheme {
 
 		public string ConfigLanguageChange { get; set; } = "言語を``{0}``から``{1}``に変更しました";
 
+		public string ConfigLevelSwitchFalse { get; set; } = "レベリングを無効にしました";
+
+		public string ConfigLevelSwitchTrue { get; set; } = "レベリングを有効にしました";
+
 		public string ConfigArgsNotFound { get; set; } = "その項目はありません";
 
 		public string EmptyRoleNumber { get; set; } = "RoleNumberが空白またはNullです";
@@ -162,6 +166,8 @@ namespace Avespoir.Core.JsonScheme {
 		public string RoleNumberNotNumber { get; set; } = "RoleNumberは数字でなければいけません";
 
 		public string EmptyRoleLevel { get; set; } = "RoleLevelが空白またはNullです";
+
+		public string RoleLevelDenyText { get; set; } = "このRoleLevelに使用できない文字が含まれています: {0}";
 
 		public string RoleLevelNotNumber { get; set; } = "RoleLevelは数字でなければいけません";
 
@@ -263,6 +269,12 @@ namespace Avespoir.Core.JsonScheme {
 		public string LevelUpEmbed1 { get; set; } = "レベルが上がりました！";
 
 		public string LevelUpEmbed2 { get; set; } = "経験値: {0}\nレベル: Lv.{1} -> Lv.{2}";
+		#endregion
+
+		#region Others
+
+		public string CommandNotImpl { get; set; } = "このコマンドは定義されていますが実装されていません。";
+
 		#endregion
 	}
 }

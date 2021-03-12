@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using LiteDB;
 
 namespace Avespoir.Core.Database.Schemas {
 
@@ -8,16 +7,16 @@ namespace Avespoir.Core.Database.Schemas {
 		[BsonId]
 		public ObjectId Id { get; set; }
 
-		[BsonElement("Guildid")]
+		[BsonField("Guildid")]
 		public ulong GuildID { get; set; }
 
-		[BsonElement("uuid")]
-		public ulong uuid { get; set; }
+		[BsonField("uuid")]
+		public ulong Uuid { get; set; }
 
-		[BsonElement("RoleNum")]
+		[BsonField("RoleNum")]
 		public uint RoleNum { get; set; }
 
-		[BsonElement("RoleLevel")]
+		[BsonField("RoleLevel")]
 		public string RoleLevel { get; set; }
 	}
 }

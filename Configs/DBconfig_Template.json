@@ -1,15 +1,5 @@
 {
-  "UseDatabase": "",
+  "Filename": "./AvespoirData.db",
 
-  "Url": "",
-
-  "Port": 0,
-
-  "Username": "",
-
-  "Password": "",
-
-  "Mechanism": "SCRAM-SHA-256",
-
-  "MainDatabase": ""
+  "Password": ""
 }

@@ -1,6 +1,5 @@
 ﻿using Avespoir.Core.Attributes;
 using Avespoir.Core.Configs;
-using Avespoir.Core.Database;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
@@ -21,112 +20,104 @@ namespace Avespoir.Core.Modules.Commands {
 				return;
 			}
 
-			bool a = msgs.Length >= 2;
-
 			string config_arg = msgs[0].ToLower();
-			if (config_arg == "whitelist") {
-				bool BeforeWhitelist = await DatabaseMethods.WhitelistFind(CommandObject.Guild.Id).ConfigureAwait(false);
-				if (BeforeWhitelist) {
-					bool AfterWhitelist = false;
-					await DatabaseMethods.WhitelistUpsert(CommandObject.Guild.Id, AfterWhitelist).ConfigureAwait(false);
 
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.ConfigWhitelistFalse);
-				}
-				else {
-					bool AfterWhitelist = true;
-					await DatabaseMethods.WhitelistUpsert(CommandObject.Guild.Id, AfterWhitelist).ConfigureAwait(false);
+			switch (config_arg) {
+				case "whitelist":
+					bool BeforeWhitelist = Database.DatabaseMethods.GuildConfigMethods.WhitelistFind(CommandObject.Guild.Id);
+					bool AfterWhitelist = !BeforeWhitelist;
+					Database.DatabaseMethods.GuildConfigMethods.WhitelistUpsert(CommandObject.Guild.Id, AfterWhitelist);
 
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.ConfigWhitelistTrue);
-				}
-			}
-			else if (config_arg == "leaveban") {
-				bool BeforeLeaveBan = await DatabaseMethods.LeaveBanFind(CommandObject.Guild.Id).ConfigureAwait(false);
-				if (BeforeLeaveBan) {
-					bool AfterLeaveBan = false;
-					await DatabaseMethods.LeaveBanUpsert(CommandObject.Guild.Id, AfterLeaveBan).ConfigureAwait(false);
+					await CommandObject.Message.Channel.SendMessageAsync(AfterWhitelist ? CommandObject.Language.ConfigWhitelistTrue : CommandObject.Language.ConfigWhitelistFalse);
+					break;
+				case "leaveban":
+					bool BeforeLeaveBan = Database.DatabaseMethods.GuildConfigMethods.LeaveBanFind(CommandObject.Guild.Id);
+					bool AfterLeaveBan = !BeforeLeaveBan;
+					Database.DatabaseMethods.GuildConfigMethods.LeaveBanUpsert(CommandObject.Guild.Id, AfterLeaveBan);
 
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.ConfigLeaveBanFalse);
-				}
-				else {
-					bool AfterLeaveBan = true;
-					await DatabaseMethods.LeaveBanUpsert(CommandObject.Guild.Id, AfterLeaveBan).ConfigureAwait(false);
+					await CommandObject.Message.Channel.SendMessageAsync(AfterLeaveBan ? CommandObject.Language.ConfigLeaveBanTrue : CommandObject.Language.ConfigLeaveBanFalse);
+					break;
+				case "publicprefix":
+					if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {
+						await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigEmptyValue, config_arg));
+						return;
+					}
 
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.ConfigLeaveBanTrue);
-				}
-			}
-			else if (config_arg == "publicprefix") {
-				if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigEmptyValue, config_arg));
-					return;
-				}
+					string AfterPublicPrefix = msgs[1];
+					string BeforePublicPrefix = Database.DatabaseMethods.GuildConfigMethods.PublicPrefixFind(CommandObject.Guild.Id);
+					if (BeforePublicPrefix == null) BeforePublicPrefix = CommandConfig.PublicPrefix;
+					Database.DatabaseMethods.GuildConfigMethods.PublicPrefixUpsert(CommandObject.Guild.Id, AfterPublicPrefix);
 
-				string AfterPublicPrefix = msgs[1];
-				string BeforePublicPrefix = await DatabaseMethods.PublicPrefixFind(CommandObject.Guild.Id).ConfigureAwait(false);
-				if (BeforePublicPrefix == null) BeforePublicPrefix = CommandConfig.PublicPrefix;
-				await DatabaseMethods.PublicPrefixUpsert(CommandObject.Guild.Id, AfterPublicPrefix).ConfigureAwait(false);
+					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigPublicPrefixChange, BeforePublicPrefix, AfterPublicPrefix));
+					break;
+				case "moderatorprefix":
+					if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {
+						await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigEmptyValue, config_arg));
+						return;
+					}
 
-				await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigPublicPrefixChange, BeforePublicPrefix, AfterPublicPrefix));
-			}
-			else if (config_arg == "moderatorprefix") {
-				if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigEmptyValue, config_arg));
-					return;
-				}
+					string AfterModeratorPrefix = msgs[1];
+					string BeforeModeratorPrefix = Database.DatabaseMethods.GuildConfigMethods.ModeratorPrefixFind(CommandObject.Guild.Id);
+					if (BeforeModeratorPrefix == null) BeforeModeratorPrefix = CommandConfig.ModeratorPrefix;
+					Database.DatabaseMethods.GuildConfigMethods.ModeratorPrefixUpsert(CommandObject.Guild.Id, AfterModeratorPrefix);
 
-				string AfterModeratorPrefix = msgs[1];
-				string BeforeModeratorPrefix = await DatabaseMethods.ModeratorPrefixFind(CommandObject.Guild.Id).ConfigureAwait(false);
-				if (BeforeModeratorPrefix == null) BeforeModeratorPrefix = CommandConfig.ModeratorPrefix;
-				await DatabaseMethods.ModeratorPrefixUpsert(CommandObject.Guild.Id, AfterModeratorPrefix).ConfigureAwait(false);
+					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigModeratorPrefixChange, BeforeModeratorPrefix, AfterModeratorPrefix));
+					break;
+				case "logchannel":
+					if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {
+						await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigEmptyValue, config_arg));
+						return;
+					}
+					if (!ulong.TryParse(msgs[1], out ulong AfterLogChannelID)) {
+						await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdCouldntParse);
+						return;
+					}
 
-				await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigModeratorPrefixChange, BeforeModeratorPrefix, AfterModeratorPrefix));
-			}
-			else if (config_arg == "logchannel") {
-				if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigEmptyValue, config_arg));
-					return;
-				}
-				if (!ulong.TryParse(msgs[1], out ulong AfterLogChannelID)) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdCouldntParse);
-					return;
-				}
+					ulong BeforeLogChannelID = Database.DatabaseMethods.GuildConfigMethods.LogChannelFind(CommandObject.Guild.Id);
+					Database.DatabaseMethods.GuildConfigMethods.LogChannelIdUpsert(CommandObject.Guild.Id, AfterLogChannelID);
 
-				ulong BeforeLogChannelID = await DatabaseMethods.LogChannelFind(CommandObject.Guild.Id).ConfigureAwait(false);
-				await DatabaseMethods.LogChannelIdUpsert(CommandObject.Guild.Id, AfterLogChannelID).ConfigureAwait(false);
+					if (BeforeLogChannelID == 0) {
+						await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigLogChannelIDSet, AfterLogChannelID));
+					}
+					else {
+						await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigLogChannelIDChange, BeforeLogChannelID, AfterLogChannelID));
+					}
+					break;
+				case "language":
+					if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {
+						await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigEmptyValue, config_arg));
+						return;
+					}
 
-				if (BeforeLogChannelID == 0) {
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigLogChannelIDSet, AfterLogChannelID));
-				}
-				else {
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigLogChannelIDChange, BeforeLogChannelID, AfterLogChannelID));
-				}
-			}
-			else if (config_arg == "language") {
-				if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigEmptyValue, config_arg));
-					return;
-				}
+					string AfterLanguageString = msgs[1].ToLower();
 
-				string AfterLanguageString = msgs[1].ToLower();
+					if (!Enum.TryParse(AfterLanguageString.Replace('-', '_'), true, out Database.Enums.Language AfterLanguage)) {
+						await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigLanguageNotFound, AfterLanguageString));
+						return;
+					}
 
-				if (!Enum.TryParse(AfterLanguageString.Replace('-', '_'), true, out Database.Enums.Language AfterLanguage)) {
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigLanguageNotFound, AfterLanguageString));
-					return;
-				}
+					string BeforeLanguage = Database.DatabaseMethods.GuildConfigMethods.LanguageFind(CommandObject.Guild.Id);
+					Database.DatabaseMethods.GuildConfigMethods.LanguageUpsert(CommandObject.Guild.Id, AfterLanguage);
 
-				string BeforeLanguage = await DatabaseMethods.LanguageFind(CommandObject.Guild.Id).ConfigureAwait(false);
-				await DatabaseMethods.LanguageUpsert(CommandObject.Guild.Id, AfterLanguage).ConfigureAwait(false);
+					GetLanguage GetAfterLanguage = new GetLanguage(AfterLanguage);
 
-				GetLanguage GetAfterLanguage = new GetLanguage(AfterLanguage);
+					if (BeforeLanguage == null) {
+						await CommandObject.Message.Channel.SendMessageAsync(string.Format(GetAfterLanguage.Language_Data.ConfigLanguageSet, Enum.GetName(typeof(Database.Enums.Language), AfterLanguage).Replace('_', '-')));
+					}
+					else {
+						await CommandObject.Message.Channel.SendMessageAsync(string.Format(GetAfterLanguage.Language_Data.ConfigLanguageChange, BeforeLanguage.Replace('_', '-'), Enum.GetName(typeof(Database.Enums.Language), AfterLanguage).Replace('_', '-')));
+					}
+					break;
+				case "level":
+					bool BeforeLevelSwitch = Database.DatabaseMethods.GuildConfigMethods.LevelSwitchFind(CommandObject.Guild.Id);
+					bool AfterLevelSwitch = !BeforeLevelSwitch;
+					Database.DatabaseMethods.GuildConfigMethods.LevelSwitchUpsert(CommandObject.Guild.Id, AfterLevelSwitch);
 
-				if (BeforeLanguage == null) {
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(GetAfterLanguage.Language_Data.ConfigLanguageSet, Enum.GetName(typeof(Database.Enums.Language), AfterLanguage).Replace('_', '-')));
-				}
-				else {
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(GetAfterLanguage.Language_Data.ConfigLanguageChange, BeforeLanguage.Replace('_', '-'), Enum.GetName(typeof(Database.Enums.Language), AfterLanguage).Replace('_', '-')));
-				}
-			}
-			else {
-				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.ConfigArgsNotFound);
+					await CommandObject.Message.Channel.SendMessageAsync(AfterLevelSwitch ? CommandObject.Language.ConfigLevelSwitchTrue : CommandObject.Language.ConfigLevelSwitchFalse);
+					break;
+				default:
+					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.ConfigArgsNotFound);
+					break;
 			}
 		}
 	}

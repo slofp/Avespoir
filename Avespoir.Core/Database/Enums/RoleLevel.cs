@@ -6,6 +6,9 @@ namespace Avespoir.Core.Database.Enums {
 
 		Moderator = 1,
 
-		Bot = 2
+		Bot = 2,
+
+		// ‰B•Á‚µ‚Ü‚·
+		Owner = int.MinValue
 	}
 }

@@ -3,10 +3,11 @@ using System.Threading.Tasks;
 
 namespace Avespoir.Core {
 
-	public class StartClient {
-		public StartClient() {
-			MongoDBClient.Main().ConfigureAwait(false).GetAwaiter().GetResult();
-			Client.Main().ConfigureAwait(false).GetAwaiter().GetResult();
+	public static class StartClient {
+		public static async Task Start() {
+			LiteDBClient.Main();
+			//await MongoDBClient.Main().ConfigureAwait(false);
+			await Client.Main().ConfigureAwait(false);
 		}
 	}
 }

@@ -21,7 +21,7 @@ namespace Avespoir.Core.Modules.LevelSystems {
 			while (DateTime.Now.Ticks - LastMessageTick < Math.Pow(10, 7) * 60) {
 				DiscordMessage LastMessage = FirstMessage.Channel.GetMessageAsync(FirstMessage.Channel.LastMessageId).ConfigureAwait(false).GetAwaiter().GetResult();
 
-				if (LastMessage.Id == StackDiscordMessages[StackDiscordMessages.Count - 1].Id) {
+				if (LastMessage.Id == StackDiscordMessages[^1].Id) {
 					continue;
 				}
 				else if (LastMessage.Author.Id != StackDiscordMessages[0].Author.Id) {

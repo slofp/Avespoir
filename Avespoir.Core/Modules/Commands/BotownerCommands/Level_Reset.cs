@@ -14,9 +14,10 @@ namespace Avespoir.Core.Modules.Commands {
 			DiscordMessage RespondMessage = await CommandObject.Message.RespondAsync("Level resetting...").ConfigureAwait(false);
 			Log.Info("Level resetting...");
 
-			await MongoDBClient.Database.DropCollectionAsync(typeof(UserData).Name).ConfigureAwait(false);
+			if (LiteDBClient.Database.DropCollection(typeof(UserData).Name))
+				await RespondMessage.ModifyAsync("UserData removed").ConfigureAwait(false);
+			else await RespondMessage.ModifyAsync("UserData couldn't removed").ConfigureAwait(false);
 
-			await RespondMessage.ModifyAsync("UserData Removed").ConfigureAwait(false);
 			Log.Info("UserData Removed");
 		}
 	}

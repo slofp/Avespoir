@@ -1,5 +1,4 @@
-﻿using Avespoir.Core.Database;
-using Avespoir.Core.Language;
+﻿using Avespoir.Core.Language;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -51,7 +50,7 @@ namespace Avespoir.Core.Modules.Commands {
 			MessageObjects = Message_Objects;
 			CommandArgs = MessageObjects.Message.Content.Trim().Split(" ");
 			if (!Message_Objects.Channel.IsPrivate) {
-				string GuildLanguageString = DatabaseMethods.LanguageFind(Message_Objects.Guild.Id).ConfigureAwait(false).GetAwaiter().GetResult();
+				string GuildLanguageString = Database.DatabaseMethods.GuildConfigMethods.LanguageFind(Message_Objects.Guild.Id);
 				if (GuildLanguageString == null) Language = new GetLanguage(Database.Enums.Language.ja_JP).Language_Data;
 				else {
 					if (!Enum.TryParse(GuildLanguageString, true, out Database.Enums.Language GuildLanguage))

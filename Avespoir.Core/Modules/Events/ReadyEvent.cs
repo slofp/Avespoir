@@ -1,21 +1,17 @@
-﻿using Avespoir.Core.JsonScheme;
-using Avespoir.Core.Database;
-using Avespoir.Core.Database.Schemas;
+﻿using Avespoir.Core.Configs;
 using Avespoir.Core.Modules.Logger;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Avespoir.Core.Configs;
 
 namespace Avespoir.Core.Modules.Events {
 
 	class ReadyEvent {
 
-		static DiscordGame StartingStatus = new DiscordGame() {
+		internal static bool ExitCheck = false;
+
+		static readonly DiscordGame StartingStatus = new DiscordGame() {
 			Name = "Starting...",
 		};
 
@@ -34,7 +30,7 @@ namespace Avespoir.Core.Modules.Events {
 		}
 
 		static async Task StartStatus() {
-			while (true) {
+			while (!ExitCheck) {
 				DiscordGame ReadyStatus = new DiscordGame() {
 					Name = CommandConfig.PublicPrefix + "help",
 				};

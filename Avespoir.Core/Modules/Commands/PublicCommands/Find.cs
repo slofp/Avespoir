@@ -2,7 +2,6 @@
 using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
-using System;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Commands {

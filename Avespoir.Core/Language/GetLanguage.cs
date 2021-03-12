@@ -9,7 +9,7 @@ namespace Avespoir.Core.Language {
 
 		internal JsonScheme.Language Language_Data { get; }
 
-		private static Assembly assembly = Assembly.GetExecutingAssembly();
+		private static readonly Assembly assembly = Assembly.GetExecutingAssembly();
 
 		internal GetLanguage(Database.Enums.Language Language_Config) {
 			string Language_Name = Enum.GetName(typeof(Database.Enums.Language), Language_Config);
