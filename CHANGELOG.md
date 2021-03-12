@@ -7,7 +7,63 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
-## [Beta 3.1](https://github.com/Fairy-Phy/Avespoir/tree/Beta-3.0) - 2020-08-31
+## [Beta 4.0](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.0) - 2021-03-12
+
+### Added
+
+* **Docker Support**
+
+* Database Methods
+
+* DBConfig Key(Filename)
+
+* Auto-generate Config file if it does not exist
+
+* Language variable
+  * ConfigLevelSwitchFalse
+  * ConfigLevelSwitchTrue
+  * RoleLevelDenyText
+  * CommandNotImpl (Future?)
+
+* LevelSystem Switching
+
+* Config Command "level" arg
+
+* Future use class
+  * CommandAbstruct
+  * LanguageDictionary
+
+### Fixed
+
+* Help Config args not write "leaveban"
+
+* Change Status Null Error
+
+* Level Up Embed Author bug
+
+### Changed
+
+* **Main Database (MongoDB -> LiteDB)**
+
+* Readme Usage
+
+* How to get the version (string -> Assembly version to string)
+
+* logout Command (Command name: logout -> exit)
+
+### Removed
+
+* WindowsRepo configuration
+
+* DBConfig Keys
+  * UseDatabase
+  * Url
+  * Port
+  * Username
+  * Mechanism
+  * MainDatabase
+
+## [Beta 3.1](https://github.com/Fairy-Phy/Avespoir/tree/Beta-3.1) - 2020-09-10
 
 ### Added
 
