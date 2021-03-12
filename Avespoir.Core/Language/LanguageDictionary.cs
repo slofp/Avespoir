@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Avespoir.Core.Language {
 
-
 	internal class LanguageDictionary : IDictionary<Database.Enums.Language, string> {
 
 		private readonly Dictionary<Database.Enums.Language, string> keyValuePairs = new Dictionary<Database.Enums.Language, string>();

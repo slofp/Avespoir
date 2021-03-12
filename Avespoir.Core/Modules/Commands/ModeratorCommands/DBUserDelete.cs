@@ -19,7 +19,6 @@ namespace Avespoir.Core.Modules.Commands {
 					return;
 				}
 
-
 				if (string.IsNullOrWhiteSpace(msgs[0])) {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyId);
 					return;

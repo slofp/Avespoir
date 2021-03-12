@@ -170,8 +170,6 @@ namespace Avespoir.Core.Modules.Commands {
 			Owner
 		}
 
-		private static void PrefixCheck() {
-			
-		}
+		private static void PrefixCheck() {}
 	}
 }
