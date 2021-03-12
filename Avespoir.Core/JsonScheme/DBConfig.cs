@@ -1,5 +1,4 @@
-﻿using Avespoir.Core.Database;
-using Avespoir.Core.Configs;
+﻿using Avespoir.Core.Configs;
 
 namespace Avespoir.Core.JsonScheme {
 
@@ -7,71 +6,24 @@ namespace Avespoir.Core.JsonScheme {
 
 		#region Database Config
 
-		public string Url {
+		public string Filename {
 			get {
-				return MongoDBConfigs.Url;
+				return LiteDBConfigs.FileName;
 			}
 			set {
-				MongoDBConfigs.Url = value;
-			}
-		}
-
-		public int Port {
-			get {
-				return MongoDBConfigs.Port;
-			}
-			set {
-				MongoDBConfigs.Port = value;
-			}
-		}
-
-		public string UseDatabase {
-			get {
-				return MongoDBConfigs.UseDatabase;
-			}
-			set {
-				MongoDBConfigs.UseDatabase = value;
-			}
-		}
-
-		public string Username {
-			get {
-				return MongoDBConfigs.Username;
-			}
-			set {
-				MongoDBConfigs.Username = value;
+				LiteDBConfigs.FileName = value;
 			}
 		}
 
 		public string Password {
 			get {
-				return MongoDBConfigs.Password;
+				return LiteDBConfigs.Password;
 			}
 			set {
-				MongoDBConfigs.Password = value;
+				LiteDBConfigs.Password = value;
 			}
 		}
 
-		public string Mechanism {
-			get {
-				return MongoDBConfigs.Mechanism;
-			}
-			set {
-				MongoDBConfigs.Mechanism = value;
-			}
-		}
-		#endregion
-
-		#region Database Options
-
-		public string MainDatabase {
-			get {
-				return MongoDBClient.MainDatabase;
-			}
-			set {
-				MongoDBClient.MainDatabase = value;
-			}
-		}
 		#endregion
 	}
 }

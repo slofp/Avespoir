@@ -1,6 +1,9 @@
 ﻿using Avespoir.Core.Attributes;
-using Avespoir.Core.Database;
+using Avespoir.Core.Modules.Events;
 using Avespoir.Core.Modules.Logger;
+using System;
+using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Commands {
@@ -12,13 +15,11 @@ namespace Avespoir.Core.Modules.Commands {
 			await CommandObject.Message.RespondAsync("Restarting...");
 			Log.Info("Restarting...");
 
-			await Client.Bot.DisconnectAsync();
+			await ConsoleExitEvent.Main(false).ConfigureAwait(false);
 
-			Client.Bot.Dispose();
-			MongoDBClient.DeleteDBAccess();
+			Process.Start(Assembly.GetEntryAssembly().Location);
 
-			await MongoDBClient.Main().ConfigureAwait(false);
-			await Client.Bot.ConnectAsync();
+			Environment.Exit(Environment.ExitCode);
 		}
 	}
 }

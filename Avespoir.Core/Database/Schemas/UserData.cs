@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using LiteDB;
 
 namespace Avespoir.Core.Database.Schemas {
 
@@ -8,13 +7,13 @@ namespace Avespoir.Core.Database.Schemas {
 		[BsonId]
 		public ObjectId Id { get; set; }
 
-		[BsonElement("User_id")]
+		[BsonField("User_id")]
 		public ulong UserID { get; set; }
 
-		[BsonElement("Level")]
+		[BsonField("Level")]
 		public uint Level { get; set; }
 
-		[BsonElement("Experience-point")]
+		[BsonField("Experience-point")]
 		public double ExperiencePoint { get; set; }
 
 		

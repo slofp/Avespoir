@@ -2,11 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <Configurations>Debug;Release</Configurations>
-    <Platforms>AnyCPU;x64;x86</Platforms>
-    <Version>1.0.0</Version>
+    <Platforms>AnyCPU</Platforms>
     <SignAssembly>false</SignAssembly>
+		<Version>2.1.4.0</Version>
+		<Authors>(Fairy)Phy</Authors>
+		<Company>Secineralyr</Company>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -14,26 +16,11 @@
     <OutputPath>../Builds</OutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <OutputPath>../Builds</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <OutputPath>../Builds</OutputPath>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>../Builds</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutputPath>../Builds</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <OutputPath>../Builds</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -51,9 +38,8 @@
 
   <ItemGroup>
     <PackageReference Include="DSharpPlus" Version="3.2.3" />
-    <PackageReference Include="log4net" Version="2.0.8" />
-    <PackageReference Include="MongoDB.Driver" Version="2.11.0" />
-    <PackageReference Include="NLua" Version="1.5.1" />
+    <PackageReference Include="LiteDB" Version="5.0.10" />
+    <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Tababular" Version="4.0.0" />
   </ItemGroup>
 

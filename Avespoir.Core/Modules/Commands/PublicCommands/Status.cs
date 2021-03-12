@@ -1,5 +1,4 @@
 ﻿using Avespoir.Core.Attributes;
-using Avespoir.Core.Database;
 using Avespoir.Core.Modules.LevelSystems;
 using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
@@ -15,8 +14,8 @@ namespace Avespoir.Core.Modules.Commands {
 		public async Task Status(CommandObjects CommandObject) {
 			string[] msgs = CommandObject.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {
-				uint Level = await DatabaseMethods.LevelFind(CommandObject.Message.Author.Id);
-				double Exp = await DatabaseMethods.ExpFind(CommandObject.Message.Author.Id);
+				uint Level = Database.DatabaseMethods.UserDataMethods.LevelFind(CommandObject.Message.Author.Id);
+				double Exp = Database.DatabaseMethods.UserDataMethods.ExpFind(CommandObject.Message.Author.Id);
 				if(Exp == 0) {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.StatusNotRegisted);
 					return;
@@ -43,8 +42,8 @@ namespace Avespoir.Core.Modules.Commands {
 					return;
 				}
 
-				uint Level = await DatabaseMethods.LevelFind(UserID);
-				double Exp = await DatabaseMethods.ExpFind(UserID);
+				uint Level = Database.DatabaseMethods.UserDataMethods.LevelFind(UserID);
+				double Exp = Database.DatabaseMethods.UserDataMethods.ExpFind(UserID);
 				if (Exp == 0) {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.StatusNotRegisted);
 					return;

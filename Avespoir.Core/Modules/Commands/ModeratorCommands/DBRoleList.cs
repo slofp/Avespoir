@@ -1,8 +1,5 @@
 ﻿using Avespoir.Core.Attributes;
-using Avespoir.Core.Database;
 using Avespoir.Core.Database.Schemas;
-using Avespoir.Core.Modules.Utils;
-using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tababular;
@@ -13,14 +10,11 @@ namespace Avespoir.Core.Modules.Commands {
 
 		[Command("db-rolelist")]
 		public async Task DBRoleList(CommandObjects CommandObject) {
-			IMongoCollection<Roles> DBRolesCollection = MongoDBClient.Database.GetCollection<Roles>(typeof(Roles).Name);
-
-			FilterDefinition<Roles> DBGuildIDFilter = Builders<Roles>.Filter.Eq(Role => Role.GuildID, CommandObject.Guild.Id);
-			List<Roles> DBRolesList = await (await DBRolesCollection.FindAsync(DBGuildIDFilter).ConfigureAwait(false)).ToListAsync().ConfigureAwait(false);
+			Database.DatabaseMethods.RolesMethods.RolesListFind(CommandObject.Guild.Id, out List<Roles> DBRolesList);
 
 			List<object> DBRolesObjects = new List<object> { };
 			foreach (Roles DBRole in DBRolesList) {
-				DBRolesObjects.Add(new { RegisteredID = DBRole.uuid, RegisteredNumber = DBRole.RoleNum, RoleLevel = DBRole.RoleLevel });
+				DBRolesObjects.Add(new { RegisteredID = DBRole.Uuid, RegisteredNumber = DBRole.RoleNum, DBRole.RoleLevel });
 			}
 
 			object[] DBRolesArray = DBRolesObjects.ToArray();

@@ -13,7 +13,7 @@ namespace Avespoir.Core.Modules.Logger {
 			string Message_Log = "Message Log";
 
 			if (Message_Objects.Channel.IsPrivate) {
-				string ChannelName = Message_Objects.Channel.Name != null ? Message_Objects.Channel.Name : "Direct Message";
+				string ChannelName = Message_Objects.Channel.Name ?? "Direct Message";
 				Message_Log +=
 						$"\n[Channel] Name: {ChannelName}, ID: {Message_Objects.Channel.Id}" +
 						$"\n[Author] Name: {Message_Objects.Author.Username}#{Message_Objects.Author.Discriminator}, ID: {Message_Objects.Author.Id}, Bot: {Message_Objects.Author.IsBot}" +
