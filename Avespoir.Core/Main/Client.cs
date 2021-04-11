@@ -4,7 +4,6 @@ using Avespoir.Core.Modules.Logger;
 using DSharpPlus;
 using System;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core {
@@ -41,21 +40,29 @@ namespace Avespoir.Core {
 		internal static DiscordClient Bot = new DiscordClient(ClientConfig.DiscordConfig());
 
 		internal static async Task Main() {
-
 			Bot.Ready += ReadyEvent.Main;
 
 			Bot.MessageCreated += MessageEvent.Main;
 
+			Bot.GuildMemberAdded += (a, b) => {
+				Console.WriteLine("Called Add");
+				return Task.CompletedTask;
+			};
 			Bot.GuildMemberAdded += GuildMemberAddEvent.Main;
 
+			Bot.GuildMemberRemoved += (a, b) => {
+				Console.WriteLine("Called Remove");
+				return Task.CompletedTask;
+			};
 			Bot.GuildMemberRemoved += GuildMemberRemoveEvent.Main;
 
 			Bot.ClientErrored += ClientErroredEvent.Main;
 
-			Bot.DebugLogger.LogMessageReceived += (Sender, LogMessage) => Log.Info(LogMessage.Message);
-			#if !DEBUG
+			//Bot.Logger.
+			//Bot.DebugLogger.LogMessageReceived += (Sender, LogMessage) => Log.Info(LogMessage.Message);
+			//#if !DEBUG
 			Bot.Heartbeated += Avespoir.Core.Modules.Logger.HeartbeatLog.ExportHeartbeatLog;
-			#endif
+			//#endif
 
 			await Bot.ConnectAsync();
 

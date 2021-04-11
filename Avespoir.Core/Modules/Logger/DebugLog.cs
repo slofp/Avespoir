@@ -1,11 +1,10 @@
-﻿namespace Avespoir.Core.Modules.Logger {
+﻿using System.Diagnostics;
+
+namespace Avespoir.Core.Modules.Logger {
 
 	partial class Log {
 
-		internal static void Debug(object Message) {
-			#if DEBUG
-			LoggerProperties.Log.Debug(Message);
-			#endif
-		}
+		[Conditional("DEBUG")]
+		internal static void Debug(object Message) => LoggerProperties.Log.Debug(Message);
 	}
 }

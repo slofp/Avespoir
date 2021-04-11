@@ -12,7 +12,7 @@ namespace Avespoir.Core.Modules.Commands {
 			await CommandObject.Message.RespondAsync("Logging out...");
 			Log.Info("Logging out...");
 
-			await ConsoleExitEvent.Main(true).ConfigureAwait(false);
+			await ConsoleExitEvent.Main(0).ConfigureAwait(false);
 		}
 	}
 }

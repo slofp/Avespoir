@@ -4,6 +4,7 @@ using Avespoir.Core.Configs;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Modules.Logger;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
@@ -79,10 +80,10 @@ namespace Avespoir.Core.Modules.Commands {
 
 		#region Command checker
 
-		internal static async Task PublicCommands(MessageCreateEventArgs Message_Objects) {
+		internal static async Task PublicCommands(DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
 			Log.Debug("PublicCommand check");
 			if (Message_Objects.Channel.IsPrivate) return;
-			CommandObjects CommandObject = new CommandObjects(Message_Objects);
+			CommandObjects CommandObject = new CommandObjects(Bot, Message_Objects);
 
 			string GuildPublicPrefix = Database.DatabaseMethods.GuildConfigMethods.PublicPrefixFind(CommandObject.Guild.Id);
 			if (GuildPublicPrefix == null) GuildPublicPrefix = CommandConfig.PublicPrefix;
@@ -98,10 +99,10 @@ namespace Avespoir.Core.Modules.Commands {
 			Log.Debug("PublicCommand OK");
 		}
 
-		internal static async Task ModeratorCommands(MessageCreateEventArgs Message_Objects) {
+		internal static async Task ModeratorCommands(DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
 			Log.Debug("ModeratorCommand check");
 			if (Message_Objects.Channel.IsPrivate) return;
-			CommandObjects CommandObject = new CommandObjects(Message_Objects);
+			CommandObjects CommandObject = new CommandObjects(Bot, Message_Objects);
 
 			string GuildModeratorPrefix = Database.DatabaseMethods.GuildConfigMethods.ModeratorPrefixFind(CommandObject.Guild.Id);
 			if (GuildModeratorPrefix == null) GuildModeratorPrefix = CommandConfig.ModeratorPrefix;
@@ -144,9 +145,9 @@ namespace Avespoir.Core.Modules.Commands {
 			}
 		}
 
-		internal static async Task BotownerCommands(MessageCreateEventArgs Message_Objects) {
+		internal static async Task BotownerCommands(DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
 			Log.Debug("BotownerCommand check");
-			CommandObjects CommandObject = new CommandObjects(Message_Objects);
+			CommandObjects CommandObject = new CommandObjects(Bot, Message_Objects);
 
 			string CommandPrefix = CommandObject.CommandArgs[0][0..CommandConfig.BotownerPrefix.Length];
 			string CommandText = CommandObject.CommandArgs[0][CommandConfig.BotownerPrefix.Length..];

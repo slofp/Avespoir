@@ -62,7 +62,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
 					GuildID = GuildID,
-					WhiteList = AfterLeaveBan
+					LeaveBan = AfterLeaveBan
 				};
 
 				GuildConfigCollection.Insert(InsertGuildConfig);

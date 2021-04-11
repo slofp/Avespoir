@@ -2,6 +2,7 @@
 using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
@@ -11,7 +12,7 @@ namespace Avespoir.Core.Modules.Events {
 
 	class GuildMemberAddEvent {
 
-		private static async Task BotProcess(GuildMemberAddEventArgs MemberObjects, GetLanguage Get_Language) {
+		private static async Task BotProcess(DiscordClient Bot, GuildMemberAddEventArgs MemberObjects, GetLanguage Get_Language) {
 			if (Database.DatabaseMethods.RolesMethods.RoleFind(MemberObjects.Guild.Id, RoleLevel.Bot, out Roles DBRoleRoleLevel)) {
 				DiscordRole GuildRole = MemberObjects.Guild.GetRole(DBRoleRoleLevel.Uuid);
 				await MemberObjects.Member.GrantRoleAsync(GuildRole);
@@ -34,17 +35,17 @@ namespace Avespoir.Core.Modules.Events {
 					.WithColor(new DiscordColor(0x1971FF))
 					.WithTimestamp(DateTime.Now)
 					.WithFooter(
-						string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
+						string.Format("{0} Bot", Bot.CurrentUser.Username)
 					)
 					.WithAuthor(Get_Language.Language_Data.Accessed);
-				await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
+				await GuildLogChannel.SendMessageAsync(LogChannelEmbed);
 			}
 			else Log.Warning("Could not send from log channel");
 
 			Log.Debug($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} is Bot");
 		}
 
-		private static async Task AllowUserProcess(GuildMemberAddEventArgs MemberObjects, GetLanguage Get_Language, AllowUsers DBAllowUserID) {
+		private static async Task AllowUserProcess(DiscordClient Bot, GuildMemberAddEventArgs MemberObjects, GetLanguage Get_Language, AllowUsers DBAllowUserID) {
 			if (Database.DatabaseMethods.RolesMethods.RoleFind(MemberObjects.Guild.Id, DBAllowUserID.RoleNum, out Roles DBRoleRoleNum)) {
 				DiscordRole GuildRole = MemberObjects.Guild.GetRole(DBRoleRoleNum.Uuid);
 
@@ -65,10 +66,10 @@ namespace Avespoir.Core.Modules.Events {
 						.WithColor(new DiscordColor(0x00B06B))
 						.WithTimestamp(DateTime.Now)
 						.WithFooter(
-							string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
+							string.Format("{0} Bot", Bot.CurrentUser.Username)
 						)
 						.WithAuthor(Get_Language.Language_Data.AccessPermission);
-					await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
+					await GuildLogChannel.SendMessageAsync(LogChannelEmbed);
 				}
 				else Log.Warning("Could not send from log channel");
 
@@ -94,9 +95,9 @@ namespace Avespoir.Core.Modules.Events {
 							.WithColor(new DiscordColor(0x00B06B))
 							.WithTimestamp(DateTime.Now)
 							.WithFooter(
-								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
+								string.Format("{0} Bot", Bot.CurrentUser.Username)
 							);
-						await MemberObjects.Member.SendMessageAsync(default, default, WelcomeEmbed);
+						await MemberObjects.Member.SendMessageAsync(WelcomeEmbed);
 					}
 					else if (DBRoleLevel == RoleLevel.Moderator) {
 						await MemberObjects.Member.GrantRoleAsync(GuildRole);
@@ -108,7 +109,7 @@ namespace Avespoir.Core.Modules.Events {
 							)
 							.AddField(
 								Get_Language.Language_Data.DMEmbed_Moderator3,
-								string.Format(Get_Language.Language_Data.DMEmbed_Moderator4, MemberObjects.Client.CurrentUser.Username)
+								string.Format(Get_Language.Language_Data.DMEmbed_Moderator4, Bot.CurrentUser.Username)
 							)
 							.AddField(
 								Get_Language.Language_Data.DMEmbed_Moderator5,
@@ -121,9 +122,9 @@ namespace Avespoir.Core.Modules.Events {
 							.WithColor(new DiscordColor(0x00B06B))
 							.WithTimestamp(DateTime.Now)
 							.WithFooter(
-								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
+								string.Format("{0} Bot", Bot.CurrentUser.Username)
 							);
-						await MemberObjects.Member.SendMessageAsync(default, default, WelcomeEmbed);
+						await MemberObjects.Member.SendMessageAsync(WelcomeEmbed);
 					}
 				}
 				else {
@@ -142,9 +143,9 @@ namespace Avespoir.Core.Modules.Events {
 							.WithColor(new DiscordColor(0x00B06B))
 							.WithTimestamp(DateTime.Now)
 							.WithFooter(
-								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
+								string.Format("{0} Bot", Bot.CurrentUser.Username)
 							);
-						await MemberObjects.Member.SendMessageAsync(default, default, WelcomeEmbed);
+						await MemberObjects.Member.SendMessageAsync(WelcomeEmbed);
 					}
 					else if (DBRoleLevel == RoleLevel.Moderator) {
 						await MemberObjects.Member.GrantRoleAsync(GuildRole);
@@ -156,7 +157,7 @@ namespace Avespoir.Core.Modules.Events {
 							)
 							.AddField(
 								Get_Language.Language_Data.DMEmbed_Moderator3,
-								string.Format(Get_Language.Language_Data.DMEmbed_Moderator4, MemberObjects.Client.CurrentUser.Username)
+								string.Format(Get_Language.Language_Data.DMEmbed_Moderator4, Bot.CurrentUser.Username)
 							)
 							.AddField(
 								Get_Language.Language_Data.DMEmbed_Moderator5,
@@ -165,9 +166,9 @@ namespace Avespoir.Core.Modules.Events {
 							.WithColor(new DiscordColor(0x00B06B))
 							.WithTimestamp(DateTime.Now)
 							.WithFooter(
-								string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
+								string.Format("{0} Bot", Bot.CurrentUser.Username)
 							);
-						await MemberObjects.Member.SendMessageAsync(default, default, WelcomeEmbed);
+						await MemberObjects.Member.SendMessageAsync(WelcomeEmbed);
 					}
 				}
 
@@ -176,7 +177,7 @@ namespace Avespoir.Core.Modules.Events {
 			else await MemberObjects.Member.SendMessageAsync(Get_Language.Language_Data.RoleNumNullMessage);
 		}
 
-		private static async Task DenyUserProcess(GuildMemberAddEventArgs MemberObjects, GetLanguage Get_Language) {
+		private static async Task DenyUserProcess(DiscordClient Bot, GuildMemberAddEventArgs MemberObjects, GetLanguage Get_Language) {
 			await MemberObjects.Member.SendMessageAsync(Get_Language.Language_Data.PermissionDenied);
 			await MemberObjects.Member.RemoveAsync(Get_Language.Language_Data.NotAccessed);
 
@@ -196,37 +197,37 @@ namespace Avespoir.Core.Modules.Events {
 					.WithColor(new DiscordColor(0xFF4B00))
 					.WithTimestamp(DateTime.Now)
 					.WithFooter(
-						string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
+						string.Format("{0} Bot", Bot.CurrentUser.Username)
 					)
 					.WithAuthor(Get_Language.Language_Data.NotAccessed);
-				await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
+				await GuildLogChannel.SendMessageAsync(LogChannelEmbed);
 			}
 			else Log.Warning("Could not send from log channel");
 
 			Log.Debug($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} is not allowed join");
 		}
 
-		private static async Task Fork(GuildMemberAddEventArgs MemberObjects, GetLanguage Get_Language) {
+		private static async Task Fork(DiscordClient Bot, GuildMemberAddEventArgs MemberObjects, GetLanguage Get_Language) {
 			if (!Database.DatabaseMethods.GuildConfigMethods.WhitelistFind(MemberObjects.Guild.Id)) {
 				Log.Info("Whitelist Disabled");
 				return;
 			}
 			if (MemberObjects.Member.IsBot) {
-				await BotProcess(MemberObjects, Get_Language).ConfigureAwait(false);
+				await BotProcess(Bot, MemberObjects, Get_Language).ConfigureAwait(false);
 				return;
 			}
 
 			if (Database.DatabaseMethods.AllowUsersMethods.AllowUserFind(MemberObjects.Guild.Id, MemberObjects.Member.Id, out AllowUsers DBAllowUserID)) {
-				await AllowUserProcess(MemberObjects, Get_Language, DBAllowUserID).ConfigureAwait(false);
+				await AllowUserProcess(Bot, MemberObjects, Get_Language, DBAllowUserID).ConfigureAwait(false);
 				return;
 			}
 			else { // if DBAllowUserID is null, processes will not be executed from here. And kick.
-				await DenyUserProcess(MemberObjects, Get_Language).ConfigureAwait(false);
+				await DenyUserProcess(Bot, MemberObjects, Get_Language).ConfigureAwait(false);
 				return;
 			}
 		}
 
-		internal static async Task Main(GuildMemberAddEventArgs MemberObjects) {
+		internal static async Task Main(DiscordClient Bot, GuildMemberAddEventArgs MemberObjects) {
 			Log.Debug("GuildMemberAddEvent " + "Start...");
 
 			GetLanguage Get_Language;
@@ -238,7 +239,7 @@ namespace Avespoir.Core.Modules.Events {
 				else Get_Language = new GetLanguage(Database.Enums.Language.ja_JP);
 			}
 
-			await Fork(MemberObjects, Get_Language).ConfigureAwait(false);
+			await Fork(Bot, MemberObjects, Get_Language).ConfigureAwait(false);
 
 			Log.Debug("GuildMemberAddEvent " + "End...");
 		}

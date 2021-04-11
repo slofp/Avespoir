@@ -16,7 +16,7 @@ namespace Avespoir.Core.Modules.Commands {
 
 		#region Extend MessageCreateEventArgs
 
-		internal BaseDiscordClient Client { get; }
+		internal DiscordClient Client { get; }
 
 		internal DiscordMessage Message { get; }
 
@@ -46,7 +46,7 @@ namespace Avespoir.Core.Modules.Commands {
 		
 		#endregion
 
-		internal CommandObjects(MessageCreateEventArgs Message_Objects) {
+		internal CommandObjects(DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
 			MessageObjects = Message_Objects;
 			CommandArgs = MessageObjects.Message.Content.Trim().Split(" ");
 			if (!Message_Objects.Channel.IsPrivate) {
@@ -60,7 +60,7 @@ namespace Avespoir.Core.Modules.Commands {
 			}
 			else Language = new GetLanguage(Database.Enums.Language.ja_JP).Language_Data;
 
-			Client = Message_Objects.Client;
+			Client = Bot;
 			Message = Message_Objects.Message;
 			Channel = Message_Objects.Channel;
 			Guild = Message_Objects.Guild;

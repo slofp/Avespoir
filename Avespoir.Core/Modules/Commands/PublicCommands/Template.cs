@@ -19,7 +19,7 @@ namespace Avespoir.Core.Modules.Commands {
 				await Task.Delay(0);
 			}
 			catch (Exception Error) {
-				Log.Error(Error);
+				Log.Error("Command Error", Error);
 			}
 		}
 	}

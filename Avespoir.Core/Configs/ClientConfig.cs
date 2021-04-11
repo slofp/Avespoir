@@ -10,9 +10,10 @@ namespace Avespoir.Core.Configs {
 		
 		internal static DiscordConfiguration DiscordConfig() => new DiscordConfiguration {
 			Token = Token,
-			#if DEBUG
-			LogLevel = LogLevel.Debug
-			#endif
+			//LoggerFactory = Modules.Logger.LoggerProperties.Log.Logger.
+			//#if DEBUG
+			//MinimumLogLevel = LogLevel.Debug
+			//#endif
 		};
 
 	}

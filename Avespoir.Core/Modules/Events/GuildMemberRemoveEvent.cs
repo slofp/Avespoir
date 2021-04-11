@@ -1,6 +1,7 @@
 ﻿using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
@@ -10,7 +11,7 @@ namespace Avespoir.Core.Modules.Events {
 
 	class GuildMemberRemoveEvent {
 
-		private static async Task BotProcess(GuildMemberRemoveEventArgs MemberObjects, GetLanguage Get_Language) {
+		private static async Task BotProcess(DiscordClient Bot, GuildMemberRemoveEventArgs MemberObjects, GetLanguage Get_Language) {
 			ulong Guild_ChannelID = Database.DatabaseMethods.GuildConfigMethods.LogChannelFind(MemberObjects.Guild.Id);
 
 			if (Guild_ChannelID != 0) {
@@ -27,10 +28,10 @@ namespace Avespoir.Core.Modules.Events {
 					.WithColor(new DiscordColor(0x1971FF))
 					.WithTimestamp(DateTime.Now)
 					.WithFooter(
-						string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
+						string.Format("{0} Bot", Bot.CurrentUser.Username)
 					)
 					.WithAuthor(Get_Language.Language_Data.BotRemoved);
-				await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
+				await GuildLogChannel.SendMessageAsync(LogChannelEmbed);
 			}
 			else Log.Warning("Could not send from log channel");
 
@@ -38,7 +39,7 @@ namespace Avespoir.Core.Modules.Events {
 			return;
 		}
 
-		private static async Task UserProcess(GuildMemberRemoveEventArgs MemberObjects, GetLanguage Get_Language) {
+		private static async Task UserProcess(DiscordClient Bot, GuildMemberRemoveEventArgs MemberObjects, GetLanguage Get_Language) {
 			bool SelfLeave = false;
 
 			if (Database.DatabaseMethods.AllowUsersMethods.AllowUserFind(MemberObjects.Guild.Id, MemberObjects.Member.Id, out AllowUsers DBAllowUserID)) {
@@ -67,10 +68,10 @@ namespace Avespoir.Core.Modules.Events {
 						.WithColor(new DiscordColor(SelfLeave ? 0xFF4B00 : 0xF6AA00))
 						.WithTimestamp(DateTime.Now)
 						.WithFooter(
-							string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
+							string.Format("{0} Bot", Bot.CurrentUser.Username)
 						)
 						.WithAuthor(Get_Language.Language_Data.Leaved);
-					await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
+					await GuildLogChannel.SendMessageAsync(LogChannelEmbed);
 				}
 				else Log.Warning("Could not send from log channel");
 			}
@@ -91,10 +92,10 @@ namespace Avespoir.Core.Modules.Events {
 						.WithColor(new DiscordColor(0xFF4B00))
 						.WithTimestamp(DateTime.Now)
 						.WithFooter(
-							string.Format("{0} Bot", MemberObjects.Client.CurrentUser.Username)
+							string.Format("{0} Bot", Bot.CurrentUser.Username)
 						)
 						.WithAuthor(Get_Language.Language_Data.Leaved);
-					await GuildLogChannel.SendMessageAsync(default, default, LogChannelEmbed);
+					await GuildLogChannel.SendMessageAsync(LogChannelEmbed);
 				}
 				else Log.Warning("Could not send from log channel");
 			}
@@ -103,8 +104,9 @@ namespace Avespoir.Core.Modules.Events {
 			return;
 		}
 
-		internal static async Task Main(GuildMemberRemoveEventArgs MemberObjects) {
+		internal static async Task Main(DiscordClient Bot, GuildMemberRemoveEventArgs MemberObjects) {
 			Log.Debug("GuildMemberRemoveEvent " + "Start...");
+			Console.WriteLine("GuildMemberRemoveEvent " + "Start...");
 
 			GetLanguage Get_Language;
 			string GuildLanguageString = Database.DatabaseMethods.GuildConfigMethods.LanguageFind(MemberObjects.Guild.Id);
@@ -115,10 +117,12 @@ namespace Avespoir.Core.Modules.Events {
 				else Get_Language = new GetLanguage(GuildLanguage);
 			}
 
-			if (MemberObjects.Member.IsBot) await BotProcess(MemberObjects, Get_Language).ConfigureAwait(false);
-			else await UserProcess(MemberObjects, Get_Language).ConfigureAwait(false);
+			Console.WriteLine("GuildMemberRemoveEvent " + "Process if");
+			if (MemberObjects.Member.IsBot) await BotProcess(Bot, MemberObjects, Get_Language).ConfigureAwait(false);
+			else await UserProcess(Bot, MemberObjects, Get_Language).ConfigureAwait(false);
 
 			Log.Debug("GuildMemberRemoveEvent " + "End...");
+			Console.WriteLine("GuildMemberRemoveEvent " + "End...");
 		}
 	}
 }

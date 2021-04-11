@@ -11,18 +11,15 @@ namespace Avespoir.Core.Modules.Events {
 
 		internal static bool ExitCheck = false;
 
-		static readonly DiscordGame StartingStatus = new DiscordGame() {
+		static readonly DiscordActivity StartingStatus = new DiscordActivity() {
 			Name = "Starting...",
 		};
 
-		internal static Task Main(ReadyEventArgs ReadyEventObjects) {
+		internal static Task Main(DiscordClient Bot, ReadyEventArgs ReadyEventObjects) {
 			Log.Debug("ReadyEvent " + "Start...");
-			BaseDiscordClient ClientBase = ReadyEventObjects.Client;
 			Client.Bot.UpdateStatusAsync(StartingStatus, UserStatus.DoNotDisturb).ConfigureAwait(false);
 
-			
-
-			Log.Info($"{ClientBase.CurrentUser.Username} Bot Ready!");
+			Log.Info($"{Bot.CurrentUser.Username} Bot Ready!");
 
 			StartStatus().ConfigureAwait(false);
 			Log.Debug("ReadyEvent " + "End...");
@@ -31,7 +28,7 @@ namespace Avespoir.Core.Modules.Events {
 
 		static async Task StartStatus() {
 			while (!ExitCheck) {
-				DiscordGame ReadyStatus = new DiscordGame() {
+				DiscordActivity ReadyStatus = new DiscordActivity() {
 					Name = CommandConfig.PublicPrefix + "help",
 				};
 				

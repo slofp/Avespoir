@@ -31,7 +31,7 @@ namespace Avespoir.Core.Modules.Commands {
 						.WithTimestamp(DateTime.Now)
 						.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
 
-				await CommandObject.Message.Channel.SendMessageAsync(default, default, UserStatusEmbed);
+				await CommandObject.Message.Channel.SendMessageAsync(UserStatusEmbed);
 				return;
 			}
 			else {
@@ -60,7 +60,7 @@ namespace Avespoir.Core.Modules.Commands {
 							.WithTimestamp(DateTime.Now)
 							.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
 
-					await CommandObject.Message.Channel.SendMessageAsync(default, default, UserStatusEmbed);
+					await CommandObject.Message.Channel.SendMessageAsync(UserStatusEmbed);
 				}
 				catch (NotFoundException) {
 					DiscordEmbed UserStatusEmbed = new DiscordEmbedBuilder()
@@ -70,7 +70,7 @@ namespace Avespoir.Core.Modules.Commands {
 							.WithTimestamp(DateTime.Now)
 							.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
 
-					await CommandObject.Message.Channel.SendMessageAsync(default, default, UserStatusEmbed);
+					await CommandObject.Message.Channel.SendMessageAsync(UserStatusEmbed);
 				}
 			}
 		}
