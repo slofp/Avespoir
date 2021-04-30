@@ -7,6 +7,22 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
+## [Beta 4.1](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.1) - 2021-04-30
+
+### Fixed
+
+* API Rate Limit in AwaitMessage
+
+### Changed
+
+* AwaitMessage Process
+
+* LiteDB Connection Type(Shared -> Direct)
+
+* DSharpPlus Update v4.0.1
+
+* Event Argument(Update adds DiscordClient)
+
 ## [Beta 4.0](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.0) - 2021-03-12
 
 ### Added

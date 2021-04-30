@@ -106,7 +106,6 @@ namespace Avespoir.Core.Modules.Events {
 
 		internal static async Task Main(DiscordClient Bot, GuildMemberRemoveEventArgs MemberObjects) {
 			Log.Debug("GuildMemberRemoveEvent " + "Start...");
-			Console.WriteLine("GuildMemberRemoveEvent " + "Start...");
 
 			GetLanguage Get_Language;
 			string GuildLanguageString = Database.DatabaseMethods.GuildConfigMethods.LanguageFind(MemberObjects.Guild.Id);
@@ -117,12 +116,10 @@ namespace Avespoir.Core.Modules.Events {
 				else Get_Language = new GetLanguage(GuildLanguage);
 			}
 
-			Console.WriteLine("GuildMemberRemoveEvent " + "Process if");
 			if (MemberObjects.Member.IsBot) await BotProcess(Bot, MemberObjects, Get_Language).ConfigureAwait(false);
 			else await UserProcess(Bot, MemberObjects, Get_Language).ConfigureAwait(false);
 
 			Log.Debug("GuildMemberRemoveEvent " + "End...");
-			Console.WriteLine("GuildMemberRemoveEvent " + "End...");
 		}
 	}
 }

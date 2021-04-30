@@ -44,16 +44,8 @@ namespace Avespoir.Core {
 
 			Bot.MessageCreated += MessageEvent.Main;
 
-			Bot.GuildMemberAdded += (a, b) => {
-				Console.WriteLine("Called Add");
-				return Task.CompletedTask;
-			};
 			Bot.GuildMemberAdded += GuildMemberAddEvent.Main;
 
-			Bot.GuildMemberRemoved += (a, b) => {
-				Console.WriteLine("Called Remove");
-				return Task.CompletedTask;
-			};
 			Bot.GuildMemberRemoved += GuildMemberRemoveEvent.Main;
 
 			Bot.ClientErrored += ClientErroredEvent.Main;
