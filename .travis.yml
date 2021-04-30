@@ -12,9 +12,9 @@ jobs:
       dist: xenial
       before_install:
         - sudo apt update
-    - os: osx
-      before_install:
-        - brew update
+    #- os: osx # Always Error
+    #  before_install:
+    #    - brew update
     #- os: windows # Not Supported
 
 language: csharp

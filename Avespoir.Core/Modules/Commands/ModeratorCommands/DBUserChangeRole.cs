@@ -89,7 +89,7 @@ namespace Avespoir.Core.Modules.Commands {
 							.WithFooter(
 								string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username)
 							);
-						await GuildMember.SendMessageAsync(default, default, WelcomeEmbed);
+						await GuildMember.SendMessageAsync(WelcomeEmbed);
 
 						return;
 					}
@@ -116,7 +116,7 @@ namespace Avespoir.Core.Modules.Commands {
 							.WithFooter(
 								string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username)
 							);
-						await GuildMember.SendMessageAsync(default, default, WelcomeEmbed);
+						await GuildMember.SendMessageAsync(WelcomeEmbed);
 
 						return;
 					}
@@ -137,7 +137,7 @@ namespace Avespoir.Core.Modules.Commands {
 							.WithFooter(
 								string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username)
 							);
-						await GuildMember.SendMessageAsync(default, default, WelcomeEmbed);
+						await GuildMember.SendMessageAsync(WelcomeEmbed);
 
 						return;
 					}
@@ -160,7 +160,7 @@ namespace Avespoir.Core.Modules.Commands {
 							.WithFooter(
 								string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username)
 							);
-						await GuildMember.SendMessageAsync(default, default, WelcomeEmbed);
+						await GuildMember.SendMessageAsync(WelcomeEmbed);
 
 						return;
 					}

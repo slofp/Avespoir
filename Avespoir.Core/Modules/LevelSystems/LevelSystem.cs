@@ -1,5 +1,6 @@
 ﻿using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
@@ -9,9 +10,9 @@ namespace Avespoir.Core.Modules.LevelSystems {
 
 	class LevelSystem {
 
-		internal static async Task Main(MessageCreateEventArgs Message_Objects) {
+		internal static async Task Main(DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
 			Log.Debug("Level System Start");
-			StackMessage Stack_Messages = new StackMessage(Message_Objects.Message);
+			StackMessage Stack_Messages = await new StackMessage(Message_Objects.Message).Start().ConfigureAwait(false);
 
 			if (!Stack_Messages.AllowExp) {
 				Log.Debug("Exp Not get");
@@ -31,11 +32,11 @@ namespace Avespoir.Core.Modules.LevelSystems {
 				Exp += ExpCalculator.ExpCalculate(MessageCount, MessageIDReplace);
 			}
 
-			await SendDB(UserID, Exp, Message_Objects).ConfigureAwait(false);
-			await SendDB(EndUserID, Exp, Message_Objects).ConfigureAwait(false);
+			await SendDB(UserID, Exp, Bot, Message_Objects).ConfigureAwait(false);
+			await SendDB(EndUserID, Exp, Bot, Message_Objects).ConfigureAwait(false);
 		}
 
-		static async Task SendDB(ulong UserID, double Exp, MessageCreateEventArgs Message_Objects) {
+		static async Task SendDB(ulong UserID, double Exp, DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
 			Exp += Database.DatabaseMethods.UserDataMethods.ExpFind(UserID);
 			uint BeforeLevel = Database.DatabaseMethods.UserDataMethods.LevelFind(UserID);
 			uint AfterLevel = LevelDecision(Exp, BeforeLevel);
@@ -69,12 +70,12 @@ namespace Avespoir.Core.Modules.LevelSystems {
 						.WithDescription(string.Format(Get_Language.Language_Data.LevelUpEmbed2, Exp, BeforeLevel, AfterLevel))
 						.WithColor(new DiscordColor(0xFFFF00))
 						.WithTimestamp(DateTime.Now)
-						.WithFooter(string.Format("{0} Bot", Message_Objects.Client.CurrentUser.Username));
+						.WithFooter(string.Format("{0} Bot", Bot.CurrentUser.Username));
 
-						await LogChannel.SendMessageAsync(default, default, LevelUpEmbed);
+						await LogChannel.SendMessageAsync(LevelUpEmbed);
 					}
 					catch (Exception Error) {
-						Log.Error(Error);
+						Log.Error("", Error);
 					}
 				}
 			}

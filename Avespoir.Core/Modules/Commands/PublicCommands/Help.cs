@@ -55,7 +55,7 @@ namespace Avespoir.Core.Modules.Commands {
 				.WithColor(new DiscordColor(0x00B06B))
 				.WithTimestamp(DateTime.Now)
 				.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
-			await CommandObject.Member.SendMessageAsync(default, default, PublicEmbed);
+			await CommandObject.Member.SendMessageAsync(PublicEmbed);
 
 			RoleLevel DBRoleLevel =
 					CommandObject.Message.Author.Id == CommandObject.Guild.Owner.Id ||
@@ -110,7 +110,7 @@ namespace Avespoir.Core.Modules.Commands {
 					.WithColor(new DiscordColor(0xF6AA00))
 					.WithTimestamp(DateTime.Now)
 					.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
-				await CommandObject.Member.SendMessageAsync(default, default, ModeratorEmbed);
+				await CommandObject.Member.SendMessageAsync(ModeratorEmbed);
 			}
 
 			if (CommandObject.Message.Author.Id == ClientConfig.BotownerId) {
@@ -128,7 +128,7 @@ namespace Avespoir.Core.Modules.Commands {
 					.WithColor(new DiscordColor(0x1971FF))
 					.WithTimestamp(DateTime.Now)
 					.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
-				await CommandObject.Member.SendMessageAsync(default, default, BotownerEmbed);
+				await CommandObject.Member.SendMessageAsync(BotownerEmbed);
 			}
 		}
 	}

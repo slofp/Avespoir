@@ -12,7 +12,7 @@ namespace Avespoir.Core.Database {
 			new ConnectionString {
 				Filename = LiteDBConfigs.FileName,
 				Password = LiteDBConfigs.Password,
-				Connection = ConnectionType.Shared
+				Connection = ConnectionType.Direct
 			};
 
 		internal static void Main() {

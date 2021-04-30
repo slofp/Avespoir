@@ -1,4 +1,5 @@
 ﻿using DSharpPlus;
+using Microsoft.Extensions.Logging;
 
 namespace Avespoir.Core.Configs {
 
@@ -7,11 +8,13 @@ namespace Avespoir.Core.Configs {
 		internal static string Token { get; set; } = "";
 
 		internal static ulong BotownerId { get; set; } = 0;
-		
+
 		internal static DiscordConfiguration DiscordConfig() => new DiscordConfiguration {
 			Token = Token,
+			Intents = DiscordIntents.All,
+			LoggerFactory = new LoggerFactory(), // No Display Log
 			#if DEBUG
-			LogLevel = LogLevel.Debug
+			MinimumLogLevel = LogLevel.Trace
 			#endif
 		};
 

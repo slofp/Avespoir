@@ -15,11 +15,7 @@ namespace Avespoir.Core.Modules.Commands {
 			await CommandObject.Message.RespondAsync("Restarting...");
 			Log.Info("Restarting...");
 
-			await ConsoleExitEvent.Main(false).ConfigureAwait(false);
-
-			Process.Start(Assembly.GetEntryAssembly().Location);
-
-			Environment.Exit(Environment.ExitCode);
+			await ConsoleExitEvent.Main(-1);
 		}
 	}
 }

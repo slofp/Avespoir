@@ -1,42 +1,31 @@
-﻿using Avespoir.Core.Modules.Logger;
-using DSharpPlus.Entities;
-using System;
-using System.Threading;
+﻿using DSharpPlus.Entities;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Utils {
 
 	static class DiscordMessageExtension {
 
-		#region AwaitMessage Methods
-
-		internal static async Task<DiscordMessage> AwaitMessage(this DiscordMessage Discord_Message, int Timeout) {
-			Task TimeoutTask = Task.Delay(Timeout);
-			while (true) {
-				if (TimeoutTask.IsCompletedSuccessfully) return null;
-
-				DiscordMessage LastMessage = await Discord_Message.Channel.GetMessageAsync(Discord_Message.Channel.LastMessageId).ConfigureAwait(false);
-
-				if (LastMessage.Id == Discord_Message.Id) continue;
-
-				return LastMessage;
-			}
-		}
-
 		internal static async Task<DiscordMessage> AwaitMessage(this DiscordMessage Discord_Message, ulong AllowAuthorID, int Timeout) {
-			Task TimeoutTask = Task.Delay(Timeout);
-			while (true) {
-				if (TimeoutTask.IsCompletedSuccessfully) return null;
+			AwaitMessageInfo AwaitMessage_Info = new AwaitMessageInfo(AllowAuthorID);
 
-				DiscordMessage LastMessage = await Discord_Message.Channel.GetMessageAsync(Discord_Message.Channel.LastMessageId).ConfigureAwait(false);
+			AwaitMessage_Info.Init(Discord_Message);
 
-				if (LastMessage.Id == Discord_Message.Id) continue;
-				if (LastMessage.Author.Id != AllowAuthorID) continue;
+			try {
+				Task TimeoutTask = Task.Delay(Timeout);
+				while (true) {
+					if (TimeoutTask.IsCompletedSuccessfully) return null;
 
-				return LastMessage;
+					if (AwaitMessage_Info.Status == AwaitMessageStatus.Pending) continue;
+
+					DiscordMessage WaitedMessage = await Discord_Message.Channel.GetMessageAsync(AwaitMessage_Info.MessageID).ConfigureAwait(false);
+
+					return WaitedMessage;
+				}
+			}
+			finally {
+				AwaitMessage_Info.Finalize_(Discord_Message);
 			}
 		}
-		#endregion
 	}
 }
 
