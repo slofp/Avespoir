@@ -1,4 +1,7 @@
-﻿using Avespoir.Core.Attributes;
+﻿using Avespoir.Core.Abstructs;
+using Avespoir.Core.Attributes;
+using Avespoir.Core.Database.Enums;
+using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
@@ -6,12 +9,20 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Avespoir.Core.Modules.Commands {
+namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
-	partial class PublicCommands {
+	[Command("invite", RoleLevel.Public)]
+	class Invite : CommandAbstruct {
 
-		[Command("invite")]
-		public async Task Invite(CommandObjects CommandObject) {
+		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
+			{ Database.Enums.Language.en_US, "Template" }
+		};
+
+		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
+			{ Database.Enums.Language.en_US, "Template" }
+		};
+
+		internal override async Task Execute(CommandObjects CommandObject) {
 			string[] msgs = CommandObject.CommandArgs.Remove(0);
 
 			if (msgs.Length == 0) {

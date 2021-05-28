@@ -55,7 +55,7 @@ Create ``ClientConfig.json`` and ``DBConfig.json``. Refer to ``ClientConfig_Temp
 
 If you build with Debug, it is assumed to start from the ``Builds/netcoreapp3.1`` folder.
 
-For example, ``/AvespoirRepo/Builds/netcoreapp3.1/Avespoir.dll`` should be ``/AvespoirRepo/Configs/... It should be ``.
+For example, if binary folder is in ``/AvespoirRepo/Builds/netcoreapp3.1/...``, config folder should be in ``/AvespoirRepo/Configs/...``.
 
 If you build with Release, the reference will be from the program.
 

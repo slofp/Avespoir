@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Avespoir.Core.Modules.Commands.Moderator_Commands {
+namespace Avespoir.Core.Modules.Commands {
 
 	[Command()]
 	class Template : CommandAbstruct {
@@ -24,7 +24,7 @@ namespace Avespoir.Core.Modules.Commands.Moderator_Commands {
 			{ Database.Enums.Language.en_US, "Template" }
 		};
 
-		internal override async Task Excute(CommandObjects CommandObject) {
+		internal override async Task Execute(CommandObjects CommandObject) {
 			string[] msgs = CommandObject.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {
 				await CommandObject.Message.Channel.SendMessageAsync("何も入力されていません");

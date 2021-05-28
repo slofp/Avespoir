@@ -1,18 +1,29 @@
-﻿using Avespoir.Core.Attributes;
+﻿using Avespoir.Core.Abstructs;
+using Avespoir.Core.Attributes;
+using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Language;
 using DSharpPlus.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tababular;
 
-namespace Avespoir.Core.Modules.Commands {
+namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
-	partial class ModeratorCommands {
+	[Command("db-userlist", RoleLevel.Moderator)]
+	class DBUserList : CommandAbstruct {
 
-		[Command("db-userlist")]
-		public async Task DBUserList(CommandObjects CommandObject) {
+		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
+			{ Database.Enums.Language.en_US, "Template" }
+		};
+
+		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
+			{ Database.Enums.Language.en_US, "Template" }
+		};
+
+		internal override async Task Execute(CommandObjects CommandObject) {
 			Database.DatabaseMethods.AllowUsersMethods.AllowUsersListFind(CommandObject.Guild.Id, out List<AllowUsers> DBAllowUsersList);
-			
+
 			List<object> DBAllowUsersObjects = new List<object> { };
 			foreach (AllowUsers DBAllowUser in DBAllowUsersList) {
 				Database.DatabaseMethods.RolesMethods.RoleFind(CommandObject.Guild.Id, DBAllowUser.RoleNum, out Roles DBRole);

@@ -24,8 +24,6 @@ namespace Avespoir.Core.Modules.Events {
 			}
 			else AlreadyExiting = true;
 
-			Log.Info("Exit...");
-
 			ReadyEvent.ExitCheck = true;
 
 			await Client.Bot.DisconnectAsync().ConfigureAwait(false);
@@ -38,17 +36,19 @@ namespace Avespoir.Core.Modules.Events {
 			Log.Info("Database Disconnected.");
 
 			if (ExitCode <= 0) {
-				if (ExitCode == -1) { 
+				if (ExitCode == -1) {
+					string ProgramPath = string.Format("{0}Avespoir", AppDomain.CurrentDomain.BaseDirectory);
+
 					try {
-						string ProgramPath = Assembly.GetEntryAssembly().Location;
-						if (ProgramPath[^4..^0] == ".dll")
-						Log.Info(Assembly.GetEntryAssembly().Location[^4..^0]);
-						Process.Start(Assembly.GetEntryAssembly().Location);
+						Process.Start(ProgramPath);
 					}
 					catch (System.ComponentModel.Win32Exception e) {
+						Log.Debug(ProgramPath);
 						Log.Error("Restart Error", e);
 					}
 				}
+
+				Log.Info("Exit...");
 				Environment.Exit(Environment.ExitCode);
 			}
 		}

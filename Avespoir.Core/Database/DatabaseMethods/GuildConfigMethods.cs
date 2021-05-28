@@ -16,6 +16,9 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 		internal static bool LeaveBanFind(ulong GuildID) =>
 			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.LeaveBan ?? false;
 
+		internal static string PrefixFind(ulong GuildID) =>
+			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.Prefix;
+
 		internal static string PublicPrefixFind(ulong GuildID) =>
 			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.PublicPrefix;
 

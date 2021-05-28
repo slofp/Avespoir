@@ -33,11 +33,7 @@ namespace Avespoir.Core.Modules.Events {
 				Task.Run(() => LevelSystemInit(Bot, Message_Objects)).ConfigureAwait(false);
 			else Log.Debug("Exist Task");
 
-			CommandRegister.PublicCommands(Bot, Message_Objects).ConfigureAwait(false);
-
-			CommandRegister.ModeratorCommands(Bot, Message_Objects).ConfigureAwait(false);
-
-			CommandRegister.BotownerCommands(Bot, Message_Objects).ConfigureAwait(false);
+			CommandRegister.Start(Bot, Message_Objects).ConfigureAwait(false);
 
 			Log.Debug("MessageEvent " + "End...");
 

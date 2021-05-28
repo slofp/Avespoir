@@ -1,5 +1,8 @@
-﻿using Avespoir.Core.Attributes;
+﻿using Avespoir.Core.Abstructs;
+using Avespoir.Core.Attributes;
+using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Exceptions;
+using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
 using System;
@@ -9,12 +12,20 @@ using System.Net;
 using System.Threading.Tasks;
 using static Avespoir.Core.Modules.Utils.EmojiConverter;
 
-namespace Avespoir.Core.Modules.Commands {
+namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
-	partial class PublicCommands {
+	[Command("emoji", RoleLevel.Public)]
+	class Emoji : CommandAbstruct {
 
-		[Command("emoji")]
-		public async Task Emoji(CommandObjects CommandObject) {
+		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
+			{ Database.Enums.Language.en_US, "Template" }
+		};
+
+		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
+			{ Database.Enums.Language.en_US, "Template" }
+		};
+
+		internal override async Task Execute(CommandObjects CommandObject) {
 			string[] msgs = CommandObject.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {
 				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyText);

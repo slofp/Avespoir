@@ -7,7 +7,7 @@ namespace Avespoir.Core.Modules.Events {
 
 	class ClientErroredEvent {
 
-		internal static Task Main(DiscordClient Bot, ClientErrorEventArgs ClientError) {
+		internal static Task Main(DiscordClient _, ClientErrorEventArgs ClientError) {
 			string Errorstring = string.Format("EventName: {0}\nException: {1}", ClientError.EventName, ClientError.Exception);
 			Log.Error(Errorstring);
 			Log.Error(ClientError.EventName, ClientError.Exception);

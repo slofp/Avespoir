@@ -16,6 +16,9 @@ namespace Avespoir.Core.Database.Schemas {
 		[BsonField("LeaveBan")]
 		public bool LeaveBan { get; set; }
 
+		[BsonField("Prefix")]
+		public string Prefix { get; set; }
+
 		[BsonField("PublicPrefix")]
 		public string PublicPrefix { get; set; }
 

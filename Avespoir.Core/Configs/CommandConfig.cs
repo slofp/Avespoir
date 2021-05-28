@@ -15,6 +15,12 @@
 		#endregion
 
 		#region MixPrefixs
+		internal static string Prefix {
+			get {
+				return MainPrefix + PublicPrefixTag;
+			}
+		}
+
 		internal static string PublicPrefix {
 			get {
 				return MainPrefix + PublicPrefixTag;

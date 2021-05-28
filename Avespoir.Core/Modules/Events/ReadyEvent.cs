@@ -15,7 +15,7 @@ namespace Avespoir.Core.Modules.Events {
 			Name = "Starting...",
 		};
 
-		internal static Task Main(DiscordClient Bot, ReadyEventArgs ReadyEventObjects) {
+		internal static Task Main(DiscordClient Bot, ReadyEventArgs _) {
 			Log.Debug("ReadyEvent " + "Start...");
 			Client.Bot.UpdateStatusAsync(StartingStatus, UserStatus.DoNotDisturb).ConfigureAwait(false);
 

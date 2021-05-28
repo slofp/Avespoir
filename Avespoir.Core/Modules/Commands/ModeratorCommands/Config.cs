@@ -1,5 +1,7 @@
-﻿using Avespoir.Core.Attributes;
+﻿using Avespoir.Core.Abstructs;
+using Avespoir.Core.Attributes;
 using Avespoir.Core.Configs;
+using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
@@ -7,12 +9,20 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Avespoir.Core.Modules.Commands {
+namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
-	partial class ModeratorCommands {
+	[Command("config", RoleLevel.Moderator)]
+	class Config : CommandAbstruct {
 
-		[Command("config")]
-		public async Task Config(CommandObjects CommandObject) {
+		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
+			{ Database.Enums.Language.en_US, "Template" }
+		};
+
+		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
+			{ Database.Enums.Language.en_US, "Template" }
+		};
+
+		internal override async Task Execute(CommandObjects CommandObject) {
 			Log.Debug("Start Config");
 			string[] msgs = CommandObject.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {

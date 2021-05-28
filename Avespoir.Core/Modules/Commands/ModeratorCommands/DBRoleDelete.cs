@@ -1,17 +1,28 @@
-﻿using Avespoir.Core.Attributes;
+﻿using Avespoir.Core.Abstructs;
+using Avespoir.Core.Attributes;
+using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Avespoir.Core.Modules.Commands {
+namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
-	partial class ModeratorCommands {
+	[Command("db-roledel", RoleLevel.Moderator)]
+	class DBRoleDelete : CommandAbstruct {
 
-		[Command("db-roledel")]
-		public async Task DBRoleDelete(CommandObjects CommandObject) {
+		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
+			{ Database.Enums.Language.en_US, "Template" }
+		};
+
+		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
+			{ Database.Enums.Language.en_US, "Template" }
+		};
+
+		internal override async Task Execute(CommandObjects CommandObject) {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
 				if (msgs.Length == 0) {
