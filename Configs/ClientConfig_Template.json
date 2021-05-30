@@ -3,11 +3,5 @@
 
   "BotownerId": "",
 
-  "MainPrefix": "",
-
-  "PublicPrefixTag": "",
-
-  "ModeratorPrefixTag": "",
-
-  "BotownerPrefixTag": ""
+  "Prefix": ""
 }
