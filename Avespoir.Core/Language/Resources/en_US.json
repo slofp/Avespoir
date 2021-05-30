@@ -45,77 +45,7 @@
 
 	"HelpCommandPrefix": "Prefix is {0}",
 
-	"HelpPing": "Pinging",
-
-	"HelpVer": "Show bot version",
-
-	"HelpHelp": "Show command list",
-
-	"HelpFind": "Show user info",
-
-	"HelpFindUserId": "[UserID]",
-
-	"HelpEmoji": "Create a picture based on an image",
-
-	"HelpEmojiName": "[Name]",
-
-	"HelpEmojiImage": "(Upload a picture)",
-
-	"HelpInvite": "Create invite URL",
-
-	"HelpInviteChannel": "(Channel)",
-
-	"HelpStatus": "Show user status",
-
-	"HelpStatusMention": "(Mention or UserID)",
-
-	"HelpRoll": "Generate random numbers",
-
-	"HelpRollMaxvalue": "(Maximum value)",
-
-	"HelpRollMinvalue": "(Minimum value)",
-
 	"HelpModeratorCommand": "Moderator Commands",
-
-	"HelpDBUserList": "Show a list of user information registered in the User database",
-
-	"HelpDBRoleList": "Show a list of role information registered in the Role database",
-
-	"HelpDBUserAdd": "Add a user to the User database",
-
-	"HelpDBUserAddName": "[Name]",
-
-	"HelpDBUserAddUserId": "[UserID]",
-
-	"HelpDBUserAddRoleNum": "[Role Number]",
-
-	"HelpDBRoleAdd": "Add a role to the Role database",
-
-	"HelpDBRoleAddRoleId": "[RoleID]",
-
-	"HelpDBRoleAddRoleNum": "[Role number]",
-
-	"HelpDBRoleAddRoleType": "[Role level(Public: 0, Moderator: 1, Bot: 2)]",
-
-	"HelpDBUserChangeRole": "Change the Role of a user in the User database",
-
-	"HelpDBUserChangeRoleUserId": "[UserID]",
-
-	"HelpDBUserChangeRoleRoleNum": "[Role number]",
-
-	"HelpDBUserDelete": "Remove a user from the User database",
-
-	"HelpDBUserDeleteUserId": "[UserID]",
-
-	"HelpDBRoleDelete": "Removes Role from the Role database",
-
-	"HelpDBRoleDeleteRoleId": "[RoleID]",
-
-	"HelpConfig": "Modify or configure Bot settings",
-
-	"HelpConfigFirstArgs": "<Reference below>",
-
-	"HelpConfigValue": "[Value(Not required for whitelist)]",
 
 	"HelpConfigArgs": "Config first argument",
 

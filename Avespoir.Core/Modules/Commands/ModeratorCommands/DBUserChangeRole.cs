@@ -1,18 +1,28 @@
-﻿using Avespoir.Core.Attributes;
+﻿using Avespoir.Core.Abstructs;
+using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Avespoir.Core.Modules.Commands {
+namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
-	partial class ModeratorCommands {
+	[Command("db-usercrole", RoleLevel.Moderator)]
+	class DBUserChangeRole : CommandAbstruct {
 
-		[Command("db-usercrole")]
-		public async Task DBUserChangeRole(CommandObjects CommandObject) {
+		internal override LanguageDictionary Description => new LanguageDictionary("Userデータベースに登録されているユーザーの役職を変更します") {
+			{ Database.Enums.Language.en_US, "Change the Role of a user in the User database" }
+		};
+
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-usercrole [ユーザーID] [役職登録番号]") {
+			{ Database.Enums.Language.en_US, "{0}db-usercrole [UserID] [Role number]" }
+		};
+
+		internal override async Task Execute(CommandObjects CommandObject) {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
 				if (msgs.Length == 0) {

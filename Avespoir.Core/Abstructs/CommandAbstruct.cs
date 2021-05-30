@@ -20,7 +20,7 @@ namespace Avespoir.Core.Abstructs {
 		/// <summary>
 		/// Process executed by <see cref="CommandRegister"/>
 		/// </summary>
-		internal virtual async Task Excute(CommandObjects CommandObject) {
+		internal virtual async Task Execute(CommandObjects CommandObject) {
 			await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.CommandNotImpl).ConfigureAwait(false);
 		}
 	}

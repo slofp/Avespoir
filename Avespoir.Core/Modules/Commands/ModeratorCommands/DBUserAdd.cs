@@ -1,17 +1,28 @@
-﻿using Avespoir.Core.Attributes;
+﻿using Avespoir.Core.Abstructs;
+using Avespoir.Core.Attributes;
+using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Avespoir.Core.Modules.Commands {
+namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
-	partial class ModeratorCommands {
+	[Command("db-useradd", RoleLevel.Moderator)]
+	class DBUserAdd : CommandAbstruct {
 
-		[Command("db-useradd")]
-		public async Task DBUserAdd(CommandObjects CommandObject) {
+		internal override LanguageDictionary Description => new LanguageDictionary("Userデータベースにユーザーを追加します") {
+			{ Database.Enums.Language.en_US, "Add a user to the User database" }
+		};
+
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-useradd [名前] [ユーザーID] [役職登録番号]") {
+			{ Database.Enums.Language.en_US, "{0}db-useradd [Name] [UserID] [Role Number]" }
+		};
+
+		internal override async Task Execute(CommandObjects CommandObject) {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
 				if (msgs.Length == 0) {

@@ -16,6 +16,9 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 		internal static bool LeaveBanFind(ulong GuildID) =>
 			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.LeaveBan ?? false;
 
+		internal static string PrefixFind(ulong GuildID) =>
+			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.Prefix;
+
 		internal static string PublicPrefixFind(ulong GuildID) =>
 			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.PublicPrefix;
 
@@ -63,6 +66,22 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 				GuildConfig InsertGuildConfig = new GuildConfig {
 					GuildID = GuildID,
 					LeaveBan = AfterLeaveBan
+				};
+
+				GuildConfigCollection.Insert(InsertGuildConfig);
+			}
+		}
+
+		internal static void PrefixUpsert(ulong GuildID, string AfterPrefix) {
+			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
+				DBGuildConfig.Prefix = AfterPrefix;
+
+				GuildConfigCollection.Update(DBGuildConfig);
+			}
+			else {
+				GuildConfig InsertGuildConfig = new GuildConfig {
+					GuildID = GuildID,
+					Prefix = AfterPrefix
 				};
 
 				GuildConfigCollection.Insert(InsertGuildConfig);

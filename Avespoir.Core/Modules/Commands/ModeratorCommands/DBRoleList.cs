@@ -1,15 +1,26 @@
-﻿using Avespoir.Core.Attributes;
+﻿using Avespoir.Core.Abstructs;
+using Avespoir.Core.Attributes;
+using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Language;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tababular;
 
-namespace Avespoir.Core.Modules.Commands {
+namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
-	partial class ModeratorCommands {
+	[Command("db-rolelist", RoleLevel.Moderator)]
+	class DBRoleList : CommandAbstruct {
 
-		[Command("db-rolelist")]
-		public async Task DBRoleList(CommandObjects CommandObject) {
+		internal override LanguageDictionary Description => new LanguageDictionary("Roleデータベースに登録されているロール情報をリストにして表示します") {
+			{ Database.Enums.Language.en_US, "Show a list of role information registered in the Role database" }
+		};
+
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-rolelist") {
+			{ Database.Enums.Language.en_US, "{0}db-rolelist" }
+		};
+
+		internal override async Task Execute(CommandObjects CommandObject) {
 			Database.DatabaseMethods.RolesMethods.RolesListFind(CommandObject.Guild.Id, out List<Roles> DBRolesList);
 
 			List<object> DBRolesObjects = new List<object> { };

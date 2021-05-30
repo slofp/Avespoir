@@ -1,5 +1,7 @@
-﻿using Avespoir.Core.Attributes;
+﻿using Avespoir.Core.Abstructs;
+using Avespoir.Core.Attributes;
 using Avespoir.Core.Configs;
+using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
@@ -7,12 +9,20 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Avespoir.Core.Modules.Commands {
+namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
-	partial class ModeratorCommands {
+	[Command("config", RoleLevel.Moderator)]
+	class Config : CommandAbstruct {
 
-		[Command("config")]
-		public async Task Config(CommandObjects CommandObject) {
+		internal override LanguageDictionary Description => new LanguageDictionary("Bot設定を変更・設定します") {
+			{ Database.Enums.Language.en_US, "Modify or configure Bot settings" }
+		};
+
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}config <下記参考> [値(whitelistは不要)]") {
+			{ Database.Enums.Language.en_US, "{0}config <Reference below> [Value(Not required for whitelist)]" }
+		};
+
+		internal override async Task Execute(CommandObjects CommandObject) {
 			Log.Debug("Start Config");
 			string[] msgs = CommandObject.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {
@@ -37,7 +47,7 @@ namespace Avespoir.Core.Modules.Commands {
 
 					await CommandObject.Message.Channel.SendMessageAsync(AfterLeaveBan ? CommandObject.Language.ConfigLeaveBanTrue : CommandObject.Language.ConfigLeaveBanFalse);
 					break;
-				case "publicprefix":
+				case "prefix":
 					if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {
 						await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigEmptyValue, config_arg));
 						return;
@@ -45,23 +55,10 @@ namespace Avespoir.Core.Modules.Commands {
 
 					string AfterPublicPrefix = msgs[1];
 					string BeforePublicPrefix = Database.DatabaseMethods.GuildConfigMethods.PublicPrefixFind(CommandObject.Guild.Id);
-					if (BeforePublicPrefix == null) BeforePublicPrefix = CommandConfig.PublicPrefix;
+					if (BeforePublicPrefix == null) BeforePublicPrefix = CommandConfig.Prefix;
 					Database.DatabaseMethods.GuildConfigMethods.PublicPrefixUpsert(CommandObject.Guild.Id, AfterPublicPrefix);
 
 					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigPublicPrefixChange, BeforePublicPrefix, AfterPublicPrefix));
-					break;
-				case "moderatorprefix":
-					if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {
-						await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigEmptyValue, config_arg));
-						return;
-					}
-
-					string AfterModeratorPrefix = msgs[1];
-					string BeforeModeratorPrefix = Database.DatabaseMethods.GuildConfigMethods.ModeratorPrefixFind(CommandObject.Guild.Id);
-					if (BeforeModeratorPrefix == null) BeforeModeratorPrefix = CommandConfig.ModeratorPrefix;
-					Database.DatabaseMethods.GuildConfigMethods.ModeratorPrefixUpsert(CommandObject.Guild.Id, AfterModeratorPrefix);
-
-					await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.ConfigModeratorPrefixChange, BeforeModeratorPrefix, AfterModeratorPrefix));
 					break;
 				case "logchannel":
 					if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {

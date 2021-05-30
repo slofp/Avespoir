@@ -10,7 +10,7 @@ namespace Avespoir.Core.Modules.Logger {
 
 	class LoggerProperties {
 
-		static ILoggerRepository Repository = LogManager.CreateRepository("default");
+		static readonly ILoggerRepository Repository = LogManager.CreateRepository("default");
 
 		static ILog Log_ {
 			get {

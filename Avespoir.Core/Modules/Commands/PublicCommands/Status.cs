@@ -1,4 +1,7 @@
-﻿using Avespoir.Core.Attributes;
+﻿using Avespoir.Core.Abstructs;
+using Avespoir.Core.Attributes;
+using Avespoir.Core.Database.Enums;
+using Avespoir.Core.Language;
 using Avespoir.Core.Modules.LevelSystems;
 using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
@@ -6,17 +9,25 @@ using DSharpPlus.Exceptions;
 using System;
 using System.Threading.Tasks;
 
-namespace Avespoir.Core.Modules.Commands {
+namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
-	partial class PublicCommands {
+	[Command("status", RoleLevel.Public)]
+	class Status : CommandAbstruct {
 
-		[Command("status")]
-		public async Task Status(CommandObjects CommandObject) {
+		internal override LanguageDictionary Description => new LanguageDictionary("ステータスを表示します") {
+			{ Database.Enums.Language.en_US, "Show user status" }
+		};
+
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}status (メンションかユーザーID)") {
+			{ Database.Enums.Language.en_US, "{0}status (Mention or UserID)" }
+		};
+
+		internal override async Task Execute(CommandObjects CommandObject) {
 			string[] msgs = CommandObject.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {
 				uint Level = Database.DatabaseMethods.UserDataMethods.LevelFind(CommandObject.Message.Author.Id);
 				double Exp = Database.DatabaseMethods.UserDataMethods.ExpFind(CommandObject.Message.Author.Id);
-				if(Exp == 0) {
+				if (Exp == 0) {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.StatusNotRegisted);
 					return;
 				}

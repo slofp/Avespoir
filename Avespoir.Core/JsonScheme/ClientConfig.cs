@@ -28,39 +28,12 @@ namespace Avespoir.Core.JsonScheme {
 
 		#region Prefix Config
 
-		public string MainPrefix {
+		public string Prefix {
 			get {
-				return CommandConfig.MainPrefix;
+				return CommandConfig.Prefix;
 			}
 			set {
-				CommandConfig.MainPrefix = value;
-			}
-		}
-
-		public string PublicPrefixTag {
-			get {
-				return CommandConfig.PublicPrefixTag;
-			}
-			set {
-				CommandConfig.PublicPrefixTag = value;
-			}
-		}
-
-		public string ModeratorPrefixTag {
-			get {
-				return CommandConfig.ModeratorPrefixTag;
-			}
-			set {
-				CommandConfig.ModeratorPrefixTag = value;
-			}
-		}
-
-		public string BotownerPrefixTag {
-			get {
-				return CommandConfig.BotownerPrefixTag;
-			}
-			set {
-				CommandConfig.BotownerPrefixTag = value;
+				CommandConfig.Prefix = value;
 			}
 		}
 		#endregion

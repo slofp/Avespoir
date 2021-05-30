@@ -1,6 +1,8 @@
-﻿using Avespoir.Core.Attributes;
+﻿using Avespoir.Core.Abstructs;
+using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
 using DSharpPlus.Entities;
 using System;
@@ -8,12 +10,20 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Avespoir.Core.Modules.Commands {
+namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
-	partial class ModeratorCommands {
+	[Command("db-roleadd", RoleLevel.Moderator)]
+	class DBRoleAdd : CommandAbstruct {
 
-		[Command("db-roleadd")]
-		public async Task DBRoleAdd(CommandObjects CommandObject) {
+		internal override LanguageDictionary Description => new LanguageDictionary("Roleデータベースに役職を追加します") {
+			{ Database.Enums.Language.en_US, "Add a role to the Role database" }
+		};
+
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-roleadd [役職ID] [役職登録番号] [役職レベル(一般: 0, モデレーター: 1, Bot: 2)]") {
+			{ Database.Enums.Language.en_US, "{0}db-roleadd [RoleID] [Role number] [Role level(Public: 0, Moderator: 1, Bot: 2)]" }
+		};
+
+		internal override async Task Execute(CommandObjects CommandObject) {
 			try {
 				string[] msgs = CommandObject.CommandArgs.Remove(0);
 				if (msgs.Length == 0) {
@@ -61,7 +71,7 @@ namespace Avespoir.Core.Modules.Commands {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.RoleLevelNotNumber);
 					return;
 				}
-				
+
 				intRoleLevel = (RoleLevel) Enum.ToObject(typeof(RoleLevel), msgs_RoleLevel);
 				if (string.IsNullOrWhiteSpace(Enum.GetName(typeof(RoleLevel), intRoleLevel))) {
 					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.RoleLevelNotFound);

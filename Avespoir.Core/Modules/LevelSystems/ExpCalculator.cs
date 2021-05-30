@@ -14,6 +14,8 @@ namespace Avespoir.Core.Modules.LevelSystems {
 
 		static readonly string CodePattern = @"```(.|\s)+```";
 
+		static readonly SHA256 CryptoProvider = new SHA256CryptoServiceProvider();
+
 		internal static (int MessageCount, string MessageIDReplace) ExpConvert(string MessageID, string MessageContentSource) {
 			string MessageCodeContent = Regex.Replace(MessageContentSource, CodePattern, "");
 			string MessageNoURLContent = Regex.Replace(MessageCodeContent, URLPattern, "");
@@ -33,8 +35,6 @@ namespace Avespoir.Core.Modules.LevelSystems {
 			Log.Debug("MessageMentionEmojiCount: " + MessageMentionEmojiCount);
 
 			int MessageCount = MessageContent.Length + MessageCodeCount + MessageURLCount + MessageMentionEmojiCount;
-
-			SHA256 CryptoProvider = new SHA256CryptoServiceProvider();
 
 			byte[] MessageIDBytes = Encoding.UTF8.GetBytes(MessageID);
 			byte[] MessageIDHashBytes = CryptoProvider.ComputeHash(MessageIDBytes);
@@ -69,9 +69,9 @@ namespace Avespoir.Core.Modules.LevelSystems {
 
 			Log.Debug("Exp: " + Exp);
 			double ExpScale;
-			if (MessageCount <= 20) ExpScale = 0.05 * MessageCount;
-			else if (MessageCount < 100) ExpScale = Math.Sin((MessageCount - 20) / 50.93) + 1;
-			else ExpScale = (((MessageCount - 100) * (MessageCount / 2.0)) / 237500.0) + 2;
+			if (MessageCount < 100) ExpScale = 0.01 * MessageCount;
+			else if (MessageCount < 1000) ExpScale = Math.Sin((MessageCount - 100) / 573.01) + 1;
+			else ExpScale = (((MessageCount - 1000) * (MessageCount / 4.0)) / 250000.0) + 2;
 
 			ExpScale /= 2.0; // Nerf Final Exp
 
