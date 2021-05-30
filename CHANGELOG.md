@@ -7,6 +7,34 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
+## [Beta 4.2](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.2) - 2021-05-30
+
+### Added
+
+* Update Checker
+
+### Fixed
+
+* Restart Method
+
+### Changed
+
+* How to execute the command
+
+  delegate to abstruct
+
+* Unification of command prefixes
+
+  All @ and > are now unified as $
+
+* Help Description
+
+  Instead of writing in the Help method, we decided to write in units of commands
+
+* Leveling System
+
+  Added weights to the experience formula
+
 ## [Beta 4.1](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.1) - 2021-04-30
 
 ### Fixed
