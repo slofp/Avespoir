@@ -14,12 +14,12 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 	[Command("db-usercrole", RoleLevel.Moderator)]
 	class DBUserChangeRole : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("Userデータベースに登録されているユーザーの役職を変更します") {
+			{ Database.Enums.Language.en_US, "Change the Role of a user in the User database" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-usercrole [ユーザーID] [役職登録番号]") {
+			{ Database.Enums.Language.en_US, "{0}db-usercrole [UserID] [Role number]" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

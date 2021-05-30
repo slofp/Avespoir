@@ -12,12 +12,12 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 	[Command("roll", RoleLevel.Public)]
 	class Roll : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("ランダムの数値を生成します") {
+			{ Database.Enums.Language.en_US, "Generate random numbers" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}roll (最大値) (最小値)") {
+			{ Database.Enums.Language.en_US, "{0}roll (Maximum value) (Minimum value)" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

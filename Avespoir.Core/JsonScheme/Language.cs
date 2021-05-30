@@ -54,77 +54,7 @@ namespace Avespoir.Core.JsonScheme {
 
 		public string HelpCommandPrefix { get; set; } = "プレフィックスは {0} です";
 
-		public string HelpPing { get; set; } = "Pingを測ります";
-
-		public string HelpVer { get; set; } = "Botのバージョンを表示します";
-
-		public string HelpHelp { get; set; } = "コマンド一覧を表示します";
-
-		public string HelpFind { get; set; } = "ユーザーの情報を表示します";
-
-		public string HelpFindUserId { get; set; } = "[ユーザーID]";
-
-		public string HelpEmoji { get; set; } = "画像をもとに絵文字を作成します";
-
-		public string HelpEmojiName { get; set; } = "[名前]";
-
-		public string HelpEmojiImage { get; set; } = "(画像アップロード)";
-
-		public string HelpInvite { get; set; } = "招待URLを作成します";
-
-		public string HelpInviteChannel { get; set; } = "(チャンネル)";
-
-		public string HelpStatus { get; set; } = "ステータスを表示します";
-
-		public string HelpStatusMention { get; set; } = "(メンションかユーザーID)";
-
-		public string HelpRoll { get; set; } = "ランダムの数値を生成します";
-
-		public string HelpRollMaxvalue { get; set; } = "(最大値)";
-
-		public string HelpRollMinvalue { get; set; } = "(最小値)";
-
 		public string HelpModeratorCommand { get; set; } = "モデレーターコマンド";
-
-		public string HelpDBUserList { get; set; } = "Userデータベースに登録されているユーザー情報をリストにして表示します";
-
-		public string HelpDBRoleList { get; set; } = "Roleデータベースに登録されているロール情報をリストにして表示します";
-
-		public string HelpDBUserAdd { get; set; } = "Userデータベースにユーザーを追加します";
-
-		public string HelpDBUserAddName { get; set; } = "[名前]";
-
-		public string HelpDBUserAddUserId { get; set; } = "[ユーザーID]";
-
-		public string HelpDBUserAddRoleNum { get; set; } = "[役職登録番号]";
-
-		public string HelpDBRoleAdd { get; set; } = "Roleデータベースに役職を追加します";
-
-		public string HelpDBRoleAddRoleId { get; set; } = "[役職ID]";
-
-		public string HelpDBRoleAddRoleNum { get; set; } = "[役職登録番号]";
-
-		public string HelpDBRoleAddRoleType { get; set; } = "[役職レベル(一般: 0, モデレーター: 1, Bot: 2)]";
-
-		public string HelpDBUserChangeRole { get; set; } = "Userデータベースに登録されているユーザーの役職を変更します";
-
-		public string HelpDBUserChangeRoleUserId { get; set; } = "[ユーザーID]";
-
-		public string HelpDBUserChangeRoleRoleNum { get; set; } = "[役職登録番号]";
-
-		public string HelpDBUserDelete { get; set; } = "Userデータベースからユーザーを削除します";
-
-		public string HelpDBUserDeleteUserId { get; set; } = "[ユーザーID]";
-
-		public string HelpDBRoleDelete { get; set; } = "Roleデータベースから役職を削除します";
-
-		public string HelpDBRoleDeleteRoleId { get; set; } = "[役職ID]";
-
-		public string HelpConfig { get; set; } = "Bot設定を変更・設定します";
-
-		public string HelpConfigFirstArgs { get; set; } = "<下記参考>";
-
-		public string HelpConfigValue { get; set; } = "[値(whitelistは不要)]";
 
 		public string HelpConfigArgs { get; set; } = "Config 第一引数";
 		#endregion

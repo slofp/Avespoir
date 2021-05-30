@@ -14,6 +14,8 @@ namespace Avespoir.Core.Modules.Commands {
 
 		internal JsonScheme.Language Language { get; }
 
+		internal Database.Enums.Language LanguageType { get; }
+
 		#region Extend MessageCreateEventArgs
 
 		internal DiscordClient Client { get; }
@@ -42,23 +44,22 @@ namespace Avespoir.Core.Modules.Commands {
 
 		// Not Use;
 		// This is google Translate at the time↓
-		internal Lazy<DiscordMember> 怠zyな { get; }
+		//internal Lazy<DiscordMember> 怠zyな { get; }
 		
 		#endregion
 
 		internal CommandObjects(DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
 			MessageObjects = Message_Objects;
 			CommandArgs = MessageObjects.Message.Content.Trim().Split(" ");
-			if (!Message_Objects.Channel.IsPrivate) {
-				string GuildLanguageString = Database.DatabaseMethods.GuildConfigMethods.LanguageFind(Message_Objects.Guild.Id);
-				if (GuildLanguageString == null) Language = new GetLanguage(Database.Enums.Language.ja_JP).Language_Data;
-				else {
-					if (!Enum.TryParse(GuildLanguageString, true, out Database.Enums.Language GuildLanguage))
-						Language = new GetLanguage(Database.Enums.Language.ja_JP).Language_Data;
-					else Language = new GetLanguage(GuildLanguage).Language_Data;
-				}
+			string GuildLanguageString = !Message_Objects.Channel.IsPrivate ? Database.DatabaseMethods.GuildConfigMethods.LanguageFind(Message_Objects.Guild.Id) : null;
+			if (GuildLanguageString != null && Enum.TryParse(GuildLanguageString, true, out Database.Enums.Language GuildLanguage)) {
+				Language = new GetLanguage(GuildLanguage).Language_Data;
+				LanguageType = GuildLanguage;
 			}
-			else Language = new GetLanguage(Database.Enums.Language.ja_JP).Language_Data;
+			else {
+				Language = new GetLanguage(Database.Enums.Language.ja_JP).Language_Data;
+				LanguageType = Database.Enums.Language.ja_JP;
+			}
 
 			Client = Bot;
 			Message = Message_Objects.Message;

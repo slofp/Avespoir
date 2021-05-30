@@ -12,12 +12,12 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 	[Command("db-rolelist", RoleLevel.Moderator)]
 	class DBRoleList : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("Roleデータベースに登録されているロール情報をリストにして表示します") {
+			{ Database.Enums.Language.en_US, "Show a list of role information registered in the Role database" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-rolelist") {
+			{ Database.Enums.Language.en_US, "{0}db-rolelist" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

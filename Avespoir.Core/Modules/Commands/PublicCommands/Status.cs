@@ -14,12 +14,12 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 	[Command("status", RoleLevel.Public)]
 	class Status : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("ステータスを表示します") {
+			{ Database.Enums.Language.en_US, "Show user status" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}status (メンションかユーザーID)") {
+			{ Database.Enums.Language.en_US, "{0}status (Mention or UserID)" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

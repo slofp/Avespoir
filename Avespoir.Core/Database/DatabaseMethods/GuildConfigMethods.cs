@@ -72,6 +72,22 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 			}
 		}
 
+		internal static void PrefixUpsert(ulong GuildID, string AfterPrefix) {
+			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
+				DBGuildConfig.Prefix = AfterPrefix;
+
+				GuildConfigCollection.Update(DBGuildConfig);
+			}
+			else {
+				GuildConfig InsertGuildConfig = new GuildConfig {
+					GuildID = GuildID,
+					Prefix = AfterPrefix
+				};
+
+				GuildConfigCollection.Insert(InsertGuildConfig);
+			}
+		}
+
 		internal static void PublicPrefixUpsert(ulong GuildID, string AfterPublicPrefix) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
 				DBGuildConfig.PublicPrefix = AfterPublicPrefix;

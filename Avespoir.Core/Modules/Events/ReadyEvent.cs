@@ -29,7 +29,7 @@ namespace Avespoir.Core.Modules.Events {
 		static async Task StartStatus() {
 			while (!ExitCheck) {
 				DiscordActivity ReadyStatus = new DiscordActivity() {
-					Name = CommandConfig.PublicPrefix + "help",
+					Name = CommandConfig.Prefix + "help",
 				};
 				
 				await Client.Bot.UpdateStatusAsync(ReadyStatus, UserStatus.Online).ConfigureAwait(false);

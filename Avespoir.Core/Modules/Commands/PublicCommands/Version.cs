@@ -9,12 +9,12 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 	[Command("ver", RoleLevel.Public)]
 	class Version : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("Botのバージョンを表示します") {
+			{ Database.Enums.Language.en_US, "Show bot version" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}ver") {
+			{ Database.Enums.Language.en_US, "{0}ver" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

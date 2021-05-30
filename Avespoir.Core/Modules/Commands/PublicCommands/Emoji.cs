@@ -17,12 +17,12 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 	[Command("emoji", RoleLevel.Public)]
 	class Emoji : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("画像をもとに絵文字を作成します") {
+			{ Database.Enums.Language.en_US, "Create a picture based on an image" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}emoji [名前] (画像アップロード)") {
+			{ Database.Enums.Language.en_US, "{0}emoji [Name] (Upload a picture)" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

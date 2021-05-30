@@ -14,12 +14,12 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 	[Command("db-userdel", RoleLevel.Moderator)]
 	class DBUserDelete : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("Userデータベースからユーザーを削除します") {
+			{ Database.Enums.Language.en_US, "Remove a user from the User database" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-userdel [ユーザーID]") {
+			{ Database.Enums.Language.en_US, "{0}db-userdel [UserID]" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

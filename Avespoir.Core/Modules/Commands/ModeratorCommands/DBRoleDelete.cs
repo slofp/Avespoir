@@ -14,12 +14,12 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 	[Command("db-roledel", RoleLevel.Moderator)]
 	class DBRoleDelete : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("Roleデータベースから役職を削除します") {
+			{ Database.Enums.Language.en_US, "Removes Role from the Role database" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-roledel [役職ID]") {
+			{ Database.Enums.Language.en_US, "{0}db-roledel [RoleID]" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

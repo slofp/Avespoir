@@ -11,13 +11,9 @@ namespace Avespoir.Core.Modules.Commands.BotownerCommands {
 	[Command("exit", RoleLevel.Owner)]
 	class Exit : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
-		};
+		internal override LanguageDictionary Description => new LanguageDictionary("Logout This Bot");
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
-		};
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}exit");
 
 		internal override async Task Execute(CommandObjects CommandObject) {
 			await CommandObject.Message.RespondAsync("Logging out...");

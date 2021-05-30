@@ -14,12 +14,12 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 	[Command("db-useradd", RoleLevel.Moderator)]
 	class DBUserAdd : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("Userデータベースにユーザーを追加します") {
+			{ Database.Enums.Language.en_US, "Add a user to the User database" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-useradd [名前] [ユーザーID] [役職登録番号]") {
+			{ Database.Enums.Language.en_US, "{0}db-useradd [Name] [UserID] [Role Number]" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

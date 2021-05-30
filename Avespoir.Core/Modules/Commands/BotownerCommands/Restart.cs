@@ -14,13 +14,9 @@ namespace Avespoir.Core.Modules.Commands.BotownerCommands {
 	[Command("restart", RoleLevel.Owner)]
 	class Restart : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
-		};
+		internal override LanguageDictionary Description => new LanguageDictionary("Restart This Bot");
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
-		};
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}restart");
 
 		internal override async Task Execute(CommandObjects CommandObject) {
 			await CommandObject.Message.RespondAsync("Restarting...");

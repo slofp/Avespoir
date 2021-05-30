@@ -14,12 +14,12 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 	[Command("invite", RoleLevel.Public)]
 	class Invite : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("招待URLを作成します") {
+			{ Database.Enums.Language.en_US, "Create invite URL" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}invite (チャンネル)") {
+			{ Database.Enums.Language.en_US, "{0}invite (Channel)" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

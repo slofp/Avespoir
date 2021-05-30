@@ -11,12 +11,12 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 	[Command("ping", RoleLevel.Public)]
 	class Ping : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("Pingを測ります") {
+			{ Database.Enums.Language.en_US, "Pinging" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}ping") {
+			{ Database.Enums.Language.en_US, "{0}ping" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

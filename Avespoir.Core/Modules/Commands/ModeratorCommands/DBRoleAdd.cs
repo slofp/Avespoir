@@ -15,12 +15,12 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 	[Command("db-roleadd", RoleLevel.Moderator)]
 	class DBRoleAdd : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("Roleデータベースに役職を追加します") {
+			{ Database.Enums.Language.en_US, "Add a role to the Role database" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-roleadd [役職ID] [役職登録番号] [役職レベル(一般: 0, モデレーター: 1, Bot: 2)]") {
+			{ Database.Enums.Language.en_US, "{0}db-roleadd [RoleID] [Role number] [Role level(Public: 0, Moderator: 1, Bot: 2)]" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

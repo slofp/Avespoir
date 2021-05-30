@@ -4,12 +4,12 @@ using System;
 namespace Avespoir.Core.Attributes {
 
 	// AttributeTargets.Method is retained for compatibility
-	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	class CommandAttribute : Attribute {
 
 		internal string CommandName { get; }
 
-		internal RoleLevel CommandRoleLevel { get; } = RoleLevel.Public;
+		internal RoleLevel CommandRoleLevel { get; }
 
 		/// <summary>
 		/// Name null. Can't Execute command.
@@ -25,6 +25,7 @@ namespace Avespoir.Core.Attributes {
 		/// <param name="Command"></param>
 		internal CommandAttribute(string Command) {
 			CommandName = Command;
+			CommandRoleLevel = RoleLevel.Public;
 		}
 
 		/// <summary>

@@ -13,12 +13,12 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 	[Command("db-userlist", RoleLevel.Moderator)]
 	class DBUserList : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("Userデータベースに登録されているユーザー情報をリストにして表示します") {
+			{ Database.Enums.Language.en_US, "Show a list of user information registered in the User database" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-userlist") {
+			{ Database.Enums.Language.en_US, "{0}db-userlist" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {

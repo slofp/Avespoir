@@ -13,13 +13,9 @@ namespace Avespoir.Core.Modules.Commands.BotownerCommands {
 	[Command("userdata_reset", RoleLevel.Owner)]
 	class UserDataReset : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
-		};
+		internal override LanguageDictionary Description => new LanguageDictionary("Reset all levels");
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
-		};
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}userdata_reset");
 
 		internal override async Task Execute(CommandObjects CommandObject) {
 			DiscordMessage RespondMessage = await CommandObject.Message.RespondAsync("Level resetting...").ConfigureAwait(false);

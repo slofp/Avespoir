@@ -12,12 +12,12 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 	[Command("find", RoleLevel.Public)]
 	class Find : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Description => new LanguageDictionary("ユーザーの情報を表示します") {
+			{ Database.Enums.Language.en_US, "Show user info" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("テンプレート") {
-			{ Database.Enums.Language.en_US, "Template" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}find [ユーザーID]") {
+			{ Database.Enums.Language.en_US, "{0}find [UserID]" }
 		};
 
 		internal override async Task Execute(CommandObjects CommandObject) {
