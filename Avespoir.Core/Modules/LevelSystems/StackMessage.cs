@@ -1,6 +1,7 @@
-﻿using Avespoir.Core.Modules.Logger;
+﻿using Avespoir.Core.Extends;
+using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
-using DSharpPlus.Entities;
+using Discord;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,18 +10,18 @@ namespace Avespoir.Core.Modules.LevelSystems {
 
 	class StackMessage {
 
-		internal List<DiscordMessage> StackDiscordMessages = new List<DiscordMessage>();
+		internal List<IMessage> StackMessages = new List<IMessage>();
 
 		internal bool AllowExp { get; set; } = true;
 
 		private long LastMessageTick = 0;
 
-		private readonly DiscordMessage FirstMessage;
+		private readonly IMessage FirstMessageObject;
 
-		internal StackMessage(DiscordMessage FirstMessage) {
-			this.FirstMessage = FirstMessage;
+		internal StackMessage(MessageObject FirstMessageObject) {
+			this.FirstMessageObject = FirstMessageObject.SourceSocketMessage;
 
-			AddStackMessage(this.FirstMessage);
+			AddStackMessage(this.FirstMessageObject);
 		}
 
 		internal async Task<StackMessage> Start() {
@@ -28,15 +29,15 @@ namespace Avespoir.Core.Modules.LevelSystems {
 
 			AwaitMessageInfo AwaitMessage_Info = new AwaitMessageInfo();
 
-			AwaitMessage_Info.Init(FirstMessage);
+			AwaitMessage_Info.Init(FirstMessageObject);
 
 			try {
 				while (DateTime.Now.Ticks - LastMessageTick < Math.Pow(10, 7) * 60) {
 					if (AwaitMessage_Info.Status == AwaitMessageStatus.Pending) continue;
 
-					DiscordMessage WaitedMessage = await FirstMessage.Channel.GetMessageAsync(AwaitMessage_Info.MessageID).ConfigureAwait(false);
+					IMessage WaitedMessage = await FirstMessageObject.Channel.GetMessageAsync(AwaitMessage_Info.MessageID).ConfigureAwait(false);
 
-					if (WaitedMessage.Author.Id != StackDiscordMessages[0].Author.Id) {
+					if (WaitedMessage.Author.Id != StackMessages[0].Author.Id) {
 						Log.Debug("Stack End"); // It's responding, but it's not working.
 						if (WaitedMessage.Author.IsBot) AllowExp = false;
 						AddStackMessage(WaitedMessage);
@@ -57,14 +58,14 @@ namespace Avespoir.Core.Modules.LevelSystems {
 				return this;
 			}
 			finally {
-				AwaitMessage_Info.Finalize_(FirstMessage);
+				AwaitMessage_Info.Finalize_(FirstMessageObject);
 			}
 		}
 
-		private void AddStackMessage(DiscordMessage Message) {
+		private void AddStackMessage(IMessage Message) {
 			LastMessageTick = Message.Timestamp.Ticks;
 
-			StackDiscordMessages.Add(Message);
+			StackMessages.Add(Message);
 		}
 	}
 }

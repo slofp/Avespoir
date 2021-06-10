@@ -1,4 +1,6 @@
-﻿using DSharpPlus;
+﻿using Discord;
+using Discord.WebSocket;
+using DSharpPlus;
 using Microsoft.Extensions.Logging;
 
 namespace Avespoir.Core.Configs {
@@ -18,5 +20,14 @@ namespace Avespoir.Core.Configs {
 			#endif
 		};
 
+		internal static DiscordSocketConfig WebSocketConfig() => new DiscordSocketConfig() {
+			#if DEBUG
+			DefaultRetryMode = RetryMode.AlwaysFail,
+			LogLevel = LogSeverity.Debug
+			#else
+			DefaultRetryMode = RetryMode.AlwaysRetry,
+			LogLevel = LogSeverity.Info
+			#endif
+		};
 	}
 }

@@ -1,9 +1,9 @@
-﻿using Avespoir.Core.Modules.Commands;
+﻿using Avespoir.Core.Extends;
+using Avespoir.Core.Modules.Commands;
 using Avespoir.Core.Modules.LevelSystems;
 using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
-using DSharpPlus;
-using DSharpPlus.EventArgs;
+using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,40 +18,42 @@ namespace Avespoir.Core.Modules.Events {
 		// ulong -> Channel ID, 
 		internal static readonly Dictionary<ulong, List<AwaitMessageInfo>> AwaitMessageInfo_List_Dict = new Dictionary<ulong, List<AwaitMessageInfo>>();
 
-		internal static Task Main(DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
+		internal static Task Main(SocketMessage Message) {
 			Log.Debug("MessageEvent " + "Start...");
 
-			MessageLog.Main(Message_Objects).ConfigureAwait(false);
+			MessageObject Message_Object = new MessageObject(Message);
 
-			AwaitMessageProcess(Message_Objects).ConfigureAwait(false);
+			MessageLog.Main(Message_Object).ConfigureAwait(false);
+
+			AwaitMessageProcess(Message_Object).ConfigureAwait(false);
 
 			// If someone talks to you while you are waiting for a message, it will count as Level.
-			if (!Message_Objects.Message.Author.IsBot &&
-				!Message_Objects.Channel.IsPrivate &&
-				!LevelSystem_Queue.Contains(Message_Objects.Channel.Id) &&
-				Database.DatabaseMethods.GuildConfigMethods.LevelSwitchFind(Message_Objects.Guild.Id))
-				Task.Run(() => LevelSystemInit(Bot, Message_Objects)).ConfigureAwait(false);
+			if (!Message_Object.Author.IsBot &&
+				!Message_Object.IsPrivate &&
+				!LevelSystem_Queue.Contains(Message_Object.Channel.Id) &&
+				Database.DatabaseMethods.GuildConfigMethods.LevelSwitchFind(Message_Object.Guild.Id))
+				Task.Run(() => LevelSystemInit(Message_Object)).ConfigureAwait(false);
 			else Log.Debug("Exist Task");
 
-			CommandRegister.Start(Bot, Message_Objects).ConfigureAwait(false);
+			CommandRegister.Start(Message_Object).ConfigureAwait(false);
 
 			Log.Debug("MessageEvent " + "End...");
 
 			return Task.CompletedTask;
 		}
 
-		private static void LevelSystemInit(DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
-			LevelSystem_Queue.Add(Message_Objects.Channel.Id);
-			LevelSystem.Main(Bot, Message_Objects).ContinueWith(_ => {
-				LevelSystem_Queue.Remove(Message_Objects.Channel.Id);
+		private static void LevelSystemInit(MessageObject Message_Object) {
+			LevelSystem_Queue.Add(Message_Object.Channel.Id);
+			LevelSystem.Main(Message_Object).ContinueWith(_ => {
+				LevelSystem_Queue.Remove(Message_Object.Channel.Id);
 			}).ConfigureAwait(false);
 		}
 
-		private static Task AwaitMessageProcess(MessageCreateEventArgs Message_Objects) {
-			if (AwaitMessageInfo_List_Dict.TryGetValue(Message_Objects.Channel.Id, out List<AwaitMessageInfo> AwaitMessageInfo_List)) {
+		private static Task AwaitMessageProcess(MessageObject Message_Object) {
+			if (AwaitMessageInfo_List_Dict.TryGetValue(Message_Object.Channel.Id, out List<AwaitMessageInfo> AwaitMessageInfo_List)) {
 				IEnumerable<AwaitMessageInfo> FindAwaitMessageInfo_Enum =
 					from AwaitMessage_Info in AwaitMessageInfo_List
-					where AwaitMessage_Info.UserID == 0 || AwaitMessage_Info.UserID == Message_Objects.Author.Id
+					where AwaitMessage_Info.UserID == 0 || AwaitMessage_Info.UserID == Message_Object.Author.Id
 					select AwaitMessage_Info
 				;
 
@@ -62,7 +64,7 @@ namespace Avespoir.Core.Modules.Events {
 					}
 
 					lock (FindAwaitMessageInfo) {
-						FindAwaitMessageInfo.MessageID = Message_Objects.Message.Id;
+						FindAwaitMessageInfo.MessageID = Message_Object.Id;
 						FindAwaitMessageInfo.Status = AwaitMessageStatus.Success;
 					}
 				}

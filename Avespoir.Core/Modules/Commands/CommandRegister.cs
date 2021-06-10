@@ -4,9 +4,7 @@ using Avespoir.Core.Configs;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Modules.Logger;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,7 +62,7 @@ namespace Avespoir.Core.Modules.Commands {
 
 		#region Command checker
 
-		internal static async Task Start(DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
+		internal static async Task Start(SocketMessage Message_Objects) {
 			Log.Debug("Command check");
 
 			CommandObjects CommandObject = new CommandObjects(Bot, Message_Objects);

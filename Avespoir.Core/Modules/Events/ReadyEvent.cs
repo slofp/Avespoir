@@ -1,5 +1,6 @@
 ﻿using Avespoir.Core.Configs;
 using Avespoir.Core.Modules.Logger;
+using Discord.WebSocket;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -15,24 +16,35 @@ namespace Avespoir.Core.Modules.Events {
 			Name = "Starting...",
 		};
 
-		internal static Task Main(DiscordClient Bot, ReadyEventArgs _) {
+		internal static Task Main(DiscordSocketClient Bot) {
 			Log.Debug("ReadyEvent " + "Start...");
-			Client.Bot.UpdateStatusAsync(StartingStatus, UserStatus.DoNotDisturb).ConfigureAwait(false);
+			//Bot.UpdateStatusAsync(StartingStatus, UserStatus.DoNotDisturb).ConfigureAwait(false);
 
 			Log.Info($"{Bot.CurrentUser.Username} Bot Ready!");
 
-			StartStatus().ConfigureAwait(false);
+			//StartStatus().ConfigureAwait(false);
 			Log.Debug("ReadyEvent " + "End...");
 			return Task.CompletedTask;
 		}
 
-		static async Task StartStatus() {
+		internal static Task Main(DiscordClient Bot, ReadyEventArgs _) {
+			Log.Debug("ReadyEvent " + "Start...");
+			Bot.UpdateStatusAsync(StartingStatus, UserStatus.DoNotDisturb).ConfigureAwait(false);
+
+			Log.Info($"{Bot.CurrentUser.Username} Bot Ready!");
+
+			StartStatus(Bot).ConfigureAwait(false);
+			Log.Debug("ReadyEvent " + "End...");
+			return Task.CompletedTask;
+		}
+
+		static async Task StartStatus(DiscordClient Bot) {
 			while (!ExitCheck) {
 				DiscordActivity ReadyStatus = new DiscordActivity() {
 					Name = CommandConfig.Prefix + "help",
 				};
 				
-				await Client.Bot.UpdateStatusAsync(ReadyStatus, UserStatus.Online).ConfigureAwait(false);
+				await Bot.UpdateStatusAsync(ReadyStatus, UserStatus.Online).ConfigureAwait(false);
 
 				await Task.Delay(1000).ConfigureAwait(false);
 			}

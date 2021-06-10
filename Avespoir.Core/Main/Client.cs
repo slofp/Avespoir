@@ -1,7 +1,6 @@
 ﻿using Avespoir.Core.Configs;
 using Avespoir.Core.Modules.Events;
-using Avespoir.Core.Modules.Logger;
-using DSharpPlus;
+using Discord.WebSocket;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -37,52 +36,40 @@ namespace Avespoir.Core {
 
 		internal static string Version => string.Format("{0} {1} {2}{3}", ProjectName, ReleaseName, VersionName, BuildTypeName);
 
-		internal static string[] VersionTag => new string[] {ReleaseName, VersionName};
+		internal static string[] VersionTag => new string[2] {ReleaseName, VersionName};
 
-		internal static DiscordClient Bot = new DiscordClient(ClientConfig.DiscordConfig());
+		internal static readonly DiscordShardedClient Bot = new DiscordShardedClient(ClientConfig.WebSocketConfig());
 
 		internal static async Task Main() {
-			Bot.Ready += ReadyEvent.Main;
+			Bot.ShardReady += ReadyEvent.Main;
 
-			Bot.MessageCreated += MessageEvent.Main;
-
-			Bot.GuildMemberAdded += GuildMemberAddEvent.Main;
-
-			Bot.GuildMemberRemoved += GuildMemberRemoveEvent.Main;
-
-			Bot.ClientErrored += ClientErroredEvent.Main;
-
-			Bot.UnknownEvent += (DiscordClient Client, DSharpPlus.EventArgs.UnknownEventArgs UnknownEvent) => {
-				Log.Warning($"Unknown Event: {UnknownEvent.EventName}\nHandled: {UnknownEvent.Handled}\nJson: {UnknownEvent.Json}");
-
-				return Task.CompletedTask;
+			Bot.MessageReceived += (SocketMessage arg) => {
+				throw new NotImplementedException();
 			};
 
-			Bot.SocketClosed += (DiscordClient Client, DSharpPlus.EventArgs.SocketCloseEventArgs SocketCloseEvent) => {
-				Log.Info($"Socket Closed: {SocketCloseEvent.CloseCode}\nCloseMessage: {SocketCloseEvent.CloseMessage}\nHandled: {SocketCloseEvent.Handled}");
-
-				return Task.CompletedTask;
+			Bot.UserJoined += (SocketGuildUser arg) => {
+				throw new NotImplementedException();
 			};
 
-			Bot.SocketErrored += (DiscordClient Client, DSharpPlus.EventArgs.SocketErrorEventArgs SocketErrorEvent) => {
-				Log.Error($"Socket Error\nHandled: {SocketErrorEvent.Handled}", SocketErrorEvent.Exception);
-
-				return Task.CompletedTask;
+			Bot.UserLeft += (SocketGuildUser arg) => {
+				throw new NotImplementedException();
 			};
 
-			Bot.SocketOpened += (DiscordClient Client, DSharpPlus.EventArgs.SocketEventArgs SocketEvent) => {
-				Log.Info($"Socket Opened\nHandled: {SocketEvent.Handled}");
+			Bot.Log += LogEvents.LogEvent;
 
-				return Task.CompletedTask;
-			};
+			Bot.LoggedIn += LogEvents.LoggedInEvent;
 
-			//Bot.Logger.
-			//Bot.DebugLogger.LogMessageReceived += (Sender, LogMessage) => Log.Info(LogMessage.Message);
-			//#if !DEBUG
-			Bot.Heartbeated += HeartbeatLog.ExportHeartbeatLog;
-			//#endif
+			Bot.LoggedOut += LogEvents.LoggedOutEvent;
 
-			await Bot.ConnectAsync();
+			Bot.ShardConnected += LogEvents.ConnectedEvent;
+
+			Bot.ShardDisconnected += LogEvents.DisconnectedEvent;
+
+			Bot.ShardLatencyUpdated += LogEvents.LatencyUpdated;
+
+			await Bot.LoginAsync(Discord.TokenType.Bot, ClientConfig.Token).ConfigureAwait(false);
+
+			await Bot.StartAsync().ConfigureAwait(false);
 
 			AppDomain.CurrentDomain.ProcessExit += ConsoleExitEvent.Main;
 
