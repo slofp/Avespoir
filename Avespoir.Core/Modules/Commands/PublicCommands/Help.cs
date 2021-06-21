@@ -3,8 +3,9 @@ using Avespoir.Core.Attributes;
 using Avespoir.Core.Configs;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
-using DSharpPlus.Entities;
+using Discord;
 using System;
 using System.Threading.Tasks;
 
@@ -21,35 +22,35 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			{ Database.Enums.Language.en_US, "{0}help" }
 		};
 
-		internal override async Task Execute(CommandObjects CommandObject) {
-			await CommandObject.Channel.SendMessageAsync(string.Format(CommandObject.Language.DMMention, CommandObject.Member.Mention));
+		internal override async Task Execute(CommandObject Command_Object) {
+			await Command_Object.Channel.SendMessageAsync(string.Format(Command_Object.Language.DMMention, Command_Object.Member.Mention));
 
-			string GuildPrefix = Database.DatabaseMethods.GuildConfigMethods.PrefixFind(CommandObject.Guild.Id);
+			string GuildPrefix = Database.DatabaseMethods.GuildConfigMethods.PrefixFind(Command_Object.Guild.Id);
 			if (GuildPrefix == null) GuildPrefix = CommandConfig.Prefix;
 
-			DiscordEmbedBuilder PublicEmbed = new DiscordEmbedBuilder();
-			DiscordEmbedBuilder ModeratorEmbed = new DiscordEmbedBuilder();
-			DiscordEmbedBuilder BotownerEmbed = new DiscordEmbedBuilder();
+			EmbedBuilder PublicEmbed = new EmbedBuilder();
+			EmbedBuilder ModeratorEmbed = new EmbedBuilder();
+			EmbedBuilder BotownerEmbed = new EmbedBuilder();
 			foreach (CommandInfo Command_Info in CommandInfo.GetCommandInfo()) {
 				if (Command_Info.Command_Attribute.CommandName == null) continue;
 
 				switch (Command_Info.Command_Attribute.CommandRoleLevel) {
 					case RoleLevel.Public:
 						PublicEmbed.AddField(
-							Command_Info.Command.Description[CommandObject.LanguageType],
-							string.Format($"`{Command_Info.Command.Usage[CommandObject.LanguageType]}`", GuildPrefix)
+							Command_Info.Command.Description[Command_Object.LanguageType],
+							string.Format($"`{Command_Info.Command.Usage[Command_Object.LanguageType]}`", GuildPrefix)
 						);
 						break;
 					case RoleLevel.Moderator:
 						ModeratorEmbed.AddField(
-							Command_Info.Command.Description[CommandObject.LanguageType],
-							string.Format($"`{Command_Info.Command.Usage[CommandObject.LanguageType]}`", GuildPrefix)
+							Command_Info.Command.Description[Command_Object.LanguageType],
+							string.Format($"`{Command_Info.Command.Usage[Command_Object.LanguageType]}`", GuildPrefix)
 						);
 						break;
 					case RoleLevel.Owner:
 						BotownerEmbed.AddField(
-							Command_Info.Command.Description[CommandObject.LanguageType],
-							string.Format($"`{Command_Info.Command.Usage[CommandObject.LanguageType]}`", CommandConfig.Prefix)
+							Command_Info.Command.Description[Command_Object.LanguageType],
+							string.Format($"`{Command_Info.Command.Usage[Command_Object.LanguageType]}`", CommandConfig.Prefix)
 						);
 						break;
 					default:
@@ -58,42 +59,42 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			}
 
 			PublicEmbed
-				.WithTitle(CommandObject.Language.HelpPublicCommand)
-				.WithDescription(string.Format(CommandObject.Language.HelpCommandPrefix, GuildPrefix))
-				.WithColor(new DiscordColor(0x00B06B))
+				.WithTitle(Command_Object.Language.HelpPublicCommand)
+				.WithDescription(string.Format(Command_Object.Language.HelpCommandPrefix, GuildPrefix))
+				.WithColor(new Color(0x00B06B))
 				.WithTimestamp(DateTime.Now)
-				.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
-			await CommandObject.Member.SendMessageAsync(PublicEmbed);
+				.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
+			await Command_Object.Member.SendMessageAsync(embed: PublicEmbed.Build());
 
 			RoleLevel DBRoleLevel =
-					CommandObject.Message.Author.Id == CommandObject.Guild.Owner.Id ||
-					CommandObject.Message.Author.Id == ClientConfig.BotownerId ? RoleLevel.Moderator :
-					Database.DatabaseMethods.AllowUsersMethods.AllowUserFind(CommandObject.Guild.Id, CommandObject.Message.Author.Id, out AllowUsers DBAllowUsersID) &&
-					Database.DatabaseMethods.RolesMethods.RoleFind(CommandObject.Guild.Id, DBAllowUsersID.RoleNum, out Roles DBRolesNum) ? (RoleLevel) Enum.Parse(typeof(RoleLevel), DBRolesNum.RoleLevel) :
+					Command_Object.Author.Id == Command_Object.Guild.Owner.Id ||
+					Command_Object.Author.Id == ClientConfig.BotownerId ? RoleLevel.Moderator :
+					Database.DatabaseMethods.AllowUsersMethods.AllowUserFind(Command_Object.Guild.Id, Command_Object.Author.Id, out AllowUsers DBAllowUsersID) &&
+					Database.DatabaseMethods.RolesMethods.RoleFind(Command_Object.Guild.Id, DBAllowUsersID.RoleNum, out Roles DBRolesNum) ? (RoleLevel) Enum.Parse(typeof(RoleLevel), DBRolesNum.RoleLevel) :
 					RoleLevel.Public;
 
 			if (DBRoleLevel == RoleLevel.Moderator) { // CommandObject.Message.Author.Id == CommandObject.Guild.Owner.Id
 				ModeratorEmbed
-					.WithTitle(CommandObject.Language.HelpModeratorCommand)
-					.WithDescription(string.Format(CommandObject.Language.HelpCommandPrefix, GuildPrefix))
+					.WithTitle(Command_Object.Language.HelpModeratorCommand)
+					.WithDescription(string.Format(Command_Object.Language.HelpCommandPrefix, GuildPrefix))
 					.AddField(
-						CommandObject.Language.HelpConfigArgs,
+						Command_Object.Language.HelpConfigArgs,
 						"`" + "whitelist" + " | " + "leaveban" + " | " + "publicprefix" + " | " + "moderatorprefix" + " | " + "logchannel" + " | " + "language" + " | " + "level" + "`"
 					)
-					.WithColor(new DiscordColor(0xF6AA00))
+					.WithColor(new Color(0xF6AA00))
 					.WithTimestamp(DateTime.Now)
-					.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
-				await CommandObject.Member.SendMessageAsync(ModeratorEmbed);
+					.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
+				await Command_Object.Member.SendMessageAsync(embed: ModeratorEmbed.Build());
 			}
 
-			if (CommandObject.Message.Author.Id == ClientConfig.BotownerId) {
+			if (Command_Object.Author.Id == ClientConfig.BotownerId) {
 				BotownerEmbed
 					.WithTitle("Botowner Commands")
 					.WithDescription(string.Format("Prefix is {0}", CommandConfig.Prefix))
-					.WithColor(new DiscordColor(0x1971FF))
+					.WithColor(new Color(0x1971FF))
 					.WithTimestamp(DateTime.Now)
-					.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
-				await CommandObject.Member.SendMessageAsync(BotownerEmbed);
+					.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
+				await Command_Object.Member.SendMessageAsync(embed: BotownerEmbed.Build());
 			}
 		}
 	}

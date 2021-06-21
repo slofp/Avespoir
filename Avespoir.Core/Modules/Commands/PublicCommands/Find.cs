@@ -1,10 +1,10 @@
 ﻿using Avespoir.Core.Abstructs;
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
+using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
-using DSharpPlus.Entities;
-using DSharpPlus.Exceptions;
+using Discord.WebSocket;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Commands.PublicCommands {
@@ -20,29 +20,29 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			{ Database.Enums.Language.en_US, "{0}find [UserID]" }
 		};
 
-		internal override async Task Execute(CommandObjects CommandObject) {
-			string[] msgs = CommandObject.CommandArgs.Remove(0);
+		internal override async Task Execute(CommandObject Command_Object) {
+			string[] msgs = Command_Object.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {
-				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyText);
+				await Command_Object.Channel.SendMessageAsync(Command_Object.Language.EmptyText);
 				return;
 			}
 
 			if (string.IsNullOrWhiteSpace(msgs[0])) {
-				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyId);
+				await Command_Object.Channel.SendMessageAsync(Command_Object.Language.EmptyId);
 				return;
 			}
 			if (!ulong.TryParse(msgs[0], out ulong Userid)) {
-				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdCouldntParse);
+				await Command_Object.Channel.SendMessageAsync(Command_Object.Language.IdCouldntParse);
 				return;
 			}
 
-			try {
-				DiscordMember FoundMember = await CommandObject.Guild.GetMemberAsync(Userid);
-				string ResultString = string.Format(CommandObject.Language.FindResult, FoundMember.Username + "#" + FoundMember.Discriminator, FoundMember.JoinedAt, FoundMember.IsOwner ? "yes" : "no", FoundMember.AvatarUrl);
-				await CommandObject.Channel.SendMessageAsync(ResultString);
+			SocketGuildUser FoundMember = Command_Object.Guild.GetUser(Userid);
+			if (FoundMember is null) {
+				await Command_Object.Channel.SendMessageAsync(Command_Object.Language.FindNotFound);
 			}
-			catch (NotFoundException) {
-				await CommandObject.Channel.SendMessageAsync(CommandObject.Language.FindNotFound);
+			else {
+				string ResultString = string.Format(Command_Object.Language.FindResult, FoundMember.Username + "#" + FoundMember.Discriminator, FoundMember.JoinedAt, Command_Object.Guild.OwnerId == FoundMember.Id ? "yes" : "no", FoundMember.GetAvatarUrl(size: 1024));
+				await Command_Object.Channel.SendMessageAsync(ResultString);
 			}
 		}
 	}

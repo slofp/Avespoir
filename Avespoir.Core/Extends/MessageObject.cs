@@ -126,8 +126,8 @@ namespace Avespoir.Core.Extends {
 			Tags = Message.Tags;
 			Timestamp = Message.Timestamp;
 
-			IsPrivate = !SourceSocketMessage.Reference.GuildId.IsSpecified;
-			Guild = IsPrivate ? null : Client.Bot.GetGuild(SourceSocketMessage.Reference.GuildId.GetValueOrDefault());
+			IsPrivate = Channel is IPrivateChannel;
+			Guild = (Channel as SocketGuildChannel)?.Guild;
 			Member = Guild?.GetUser(Author.Id);
 		}
 

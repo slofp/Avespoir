@@ -1,6 +1,7 @@
 using Avespoir.Core.Abstructs;
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
+using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
 using System;
@@ -20,33 +21,33 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			{ Database.Enums.Language.en_US, "{0}roll (Maximum value) (Minimum value)" }
 		};
 
-		internal override async Task Execute(CommandObjects CommandObject) {
-			string[] msgs = CommandObject.CommandArgs.Remove(0);
+		internal override async Task Execute(CommandObject Command_Object) {
+			string[] msgs = Command_Object.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {
 				Random random = new Random();
 
-				await CommandObject.Channel.SendMessageAsync(random.NextLong(100).ToString()).ConfigureAwait(false);
+				await Command_Object.Channel.SendMessageAsync(random.NextLong(100).ToString()).ConfigureAwait(false);
 			}
 			else if (msgs.Length == 1) {
 				string Maxstring = msgs[0].Split('.')[0];
 				if (!long.TryParse(Maxstring, out long Maxvalue)) {
-					await CommandObject.Channel.SendMessageAsync(CommandObject.Language.RollMaxCouldntParse).ConfigureAwait(false);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RollMaxCouldntParse).ConfigureAwait(false);
 				}
 				else {
 					Random random = new Random();
 
 					try {
 						if (Maxvalue == 0) {
-							await CommandObject.Channel.SendMessageAsync("0").ConfigureAwait(false);
+							await Command_Object.Channel.SendMessageAsync("0").ConfigureAwait(false);
 						}
 						else {
 							long Resultvalue = random.NextLong(Maxvalue);
 
-							await CommandObject.Channel.SendMessageAsync(Resultvalue.ToString()).ConfigureAwait(false);
+							await Command_Object.Channel.SendMessageAsync(Resultvalue.ToString()).ConfigureAwait(false);
 						}
 					}
 					catch (ArgumentOutOfRangeException) {
-						await CommandObject.Channel.SendMessageAsync(CommandObject.Language.RollMaxCouldntParse).ConfigureAwait(false);
+						await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RollMaxCouldntParse).ConfigureAwait(false);
 					}
 				}
 			}
@@ -54,25 +55,25 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 				string Maxstring = msgs[0].Split('.')[0];
 				string Minstring = msgs[1].Split('.')[0];
 				if (!long.TryParse(Maxstring, out long Maxvalue)) {
-					await CommandObject.Channel.SendMessageAsync(CommandObject.Language.RollMaxCouldntParse).ConfigureAwait(false);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RollMaxCouldntParse).ConfigureAwait(false);
 				}
 				else {
 					if (!long.TryParse(Minstring, out long Minvalue)) {
-						await CommandObject.Channel.SendMessageAsync(CommandObject.Language.RollMinCouldntParse).ConfigureAwait(false);
+						await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RollMinCouldntParse).ConfigureAwait(false);
 					}
 					else {
 						try {
 							if (Minvalue == Maxvalue) {
-								await CommandObject.Channel.SendMessageAsync(Maxvalue.ToString()).ConfigureAwait(false);
+								await Command_Object.Channel.SendMessageAsync(Maxvalue.ToString()).ConfigureAwait(false);
 							}
 							else {
 								Random random = new Random();
 
-								await CommandObject.Channel.SendMessageAsync(random.NextLong(Minvalue, Maxvalue).ToString()).ConfigureAwait(false);
+								await Command_Object.Channel.SendMessageAsync(random.NextLong(Minvalue, Maxvalue).ToString()).ConfigureAwait(false);
 							}
 						}
 						catch (ArgumentOutOfRangeException) {
-							await CommandObject.Channel.SendMessageAsync(CommandObject.Language.RollMaxMinCouldntParse).ConfigureAwait(false);
+							await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RollMaxMinCouldntParse).ConfigureAwait(false);
 						}
 					}
 				}

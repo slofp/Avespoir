@@ -1,9 +1,11 @@
 ﻿using Avespoir.Core.Abstructs;
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
+using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Events;
 using Avespoir.Core.Modules.Logger;
+using Discord;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Commands.BotownerCommands {
@@ -15,8 +17,8 @@ namespace Avespoir.Core.Modules.Commands.BotownerCommands {
 
 		internal override LanguageDictionary Usage => new LanguageDictionary("{0}exit");
 
-		internal override async Task Execute(CommandObjects CommandObject) {
-			await CommandObject.Message.RespondAsync("Logging out...");
+		internal override async Task Execute(CommandObject Command_Object) {
+			await Command_Object.Author.SendMessageAsync("Logging out...");
 			Log.Info("Logging out...");
 
 			await ConsoleExitEvent.Main(0).ConfigureAwait(false);

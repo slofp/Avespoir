@@ -1,34 +1,28 @@
 ﻿using Avespoir.Core.Modules.Logger;
+using Avespoir.Core.Modules.Utils;
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Avespoir.Core.Modules.LevelSystems {
 
 	class ExpCalculator {
 
-		static readonly string URLPattern = @"(http|https?)://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+";
-
-		static readonly string IDPattern = @"<(@!|@&|#|a:[\S]+:|:[\S]+:)[0-9]+>";
-
-		static readonly string CodePattern = @"```(.|\s)+```";
-
 		static readonly SHA256 CryptoProvider = new SHA256CryptoServiceProvider();
 
 		internal static (int MessageCount, string MessageIDReplace) ExpConvert(string MessageID, string MessageContentSource) {
-			string MessageCodeContent = Regex.Replace(MessageContentSource, CodePattern, "");
-			string MessageNoURLContent = Regex.Replace(MessageCodeContent, URLPattern, "");
-			string MessageContent = Regex.Replace(MessageNoURLContent, IDPattern, "");
+			string MessageCodeContent = PatternMatch.ReplaceCode(MessageContentSource, "");
+			string MessageNoURLContent = PatternMatch.ReplaceUrl(MessageCodeContent, "");
+			string MessageContent = PatternMatch.ReplaceID(MessageNoURLContent, "");
 
 			Log.Debug("MessageCodeContent: " + MessageCodeContent);
 			Log.Debug("MessageNoURLContent: " + MessageNoURLContent);
 			Log.Debug("MessageContent: " + MessageContent);
 			Log.Debug("MessageContentCount: " + MessageContent.Length);
 
-			int MessageCodeCount = Regex.Matches(MessageContentSource, CodePattern).Count;
-			int MessageURLCount = Regex.Matches(MessageCodeContent, URLPattern).Count;
-			int MessageMentionEmojiCount = Regex.Matches(MessageNoURLContent, IDPattern).Count;
+			int MessageCodeCount = PatternMatch.MatchCodeCount(MessageContentSource);
+			int MessageURLCount = PatternMatch.MatchUrlCount(MessageCodeContent);
+			int MessageMentionEmojiCount = PatternMatch.MatchIDCount(MessageNoURLContent);
 
 			Log.Debug("MessageCodeCount: " + MessageCodeCount);
 			Log.Debug("MessageURLCount: " + MessageURLCount);
@@ -44,7 +38,7 @@ namespace Avespoir.Core.Modules.LevelSystems {
 				MessageIDHash += string.Format("{0:X2}", MessageIDHashBytes[i]);
 			}
 
-			string MessageIDReplace = Regex.Replace(MessageIDHash, @"[^0-9]", "");
+			string MessageIDReplace = PatternMatch.ReplaceBeyondNumbers(MessageIDHash, "");
 			Log.Debug("MessageIDReplace: " + MessageIDReplace);
 
 			return (MessageCount, MessageIDReplace);

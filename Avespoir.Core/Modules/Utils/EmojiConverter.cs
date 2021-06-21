@@ -1,16 +1,9 @@
-﻿using DSharpPlus.Entities;
+﻿using Discord;
 
 namespace Avespoir.Core.Modules.Utils {
 
 	class EmojiConverter {
 
-		internal static string ConvertEmoji(DiscordGuildEmoji Emoji) {
-			string StringEmoji = "<";
-			StringEmoji += Emoji.GetDiscordName();
-			StringEmoji += Emoji.Id;
-			StringEmoji += ">";
-
-			return StringEmoji;
-		}
+		internal static string ConvertEmoji(GuildEmote Emoji) => $"<:{Emoji.Name}:{Emoji.Id}>";
 	}
 }

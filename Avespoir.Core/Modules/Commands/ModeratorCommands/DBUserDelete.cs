@@ -2,9 +2,10 @@
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
-using DSharpPlus.Entities;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,47 +23,47 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 			{ Database.Enums.Language.en_US, "{0}db-userdel [UserID]" }
 		};
 
-		internal override async Task Execute(CommandObjects CommandObject) {
+		internal override async Task Execute(CommandObject Command_Object) {
 			try {
-				string[] msgs = CommandObject.CommandArgs.Remove(0);
+				string[] msgs = Command_Object.CommandArgs.Remove(0);
 				if (msgs.Length == 0) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyText);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.EmptyText);
 					return;
 				}
 
 				if (string.IsNullOrWhiteSpace(msgs[0])) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyId);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.EmptyId);
 					return;
 				}
 				if (!ulong.TryParse(msgs[0], out ulong msgs_ID)) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdCouldntParse);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.IdCouldntParse);
 					return;
 				}
 
-				if (Database.DatabaseMethods.AllowUsersMethods.AllowUserFind(CommandObject.Guild.Id, msgs_ID, out AllowUsers DBAllowUsersID)) {
-					if (!await Authentication.Confirmation(CommandObject)) {
-						await CommandObject.Channel.SendMessageAsync(CommandObject.Language.AuthFailure);
+				if (Database.DatabaseMethods.AllowUsersMethods.AllowUserFind(Command_Object.Guild.Id, msgs_ID, out AllowUsers DBAllowUsersID)) {
+					if (!await Authentication.Confirmation(Command_Object)) {
+						await Command_Object.Channel.SendMessageAsync(Command_Object.Language.AuthFailure);
 						return;
 					}
 
 					Database.DatabaseMethods.AllowUsersMethods.AllowUserDelete(DBAllowUsersID);
 					try {
-						DiscordMember DeleteGuildMember = await CommandObject.Guild.GetMemberAsync(DBAllowUsersID.Uuid);
-						string KickReason = string.Format(CommandObject.Language.KickReason, CommandObject.Member.Username + "#" + CommandObject.Member.Discriminator);
-						await DeleteGuildMember.RemoveAsync(KickReason);
+						SocketGuildUser DeleteGuildMember = Command_Object.Guild.GetUser(DBAllowUsersID.Uuid);
+						string KickReason = string.Format(Command_Object.Language.KickReason, Command_Object.Member.Username + "#" + Command_Object.Member.Discriminator);
+						await DeleteGuildMember.KickAsync(KickReason);
 					}
 					finally {
-						string ResultText = string.Format(CommandObject.Language.DBUserDeleteSuccess, DBAllowUsersID.Name, DBAllowUsersID.Uuid);
-						await CommandObject.Message.Channel.SendMessageAsync(ResultText);
+						string ResultText = string.Format(Command_Object.Language.DBUserDeleteSuccess, DBAllowUsersID.Name, DBAllowUsersID.Uuid);
+						await Command_Object.Channel.SendMessageAsync(ResultText);
 					}
 				}
 				else {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdNotRegisted);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.IdNotRegisted);
 					return;
 				}
 			}
 			catch (IndexOutOfRangeException) {
-				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.TypingMissed);
+				await Command_Object.Channel.SendMessageAsync(Command_Object.Language.TypingMissed);
 			}
 		}
 	}

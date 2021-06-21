@@ -2,8 +2,10 @@
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
-using DSharpPlus.Entities;
+using Discord;
+using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tababular;
@@ -21,14 +23,14 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 			{ Database.Enums.Language.en_US, "{0}db-userlist" }
 		};
 
-		internal override async Task Execute(CommandObjects CommandObject) {
-			Database.DatabaseMethods.AllowUsersMethods.AllowUsersListFind(CommandObject.Guild.Id, out List<AllowUsers> DBAllowUsersList);
+		internal override async Task Execute(CommandObject Command_Object) {
+			Database.DatabaseMethods.AllowUsersMethods.AllowUsersListFind(Command_Object.Guild.Id, out List<AllowUsers> DBAllowUsersList);
 
 			List<object> DBAllowUsersObjects = new List<object> { };
 			foreach (AllowUsers DBAllowUser in DBAllowUsersList) {
-				Database.DatabaseMethods.RolesMethods.RoleFind(CommandObject.Guild.Id, DBAllowUser.RoleNum, out Roles DBRole);
+				Database.DatabaseMethods.RolesMethods.RoleFind(Command_Object.Guild.Id, DBAllowUser.RoleNum, out Roles DBRole);
 
-				DiscordRole GuildRole = CommandObject.Guild.GetRole(DBRole.Uuid);
+				SocketRole GuildRole = Command_Object.Guild.GetRole(DBRole.Uuid);
 
 				DBAllowUsersObjects.Add(new { RegisteredName = DBAllowUser.Name, UserID = DBAllowUser.Uuid, Role = GuildRole.Name });
 			}
@@ -36,9 +38,9 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 			object[] DBAllowUsersArray = DBAllowUsersObjects.ToArray();
 			string DBAllowUsersTableText = new TableFormatter().FormatObjects(DBAllowUsersArray);
 
-			await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.DMMention, CommandObject.Message.Author.Mention));
-			if (string.IsNullOrWhiteSpace(DBAllowUsersTableText)) await CommandObject.Member.SendMessageAsync(CommandObject.Language.ListNothing);
-			else await CommandObject.Member.SendMessageAsync(DBAllowUsersTableText);
+			await Command_Object.Channel.SendMessageAsync(string.Format(Command_Object.Language.DMMention, Command_Object.Author.Mention));
+			if (string.IsNullOrWhiteSpace(DBAllowUsersTableText)) await Command_Object.Member.SendMessageAsync(Command_Object.Language.ListNothing);
+			else await Command_Object.Member.SendMessageAsync(DBAllowUsersTableText);
 		}
 	}
 }

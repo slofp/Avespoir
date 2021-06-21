@@ -1,20 +1,17 @@
 ﻿using Avespoir.Core.Abstructs;
 using Avespoir.Core.Attributes;
-using Avespoir.Core.Database;
 using Avespoir.Core.Database.Enums;
-using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
-using Avespoir.Core.Modules.Logger;
+using Avespoir.Core.Modules.Audio;
 using Avespoir.Core.Modules.Utils;
-using DSharpPlus.Entities;
-using LiteDB;
-using System;
+using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Commands {
 
-	[Command("join", RoleLevel.Public)]
+	[Command(/*"join", RoleLevel.Public*/)]
 	class Join : CommandAbstruct {
 
 		internal override LanguageDictionary Description => new LanguageDictionary("ボイスチャットに入ります") {
@@ -25,16 +22,58 @@ namespace Avespoir.Core.Modules.Commands {
 			{ Database.Enums.Language.en_US, "{0}join" }
 		};
 
-		internal override async Task Execute(CommandObjects CommandObject) {
-			string[] msgs = CommandObject.CommandArgs.Remove(0);
-			if (msgs.Length == 0) {
-				await CommandObject.Message.Channel.SendMessageAsync("何も入力されていません");
-				return;
+		internal bool IsEntryPlay { get; set; } = false;
+
+		internal VCInfo ResultVCInfo { get; private set; }
+
+		internal override async Task Execute(CommandObject Command_Object) {
+			if (Client.ConnectedVoiceChannel_Dict.TryGetValue(Command_Object.Guild.Id, out VCInfo VC_Info)) {
+				//await Command_Object.Channel.SendMessageAsync("すでにVCに入っているため移動します");
+				ResultVCInfo = VC_Info;
 			}
 
+			string[] msgs = Command_Object.CommandArgs.Remove(0, IsEntryPlay ? 2 : default);
+			if (msgs.Length == 0) {
+				if (Command_Object.Member.VoiceChannel is null) {
+					if (ResultVCInfo is null) await Command_Object.Channel.SendMessageAsync("VCに入っていないため実行することができません");
+					return;
+				}
 
-			//CommandObject.Member.VoiceState.Channel.
-			await Task.Delay(0);
+				if (ResultVCInfo is null) {
+					ResultVCInfo = await VCInfo.Create(Command_Object.Member.VoiceChannel).ConfigureAwait(false);
+					_ = Task.Run(() => ResultVCInfo.Start().ConfigureAwait(false)).ConfigureAwait(false);
+				}
+				else if (ResultVCInfo.VoiceChannel.Id != Command_Object.Member.VoiceChannel.Id)
+					await ResultVCInfo.UpdateVoiceChannel(Command_Object.Member.VoiceChannel);
+			}
+			else if (msgs.Length >= 1) {
+				string VoiceIDString = msgs[0].TrimStart('<', '#').TrimEnd('>');
+
+				if (!ulong.TryParse(VoiceIDString, out ulong VoiceID)) {
+					if (Command_Object.Member.VoiceChannel is null) {
+						if (ResultVCInfo is null) await Command_Object.Channel.SendMessageAsync("VCに入っていないため実行することができません");
+						return;
+					}
+
+					VoiceID = Command_Object.Member.VoiceChannel.Id;
+				}
+
+				SocketVoiceChannel VoiceChannel =
+					VoiceID == Command_Object.Member.VoiceChannel?.Id ?
+						Command_Object.Member.VoiceChannel : Command_Object.Guild.GetVoiceChannel(VoiceID);
+
+				if (VoiceChannel is null) {
+					if (ResultVCInfo is null) await Command_Object.Channel.SendMessageAsync("VCチャンネルが見つかりませんでした");
+					return;
+				}
+
+				if (ResultVCInfo is null) {
+					ResultVCInfo = await VCInfo.Create(VoiceChannel).ConfigureAwait(false);
+					_ = Task.Run(() => ResultVCInfo.Start().ConfigureAwait(false)).ConfigureAwait(false);
+				}
+				else if (ResultVCInfo.VoiceChannel.Id != VoiceChannel.Id)
+					await ResultVCInfo.UpdateVoiceChannel(VoiceChannel);
+			}
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Avespoir.Core.Language;
+﻿using Avespoir.Core.Extends;
+using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Commands;
 using System.Threading.Tasks;
 
@@ -20,8 +21,8 @@ namespace Avespoir.Core.Abstructs {
 		/// <summary>
 		/// Process executed by <see cref="CommandRegister"/>
 		/// </summary>
-		internal virtual async Task Execute(CommandObjects CommandObject) {
-			await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.CommandNotImpl).ConfigureAwait(false);
+		internal virtual async Task Execute(CommandObject Command_Object) {
+			await Command_Object.Channel.SendMessageAsync(Command_Object.Language.CommandNotImpl).ConfigureAwait(false);
 		}
 	}
 }
