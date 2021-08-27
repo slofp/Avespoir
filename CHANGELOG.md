@@ -7,6 +7,12 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
+## [Beta 4.3](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.3) - 2021-08-28
+
+### Changed
+
+* Main use database(LinqDB -> MySQL or MariaDB)
+
 ## [Beta 4.2](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.2) - 2021-05-30
 
 ### Added

@@ -6,7 +6,6 @@ using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
-using LiteDB;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

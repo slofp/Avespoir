@@ -1,21 +1,20 @@
-﻿using LiteDB;
+﻿using LinqToDB.Mapping;
 
 namespace Avespoir.Core.Database.Schemas {
 
-	class UserData {
+	[Table(Name = "UserData")]
+	public class UserData {
 
-		[BsonId]
-		public ObjectId Id { get; set; }
+		[PrimaryKey, Identity]
+		public int Id { get; set; }
 
-		[BsonField("User_id")]
+		[Column("User_id"), NotNull]
 		public ulong UserID { get; set; }
 
-		[BsonField("Level")]
+		[Column("Level")]
 		public uint Level { get; set; }
 
-		[BsonField("Experience-point")]
+		[Column("Experience-point")]
 		public double ExperiencePoint { get; set; }
-
-		
 	}
 }

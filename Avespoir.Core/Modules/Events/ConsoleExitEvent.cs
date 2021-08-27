@@ -34,7 +34,7 @@ namespace Avespoir.Core.Modules.Events {
 			Client.Bot.Dispose();
 			Log.Info("Bot Disposed.");
 
-			LiteDBClient.DeleteDBAccess();
+			MySqlClient.DeleteDBAccess();
 			Log.Info("Database Disconnected.");
 
 			if (ExitCode <= 0) {

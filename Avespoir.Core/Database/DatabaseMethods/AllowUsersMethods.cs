@@ -1,5 +1,6 @@
 ﻿using Avespoir.Core.Database.Schemas;
-using LiteDB;
+using LinqToDB;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -8,27 +9,37 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 
 	class AllowUsersMethods {
 
-		internal static ILiteCollection<AllowUsers> AllowUsersCollection =>
-			LiteDBClient.Database.GetCollection<AllowUsers>(typeof(AllowUsers).Name);
+		internal static ITable<AllowUsers> AllowUsersTable =>
+			MySqlClient.Database.GetTable<AllowUsers>();
+
+		internal static AllowUsers FindOne(Func<AllowUsers, bool> WhereFunc) => (
+			 from AllowUser in AllowUsersTable
+			 where WhereFunc(AllowUser)
+			 select AllowUser
+			).FirstOrDefault();
 
 		internal static bool AllowUserExist(ulong GuildID, ulong Uuid) => AllowUserFind(GuildID, Uuid, out AllowUsers _);
 
 		internal static bool AllowUserExist(ulong GuildID, string Name) => AllowUserFind(GuildID, Name, out AllowUsers _);
 
 		internal static bool AllowUserFind(ulong GuildID, ulong Uuid, [MaybeNullWhen(true)] out AllowUsers DBAllowUser) {
-			DBAllowUser = AllowUsersCollection.FindOne(AllowUser => AllowUser.GuildID == GuildID & AllowUser.Uuid == Uuid);
+			DBAllowUser = FindOne(AllowUser => AllowUser.GuildID == GuildID & AllowUser.Uuid == Uuid);
 
 			return DBAllowUser != null;
 		}
 
 		internal static bool AllowUserFind(ulong GuildID, string Name, [MaybeNullWhen(true)] out AllowUsers DBAllowUser) {
-			DBAllowUser = AllowUsersCollection.FindOne(AllowUser => AllowUser.GuildID == GuildID & AllowUser.Name == Name);
+			DBAllowUser = FindOne(AllowUser => AllowUser.GuildID == GuildID & AllowUser.Name == Name);
 
 			return DBAllowUser != null;
 		}
 
 		internal static bool AllowUsersListFind(ulong GuildID, [MaybeNullWhen(true)] out List<AllowUsers> DBAllowUsers) {
-			DBAllowUsers = AllowUsersCollection.Find(AllowUser => AllowUser.GuildID == GuildID).ToList();
+			DBAllowUsers = (
+				from AllowUser in AllowUsersTable
+				where AllowUser.GuildID == GuildID
+				select AllowUser
+			).ToList();
 
 			return DBAllowUsers != null;
 		}
@@ -38,17 +49,29 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 				Name ??= DBAllowUser.Name;
 				RoleNum ??= DBAllowUser.RoleNum;
 
-				DBAllowUser.Name = Name;
-				DBAllowUser.RoleNum = (uint) RoleNum;
-
-				AllowUsersCollection.Update(DBAllowUser);
+				AllowUsersTable
+				.Where(AllowUser => AllowUser.Id == DBAllowUser.Id)
+				.Set(AllowUser => AllowUser.Name, Name)
+				.Set(AllowUser => AllowUser.RoleNum, (uint) RoleNum)
+				.Update();
 
 				return true;
 			}
 			else return false;
 		}
 
-		internal static bool AllowUserUpdate(AllowUsers DBAllowUser) => AllowUsersCollection.Update(DBAllowUser);
+		internal static bool AllowUserUpdate(AllowUsers DBAllowUser) {
+			try {
+				AllowUsersTable
+				.Where(AllowUser => AllowUser.Id == DBAllowUser.Id)
+				.Set(x => x, DBAllowUser)
+				.Update();
+				return true;
+			}
+			catch (Exception) {
+				return false;
+			}
+		}
 
 		internal static AllowUsers AllowUserInsert(ulong GuildID, ulong Uuid, string Name, uint RoleNum) {
 			AllowUsers InsertAllowUser = new AllowUsers {
@@ -58,11 +81,24 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 				RoleNum = RoleNum
 			};
 
-			AllowUsersCollection.Insert(InsertAllowUser);
+			AllowUsersTable
+			.Value(x => x.GuildID, InsertAllowUser.GuildID)
+			.Value(x => x.Uuid, InsertAllowUser.Uuid)
+			.Value(x => x.Name, InsertAllowUser.Name)
+			.Value(x => x.RoleNum, InsertAllowUser.RoleNum)
+			.Insert();
 
 			return InsertAllowUser;
 		}
 
-		internal static bool AllowUserDelete(AllowUsers AllowUser) => AllowUsersCollection.Delete(AllowUser.Id);
+		internal static bool AllowUserDelete(AllowUsers AllowUser) {
+			try {
+				AllowUsersTable.Where(Allow_User => Allow_User.Id == AllowUser.Id).Delete();
+				return true;
+			}
+			catch (Exception) {
+				return false;
+			}
+		}
 	}
 }

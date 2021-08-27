@@ -1,37 +1,37 @@
-﻿using LiteDB;
+﻿using LinqToDB.Mapping;
 
 namespace Avespoir.Core.Database.Schemas {
 
-	class GuildConfig {
+	public class GuildConfig {
 
-		[BsonId]
-		public ObjectId Id { get; set; }
+		[PrimaryKey, Identity]
+		public int Id { get; set; }
 
-		[BsonField("Guildid")]
+		[Column("Guildid"), NotNull]
 		public ulong GuildID { get; set; }
 
-		[BsonField("WhiteList")]
+		[Column("WhiteList")]
 		public bool WhiteList { get; set; }
 
-		[BsonField("LeaveBan")]
+		[Column("LeaveBan")]
 		public bool LeaveBan { get; set; }
 
-		[BsonField("Prefix")]
+		[Column("Prefix")]
 		public string Prefix { get; set; }
 
-		[BsonField("PublicPrefix")]
+		[Column("PublicPrefix")]
 		public string PublicPrefix { get; set; }
 
-		[BsonField("ModeratorPrefix")]
+		[Column("ModeratorPrefix")]
 		public string ModeratorPrefix { get; set; }
 
-		[BsonField("LogChannelId")]
+		[Column("LogChannelId")]
 		public ulong LogChannelId { get; set; }
 
-		[BsonField("Language")]
+		[Column("Language")]
 		public string Language { get; set; }
 
-		[BsonField("LevelSwitch")]
+		[Column("LevelSwitch")]
 		public bool LevelSwitch { get; set; }
 	}
 }

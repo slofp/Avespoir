@@ -8,7 +8,7 @@ namespace Avespoir.Core {
 		public static async Task Start() {
 			await UpdateChecker.GetUpdate();
 
-			LiteDBClient.Main();
+			MySqlClient.Main();
 			//await MongoDBClient.Main().ConfigureAwait(false);
 			await Client.Main().ConfigureAwait(false);
 		}

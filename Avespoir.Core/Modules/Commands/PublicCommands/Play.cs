@@ -1,4 +1,8 @@
-﻿using Avespoir.Core.Abstructs;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+using System.Threading.Tasks;
+using Avespoir.Core.Abstructs;
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Extends;
@@ -8,38 +12,31 @@ using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
 using Discord.Audio;
 using Discord.WebSocket;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Commands {
 
-	[Command(/*"play", RoleLevel.Public*/)]
+	[Command ( /*"play", RoleLevel.Public*/ )]
 	class Play : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("曲を流します") {
-			{ Database.Enums.Language.en_US, "Play the song" }
+		internal override LanguageDictionary Description => new LanguageDictionary ("曲を流します") { { Database.Enums.Language.en_US, "Play the song" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("{0}play") {
-			{ Database.Enums.Language.en_US, "{0}play" }
+		internal override LanguageDictionary Usage => new LanguageDictionary ("{0}play") { { Database.Enums.Language.en_US, "{0}play" }
 		};
 
-		internal override async Task Execute(CommandObject Command_Object) {
-			string[] msgs = Command_Object.CommandArgs.Remove(0);
+		internal override async Task Execute (CommandObject Command_Object) {
+			string[] msgs = Command_Object.CommandArgs.Remove (0);
 			if (msgs.Length == 0) {
-				await Command_Object.Channel.SendMessageAsync("URLが指定されていません");
+				await Command_Object.Channel.SendMessageAsync ("URLが指定されていません");
 				return;
-			}
-			else if (msgs.Length >= 1) {
+			} else if (msgs.Length >= 1) {
 				//string URL = msgs[0];
 
-				await new Join { IsEntryPlay = true }.Execute(Command_Object).ConfigureAwait(false);
-				Log.Debug("End Joined");
-				if (!Client.ConnectedVoiceChannel_Dict.TryGetValue(Command_Object.Guild.Id, out VCInfo VC_Info)) return;
+				await new Join { IsEntryPlay = true }.Execute (Command_Object).ConfigureAwait (false);
+				Log.Debug ("End Joined");
+				if (!Client.ConnectedVoiceChannel_Dict.TryGetValue (Command_Object.Guild.Id, out VCInfo VC_Info)) return;
 
-				VC_Info.AddQueue(msgs[0], GetAudioType.Ytdl);
+				VC_Info.AddQueue (msgs[0], GetAudioType.Ytdl);
 
 				/*using AudioOutStream DiscordStream = VC_Info.AudioClient.CreatePCMStream(AudioApplication.Mixed, Command_Object.Member.VoiceChannel.Bitrate);
 

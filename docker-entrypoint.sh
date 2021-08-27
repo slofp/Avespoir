@@ -19,10 +19,6 @@ ExitEvent() {
 	wait ${app_pid}
 	echo "Killed process." >> ./Log/bash_log.log
 
-	echo "Copy database file..." >> ./Log/bash_log.log
-	cp --backup=numbered ./*.db ./.DB_Backup
-	echo "Copyed database file." >> ./Log/bash_log.log
-
 	echo "=== ExitEvent End ===" >> ./Log/bash_log.log
 	exit 0
 }

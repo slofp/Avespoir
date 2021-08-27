@@ -6,21 +6,48 @@ namespace Avespoir.Core.JsonScheme {
 
 		#region Database Config
 
-		public string Filename {
+		public string Server {
 			get {
-				return LiteDBConfigs.FileName;
+				return MySqlConfigs.Server;
 			}
 			set {
-				LiteDBConfigs.FileName = value;
+				MySqlConfigs.Server = value;
+			}
+		}
+
+		public string Database {
+			get {
+				return MySqlConfigs.Database;
+			}
+			set {
+				MySqlConfigs.Database = value;
+			}
+		}
+
+		public string User {
+			get {
+				return MySqlConfigs.User;
+			}
+			set {
+				MySqlConfigs.User = value;
 			}
 		}
 
 		public string Password {
 			get {
-				return LiteDBConfigs.Password;
+				return MySqlConfigs.Password;
 			}
 			set {
-				LiteDBConfigs.Password = value;
+				MySqlConfigs.Password = value;
+			}
+		}
+
+		public string OtherOptions {
+			get {
+				return MySqlConfigs.OtherOptions;
+			}
+			set {
+				MySqlConfigs.OtherOptions = value;
 			}
 		}
 

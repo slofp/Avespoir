@@ -6,6 +6,5 @@ services:
     stop_signal: SIGTERM
     container_name: Avespoir
     volumes:
-      - ./DB_Backup:/Avespoir/.DB_Backup
       - ./Configs:/Avespoir/Configs
       - ./Log:/Avespoir/Log

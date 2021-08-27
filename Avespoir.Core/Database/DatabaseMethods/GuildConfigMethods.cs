@@ -1,50 +1,58 @@
 ﻿using Avespoir.Core.Database.Schemas;
-using LiteDB;
+using LinqToDB;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Avespoir.Core.Database.DatabaseMethods {
 
 	class GuildConfigMethods {
 
-		internal static ILiteCollection<GuildConfig> GuildConfigCollection =>
-			LiteDBClient.Database.GetCollection<GuildConfig>(typeof(GuildConfig).Name);
+		internal static ITable<GuildConfig> GuildConfigTable =>
+			MySqlClient.Database.GetTable<GuildConfig>();
+
+		internal static GuildConfig FindOne(Func<GuildConfig, bool> WhereFunc) => (
+			 from Guild_Config in GuildConfigTable
+			 where WhereFunc(Guild_Config)
+			 select Guild_Config
+			).FirstOrDefault();
 
 		internal static bool WhitelistFind(ulong GuildID) =>
-			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.WhiteList ?? false;
+			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.WhiteList ?? false;
 
 		internal static bool LeaveBanFind(ulong GuildID) =>
-			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.LeaveBan ?? false;
+			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.LeaveBan ?? false;
 
 		internal static string PrefixFind(ulong GuildID) =>
-			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.Prefix;
+			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.Prefix;
 
 		internal static string PublicPrefixFind(ulong GuildID) =>
-			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.PublicPrefix;
+			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.PublicPrefix;
 
 		internal static string ModeratorPrefixFind(ulong GuildID) =>
-			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.ModeratorPrefix;
+			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.ModeratorPrefix;
 
 		internal static ulong LogChannelFind(ulong GuildID) =>
-			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.LogChannelId ?? 0;
+			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.LogChannelId ?? 0;
 
 		internal static string LanguageFind(ulong GuildID) =>
-			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.Language;
+			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.Language;
 
 		internal static bool LevelSwitchFind(ulong GuildID) =>
-			GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.LevelSwitch ?? true;
+			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.LevelSwitch ?? true;
 
 		private static bool GuildConfigFind(ulong GuildID, [MaybeNullWhen(true)] out GuildConfig DBGuildConfig) {
-			DBGuildConfig = GuildConfigCollection.FindOne(Guild_Config => Guild_Config.GuildID == GuildID);
+			DBGuildConfig = FindOne(Guild_Config => Guild_Config.GuildID == GuildID);
 
 			return DBGuildConfig != null;
 		}
 
 		internal static void WhitelistUpsert(ulong GuildID, bool AfterWhitelist) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				DBGuildConfig.WhiteList = AfterWhitelist;
-
-				GuildConfigCollection.Update(DBGuildConfig);
+				GuildConfigTable
+				.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
+				.Set(Guild_Config => Guild_Config.WhiteList, AfterWhitelist)
+				.Update();
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -52,15 +60,19 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					WhiteList = AfterWhitelist
 				};
 
-				GuildConfigCollection.Insert(InsertGuildConfig);
+				GuildConfigTable
+				.Value(x => x.GuildID, InsertGuildConfig.GuildID)
+				.Value(x => x.WhiteList, InsertGuildConfig.WhiteList)
+				.Insert();
 			}
 		}
 
 		internal static void LeaveBanUpsert(ulong GuildID, bool AfterLeaveBan) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				DBGuildConfig.LeaveBan = AfterLeaveBan;
-
-				GuildConfigCollection.Update(DBGuildConfig);
+				GuildConfigTable
+				.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
+				.Set(Guild_Config => Guild_Config.LeaveBan, AfterLeaveBan)
+				.Update();
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -68,15 +80,19 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					LeaveBan = AfterLeaveBan
 				};
 
-				GuildConfigCollection.Insert(InsertGuildConfig);
+				GuildConfigTable
+				.Value(x => x.GuildID, InsertGuildConfig.GuildID)
+				.Value(x => x.LeaveBan, InsertGuildConfig.LeaveBan)
+				.Insert();
 			}
 		}
 
 		internal static void PrefixUpsert(ulong GuildID, string AfterPrefix) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				DBGuildConfig.Prefix = AfterPrefix;
-
-				GuildConfigCollection.Update(DBGuildConfig);
+				GuildConfigTable
+				.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
+				.Set(Guild_Config => Guild_Config.Prefix, AfterPrefix)
+				.Update();
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -84,15 +100,19 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					Prefix = AfterPrefix
 				};
 
-				GuildConfigCollection.Insert(InsertGuildConfig);
+				GuildConfigTable
+				.Value(x => x.GuildID, InsertGuildConfig.GuildID)
+				.Value(x => x.Prefix, InsertGuildConfig.Prefix)
+				.Insert();
 			}
 		}
 
 		internal static void PublicPrefixUpsert(ulong GuildID, string AfterPublicPrefix) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				DBGuildConfig.PublicPrefix = AfterPublicPrefix;
-
-				GuildConfigCollection.Update(DBGuildConfig);
+				GuildConfigTable
+				.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
+				.Set(Guild_Config => Guild_Config.PublicPrefix, AfterPublicPrefix)
+				.Update();
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -100,15 +120,19 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					PublicPrefix = AfterPublicPrefix
 				};
 
-				GuildConfigCollection.Insert(InsertGuildConfig);
+				GuildConfigTable
+				.Value(x => x.GuildID, InsertGuildConfig.GuildID)
+				.Value(x => x.PublicPrefix, InsertGuildConfig.PublicPrefix)
+				.Insert();
 			}
 		}
 
 		internal static void ModeratorPrefixUpsert(ulong GuildID, string AfterModeratorPrefix) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				DBGuildConfig.ModeratorPrefix = AfterModeratorPrefix;
-
-				GuildConfigCollection.Update(DBGuildConfig);
+				GuildConfigTable
+				.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
+				.Set(Guild_Config => Guild_Config.ModeratorPrefix, AfterModeratorPrefix)
+				.Update();
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -116,15 +140,19 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					ModeratorPrefix = AfterModeratorPrefix
 				};
 
-				GuildConfigCollection.Insert(InsertGuildConfig);
+				GuildConfigTable
+				.Value(x => x.GuildID, InsertGuildConfig.GuildID)
+				.Value(x => x.ModeratorPrefix, InsertGuildConfig.ModeratorPrefix)
+				.Insert();
 			}
 		}
 
 		internal static void LogChannelIdUpsert(ulong GuildID, ulong AfterLogChannelId) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				DBGuildConfig.LogChannelId = AfterLogChannelId;
-
-				GuildConfigCollection.Update(DBGuildConfig);
+				GuildConfigTable
+				.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
+				.Set(Guild_Config => Guild_Config.LogChannelId, AfterLogChannelId)
+				.Update();
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -132,15 +160,19 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					LogChannelId = AfterLogChannelId
 				};
 
-				GuildConfigCollection.Insert(InsertGuildConfig);
+				GuildConfigTable
+				.Value(x => x.GuildID, InsertGuildConfig.GuildID)
+				.Value(x => x.LogChannelId, InsertGuildConfig.LogChannelId)
+				.Insert();
 			}
 		}
 
 		internal static void LanguageUpsert(ulong GuildID, Enums.Language AfterLanguage) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				DBGuildConfig.Language = Enum.GetName(typeof(Enums.Language), AfterLanguage);
-
-				GuildConfigCollection.Update(DBGuildConfig);
+				GuildConfigTable
+				.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
+				.Set(Guild_Config => Guild_Config.Language, Enum.GetName(typeof(Enums.Language), AfterLanguage))
+				.Update();
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -148,15 +180,19 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					Language = Enum.GetName(typeof(Enums.Language), AfterLanguage)
 				};
 
-				GuildConfigCollection.Insert(InsertGuildConfig);
+				GuildConfigTable
+				.Value(x => x.GuildID, InsertGuildConfig.GuildID)
+				.Value(x => x.Language, InsertGuildConfig.Language)
+				.Insert();
 			}
 		}
 
 		internal static void LevelSwitchUpsert(ulong GuildID, bool AfterLevelSwitch) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				DBGuildConfig.LevelSwitch = AfterLevelSwitch;
-
-				GuildConfigCollection.Update(DBGuildConfig);
+				GuildConfigTable
+				.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
+				.Set(Guild_Config => Guild_Config.LevelSwitch, AfterLevelSwitch)
+				.Update();
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -164,7 +200,10 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					LevelSwitch = AfterLevelSwitch
 				};
 
-				GuildConfigCollection.Insert(InsertGuildConfig);
+				GuildConfigTable
+				.Value(x => x.GuildID, InsertGuildConfig.GuildID)
+				.Value(x => x.LevelSwitch, InsertGuildConfig.LevelSwitch)
+				.Insert();
 			}
 		}
 	}
