@@ -11,11 +11,8 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 		internal static ITable<GuildConfig> GuildConfigTable =>
 			MySqlClient.Database.GetTable<GuildConfig>();
 
-		internal static GuildConfig FindOne(Func<GuildConfig, bool> WhereFunc) => (
-			 from Guild_Config in GuildConfigTable
-			 where WhereFunc(Guild_Config)
-			 select Guild_Config
-			).FirstOrDefault();
+		internal static GuildConfig FindOne(Func<GuildConfig, bool> WhereFunc) =>
+			GuildConfigTable.Where(WhereFunc).FirstOrDefault();
 
 		internal static bool WhitelistFind(ulong GuildID) =>
 			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.WhiteList ?? false;

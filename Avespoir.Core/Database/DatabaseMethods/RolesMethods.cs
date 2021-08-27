@@ -12,11 +12,8 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 		internal static ITable<Roles> RolesTable =>
 			MySqlClient.Database.GetTable<Roles>();
 
-		internal static Roles FindOne(Func<Roles, bool> WhereFunc) => (
-			 from Role in RolesTable
-			 where WhereFunc(Role)
-			 select Role
-			).FirstOrDefault();
+		internal static Roles FindOne(Func<Roles, bool> WhereFunc) =>
+			RolesTable.Where(WhereFunc).FirstOrDefault();
 
 		internal static bool RoleExist(ulong GuildID, ulong Uuid) => RoleFind(GuildID, Uuid, out Roles _);
 

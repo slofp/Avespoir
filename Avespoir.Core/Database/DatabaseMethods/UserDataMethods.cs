@@ -11,11 +11,8 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 		internal static ITable<UserData> UserDataTable =>
 			MySqlClient.Database.GetTable<UserData>();
 
-		internal static UserData FindOne(Func<UserData, bool> WhereFunc) => (
-			 from User_Data in UserDataTable
-			 where WhereFunc(User_Data)
-			 select User_Data
-			).FirstOrDefault();
+		internal static UserData FindOne(Func<UserData, bool> WhereFunc) =>
+			UserDataTable.Where(WhereFunc).FirstOrDefault();
 
 		internal static double ExpFind(ulong UserID) => 
 			FindOne(User_Data => User_Data.UserID == UserID)?.ExperiencePoint ?? 0;

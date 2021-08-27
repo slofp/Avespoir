@@ -12,11 +12,8 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 		internal static ITable<AllowUsers> AllowUsersTable =>
 			MySqlClient.Database.GetTable<AllowUsers>();
 
-		internal static AllowUsers FindOne(Func<AllowUsers, bool> WhereFunc) => (
-			 from AllowUser in AllowUsersTable
-			 where WhereFunc(AllowUser)
-			 select AllowUser
-			).FirstOrDefault();
+		internal static AllowUsers FindOne(Func<AllowUsers, bool> WhereFunc) =>
+			AllowUsersTable.Where(WhereFunc).FirstOrDefault();
 
 		internal static bool AllowUserExist(ulong GuildID, ulong Uuid) => AllowUserFind(GuildID, Uuid, out AllowUsers _);
 

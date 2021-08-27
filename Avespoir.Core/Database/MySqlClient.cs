@@ -45,7 +45,7 @@ namespace Avespoir.Core.Database {
 		internal static void Main() {
 			Log.Info("Connecting to database...");
 
-			Database = new DataConnection(MySqlConfigs.ConnectionString);
+			Database = new DataConnection(ProviderName.MySql, MySqlConfigs.ConnectionString);
 
 			Log.Info("Connected to database!");
 
