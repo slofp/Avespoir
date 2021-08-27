@@ -46,8 +46,4 @@
     <PackageReference Include="Tababular" Version="4.0.0" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(SolutionDir)Libraries\libsodium.dll&quot; $(TargetDir) /Y&#xD;&#xA;xcopy &quot;$(SolutionDir)Libraries\opus.dll&quot; $(TargetDir) /Y&#xD;&#xA;xcopy &quot;$(SolutionDir)Libraries\ffmpeg.exe&quot; $(TargetDir) /Y&#xD;&#xA;xcopy &quot;$(SolutionDir)Libraries\youtube-dl.exe&quot; $(TargetDir) /Y" />
-  </Target>
-
 </Project>
