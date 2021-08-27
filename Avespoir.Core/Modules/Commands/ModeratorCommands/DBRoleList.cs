@@ -2,7 +2,9 @@
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
+using Discord;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tababular;
@@ -20,8 +22,8 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 			{ Database.Enums.Language.en_US, "{0}db-rolelist" }
 		};
 
-		internal override async Task Execute(CommandObjects CommandObject) {
-			Database.DatabaseMethods.RolesMethods.RolesListFind(CommandObject.Guild.Id, out List<Roles> DBRolesList);
+		internal override async Task Execute(CommandObject Command_Object) {
+			Database.DatabaseMethods.RolesMethods.RolesListFind(Command_Object.Guild.Id, out List<Roles> DBRolesList);
 
 			List<object> DBRolesObjects = new List<object> { };
 			foreach (Roles DBRole in DBRolesList) {
@@ -31,9 +33,9 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 			object[] DBRolesArray = DBRolesObjects.ToArray();
 			string DBRolesTableText = new TableFormatter().FormatObjects(DBRolesArray);
 
-			await CommandObject.Message.Channel.SendMessageAsync(string.Format(CommandObject.Language.DMMention, CommandObject.Message.Author.Mention));
-			if (string.IsNullOrWhiteSpace(DBRolesTableText)) await CommandObject.Member.SendMessageAsync(CommandObject.Language.ListNothing);
-			else await CommandObject.Member.SendMessageAsync(DBRolesTableText);
+			await Command_Object.Channel.SendMessageAsync(string.Format(Command_Object.Language.DMMention, Command_Object.Author.Mention));
+			if (string.IsNullOrWhiteSpace(DBRolesTableText)) await Command_Object.Member.SendMessageAsync(Command_Object.Language.ListNothing);
+			else await Command_Object.Member.SendMessageAsync(DBRolesTableText);
 		}
 	}
 }

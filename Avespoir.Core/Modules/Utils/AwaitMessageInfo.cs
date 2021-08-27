@@ -1,6 +1,6 @@
 ﻿using Avespoir.Core.Modules.Events;
 using Avespoir.Core.Modules.Logger;
-using DSharpPlus.Entities;
+using Discord;
 using System.Collections.Generic;
 
 namespace Avespoir.Core.Modules.Utils {
@@ -35,18 +35,18 @@ namespace Avespoir.Core.Modules.Utils {
 			this.UserID = UserID;
 		}
 
-		internal void Init(DiscordMessage Discord_Message) {
-			if (!MessageEvent.AwaitMessageInfo_List_Dict.ContainsKey(Discord_Message.Channel.Id))
-				MessageEvent.AwaitMessageInfo_List_Dict.Add(Discord_Message.Channel.Id, new List<AwaitMessageInfo>());
+		internal void Init(IMessage Message) {
+			if (!MessageEvent.AwaitMessageInfo_List_Dict.ContainsKey(Message.Channel.Id))
+				MessageEvent.AwaitMessageInfo_List_Dict.Add(Message.Channel.Id, new List<AwaitMessageInfo>());
 
-			MessageEvent.AwaitMessageInfo_List_Dict[Discord_Message.Channel.Id].Add(this);
+			MessageEvent.AwaitMessageInfo_List_Dict[Message.Channel.Id].Add(this);
 		}
 
 		// NOT DESTRUCTOR
-		internal void Finalize_(DiscordMessage Discord_Message) {
-			if (MessageEvent.AwaitMessageInfo_List_Dict.TryGetValue(Discord_Message.Channel.Id, out List<AwaitMessageInfo> AwaitMessageInfo_List)) {
+		internal void Finalize_(IMessage Message) {
+			if (MessageEvent.AwaitMessageInfo_List_Dict.TryGetValue(Message.Channel.Id, out List<AwaitMessageInfo> AwaitMessageInfo_List)) {
 				if (!AwaitMessageInfo_List.Remove(this)) Log.Warning("AwaitMessageInfo not Exist?????");
-				if (AwaitMessageInfo_List.Count == 0) MessageEvent.AwaitMessageInfo_List_Dict.Remove(Discord_Message.Channel.Id);
+				if (AwaitMessageInfo_List.Count == 0) MessageEvent.AwaitMessageInfo_List_Dict.Remove(Message.Channel.Id);
 			}
 			else Log.Warning("AwaitMessageInfo List not Exist?????");
 		}

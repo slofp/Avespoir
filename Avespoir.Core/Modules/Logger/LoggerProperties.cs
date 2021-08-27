@@ -1,9 +1,6 @@
-﻿using DSharpPlus;
-using log4net;
+﻿using log4net;
 using log4net.Repository;
-using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace Avespoir.Core.Modules.Logger {

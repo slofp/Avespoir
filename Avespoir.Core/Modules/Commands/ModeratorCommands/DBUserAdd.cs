@@ -2,9 +2,10 @@
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
-using DSharpPlus.Entities;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,68 +23,68 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 			{ Database.Enums.Language.en_US, "{0}db-useradd [Name] [UserID] [Role Number]" }
 		};
 
-		internal override async Task Execute(CommandObjects CommandObject) {
+		internal override async Task Execute(CommandObject Command_Object) {
 			try {
-				string[] msgs = CommandObject.CommandArgs.Remove(0);
+				string[] msgs = Command_Object.CommandArgs.Remove(0);
 				if (msgs.Length == 0) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyText);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.EmptyText);
 					return;
 				}
 
 				string msgs_Name;
 
 				if (string.IsNullOrWhiteSpace(msgs[0])) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyName);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.EmptyName);
 					return;
 				}
 				msgs_Name = msgs[0];
 
 				if (string.IsNullOrWhiteSpace(msgs[1])) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyId);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.EmptyId);
 					return;
 				}
 				if (!ulong.TryParse(msgs[1], out ulong msgs_ID)) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdCouldntParse);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.IdCouldntParse);
 					return;
 				}
 
 				if (string.IsNullOrWhiteSpace(msgs[2])) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.EmptyRoleNumber);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.EmptyRoleNumber);
 					return;
 				}
 				if (!uint.TryParse(msgs[2], out uint msgs_RoleNum)) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.RoleNumberNotNumber);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RoleNumberNotNumber);
 					return;
 				}
 
-				if (Database.DatabaseMethods.AllowUsersMethods.AllowUserExist(CommandObject.Guild.Id, msgs_Name)) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.NameRegisted);
+				if (Database.DatabaseMethods.AllowUsersMethods.AllowUserExist(Command_Object.Guild.Id, msgs_Name)) {
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.NameRegisted);
 					return;
 				}
 
-				if (Database.DatabaseMethods.AllowUsersMethods.AllowUserExist(CommandObject.Guild.Id, msgs_ID)) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.IdRegisted);
+				if (Database.DatabaseMethods.AllowUsersMethods.AllowUserExist(Command_Object.Guild.Id, msgs_ID)) {
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.IdRegisted);
 					return;
 				}
 
-				if (!Database.DatabaseMethods.RolesMethods.RoleFind(CommandObject.Guild.Id, msgs_RoleNum, out Roles DBRolesNum)) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.RoleNumberNotFound);
+				if (!Database.DatabaseMethods.RolesMethods.RoleFind(Command_Object.Guild.Id, msgs_RoleNum, out Roles DBRolesNum)) {
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RoleNumberNotFound);
 					return;
 				}
 
-				if (!await Authentication.Confirmation(CommandObject)) {
-					await CommandObject.Channel.SendMessageAsync(CommandObject.Language.AuthFailure);
+				if (!await Authentication.Confirmation(Command_Object)) {
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.AuthFailure);
 					return;
 				}
 
-				AllowUsers InsertAllowUserData = Database.DatabaseMethods.AllowUsersMethods.AllowUserInsert(CommandObject.Guild.Id, msgs_ID, msgs_Name, msgs_RoleNum);
+				AllowUsers InsertAllowUserData = Database.DatabaseMethods.AllowUsersMethods.AllowUserInsert(Command_Object.Guild.Id, msgs_ID, msgs_Name, msgs_RoleNum);
 
-				DiscordRole GuildRole = CommandObject.Guild.GetRole(DBRolesNum.Uuid);
-				string ResultText = string.Format(CommandObject.Language.DBUserAddSuccess, InsertAllowUserData.Name, InsertAllowUserData.Uuid, InsertAllowUserData.RoleNum, GuildRole.Name);
-				await CommandObject.Message.Channel.SendMessageAsync(ResultText);
+				SocketRole GuildRole = Command_Object.Guild.GetRole(DBRolesNum.Uuid);
+				string ResultText = string.Format(Command_Object.Language.DBUserAddSuccess, InsertAllowUserData.Name, InsertAllowUserData.Uuid, InsertAllowUserData.RoleNum, GuildRole.Name);
+				await Command_Object.Channel.SendMessageAsync(ResultText);
 			}
 			catch (IndexOutOfRangeException) {
-				await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.TypingMissed);
+				await Command_Object.Channel.SendMessageAsync(Command_Object.Language.TypingMissed);
 			}
 		}
 	}

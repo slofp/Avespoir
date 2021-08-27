@@ -1,8 +1,9 @@
 ﻿using Avespoir.Core.Abstructs;
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
+using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
-using DSharpPlus.Entities;
+using Discord.Rest;
 using System;
 using System.Threading.Tasks;
 
@@ -19,17 +20,17 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			{ Database.Enums.Language.en_US, "{0}ping" }
 		};
 
-		internal override async Task Execute(CommandObjects CommandObject) {
-			DiscordMessage BotResponse = await CommandObject.Channel.SendMessageAsync(CommandObject.Language.PingWait);
+		internal override async Task Execute(CommandObject Command_Object) {
+			RestUserMessage BotResponse = await Command_Object.Channel.SendMessageAsync(Command_Object.Language.PingWait);
 
-			long MessageTick = CommandObject.Message.CreationTimestamp.Ticks;
-			long ResponseTick = BotResponse.CreationTimestamp.Ticks;
+			long MessageTick = Command_Object.Timestamp.Ticks;
+			long ResponseTick = BotResponse.Timestamp.Ticks;
 			long PingTick = ResponseTick - MessageTick;
 
 			TimeSpan PingSpan = new TimeSpan(PingTick);
 			double Ping = PingSpan.TotalMilliseconds;
 
-			await BotResponse.ModifyAsync($"{Ping}ms");
+			await BotResponse.ModifyAsync(MessagePropertie => MessagePropertie.Content = $"{Ping}ms");
 		}
 	}
 }

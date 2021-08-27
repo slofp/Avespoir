@@ -1,88 +1,43 @@
 ﻿using Avespoir.Core.Configs;
+using Avespoir.Core.Modules.Audio;
 using Avespoir.Core.Modules.Events;
-using Avespoir.Core.Modules.Logger;
-using DSharpPlus;
+using Discord.WebSocket;
 using System;
-using System.Reflection;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core {
 
 	class Client {
 
-		private static readonly AssemblyName AssemblyInfo = Assembly.GetExecutingAssembly().GetName();
+		internal static Dictionary<ulong, VCInfo> ConnectedVoiceChannel_Dict = new Dictionary<ulong, VCInfo>();
 
-		private static readonly Version AssemblyVersion = AssemblyInfo.Version;
-
-		private static string ProjectName => AssemblyVersion.Major switch {
-			1 => "Silence",
-			2 => "Avespoir",
-			_ => "Unknown",
-		};
-
-		private static string ReleaseName => AssemblyVersion.Minor switch {
-			0 => "Alpha",
-			1 => "Beta",
-			2 => "Stable",
-			_ => "Unknown",
-		};
-
-		private static string VersionName => string.Format("{0}.{1}", AssemblyVersion.Build, AssemblyVersion.Revision);
-
-		#if DEBUG
-		private const string BuildTypeName = " Dev";
-		#else
-		private const string BuildTypeName = "";
-		#endif
-
-		internal static string Version => string.Format("{0} {1} {2}{3}", ProjectName, ReleaseName, VersionName, BuildTypeName);
-
-		internal static string[] VersionTag => new string[] {ReleaseName, VersionName};
-
-		internal static DiscordClient Bot = new DiscordClient(ClientConfig.DiscordConfig());
+		internal static readonly DiscordShardedClient Bot = new DiscordShardedClient(ClientConfig.WebSocketConfig());
 
 		internal static async Task Main() {
-			Bot.Ready += ReadyEvent.Main;
+			Bot.ShardReady += ReadyEvent.Main;
 
-			Bot.MessageCreated += MessageEvent.Main;
+			Bot.MessageReceived += MessageEvent.Main;
 
-			Bot.GuildMemberAdded += GuildMemberAddEvent.Main;
+			Bot.UserJoined += GuildMemberAddEvent.Main;
 
-			Bot.GuildMemberRemoved += GuildMemberRemoveEvent.Main;
+			Bot.UserLeft += GuildMemberRemoveEvent.Main;
 
-			Bot.ClientErrored += ClientErroredEvent.Main;
+			Bot.Log += LogEvents.LogEvent;
 
-			Bot.UnknownEvent += (DiscordClient Client, DSharpPlus.EventArgs.UnknownEventArgs UnknownEvent) => {
-				Log.Warning($"Unknown Event: {UnknownEvent.EventName}\nHandled: {UnknownEvent.Handled}\nJson: {UnknownEvent.Json}");
+			Bot.LoggedIn += LogEvents.LoggedInEvent;
 
-				return Task.CompletedTask;
-			};
+			Bot.LoggedOut += LogEvents.LoggedOutEvent;
 
-			Bot.SocketClosed += (DiscordClient Client, DSharpPlus.EventArgs.SocketCloseEventArgs SocketCloseEvent) => {
-				Log.Info($"Socket Closed: {SocketCloseEvent.CloseCode}\nCloseMessage: {SocketCloseEvent.CloseMessage}\nHandled: {SocketCloseEvent.Handled}");
+			Bot.ShardConnected += LogEvents.ConnectedEvent;
 
-				return Task.CompletedTask;
-			};
+			Bot.ShardDisconnected += LogEvents.DisconnectedEvent;
 
-			Bot.SocketErrored += (DiscordClient Client, DSharpPlus.EventArgs.SocketErrorEventArgs SocketErrorEvent) => {
-				Log.Error($"Socket Error\nHandled: {SocketErrorEvent.Handled}", SocketErrorEvent.Exception);
+			Bot.ShardLatencyUpdated += LogEvents.LatencyUpdated;
 
-				return Task.CompletedTask;
-			};
+			await Bot.LoginAsync(Discord.TokenType.Bot, ClientConfig.Token).ConfigureAwait(false);
 
-			Bot.SocketOpened += (DiscordClient Client, DSharpPlus.EventArgs.SocketEventArgs SocketEvent) => {
-				Log.Info($"Socket Opened\nHandled: {SocketEvent.Handled}");
-
-				return Task.CompletedTask;
-			};
-
-			//Bot.Logger.
-			//Bot.DebugLogger.LogMessageReceived += (Sender, LogMessage) => Log.Info(LogMessage.Message);
-			//#if !DEBUG
-			Bot.Heartbeated += HeartbeatLog.ExportHeartbeatLog;
-			//#endif
-
-			await Bot.ConnectAsync();
+			await Bot.StartAsync().ConfigureAwait(false);
 
 			AppDomain.CurrentDomain.ProcessExit += ConsoleExitEvent.Main;
 

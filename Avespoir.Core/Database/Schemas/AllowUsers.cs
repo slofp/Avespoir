@@ -1,22 +1,22 @@
-﻿using LiteDB;
+﻿using LinqToDB.Mapping;
 
 namespace Avespoir.Core.Database.Schemas {
 
-	class AllowUsers {
-		
-		[BsonId]
-		public ObjectId Id { get; set; }
+	public class AllowUsers {
 
-		[BsonField("Guildid")]
+		[PrimaryKey, Identity]
+		public int Id { get; set; }
+
+		[Column("Guildid"), NotNull]
 		public ulong GuildID { get; set; }
 
-		[BsonField("Name")]
+		[Column("Name")]
 		public string Name { get; set; }
 
-		[BsonField("uuid")]
+		[Column("uuid"), NotNull]
 		public ulong Uuid { get; set; }
 
-		[BsonField("RoleNum")]
+		[Column("RoleNum"), NotNull]
 		public uint RoleNum { get; set; }
 	}
 }

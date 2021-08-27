@@ -26,13 +26,15 @@ namespace Avespoir.Core.Modules.Events {
 
 			ReadyEvent.ExitCheck = true;
 
-			await Client.Bot.DisconnectAsync().ConfigureAwait(false);
-			Log.Info("Bot Disconnected.");
+			await Client.Bot.StopAsync().ConfigureAwait(false);
+			Log.Info("Bot Stopped.");
+
+			await Client.Bot.LogoutAsync().ConfigureAwait(false);
 
 			Client.Bot.Dispose();
 			Log.Info("Bot Disposed.");
 
-			LiteDBClient.DeleteDBAccess();
+			MySqlClient.DeleteDBAccess();
 			Log.Info("Database Disconnected.");
 
 			if (ExitCode <= 0) {

@@ -1,11 +1,12 @@
 ﻿using Avespoir.Core.Abstructs;
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
+using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.LevelSystems;
 using Avespoir.Core.Modules.Utils;
-using DSharpPlus.Entities;
-using DSharpPlus.Exceptions;
+using Discord;
+using Discord.WebSocket;
 using System;
 using System.Threading.Tasks;
 
@@ -22,66 +23,66 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			{ Database.Enums.Language.en_US, "{0}status (Mention or UserID)" }
 		};
 
-		internal override async Task Execute(CommandObjects CommandObject) {
-			string[] msgs = CommandObject.CommandArgs.Remove(0);
+		internal override async Task Execute(CommandObject Command_Object) {
+			string[] msgs = Command_Object.CommandArgs.Remove(0);
 			if (msgs.Length == 0) {
-				uint Level = Database.DatabaseMethods.UserDataMethods.LevelFind(CommandObject.Message.Author.Id);
-				double Exp = Database.DatabaseMethods.UserDataMethods.ExpFind(CommandObject.Message.Author.Id);
+				uint Level = Database.DatabaseMethods.UserDataMethods.LevelFind(Command_Object.Author.Id);
+				double Exp = Database.DatabaseMethods.UserDataMethods.ExpFind(Command_Object.Author.Id);
 				if (Exp == 0) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.StatusNotRegisted);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.StatusNotRegisted);
 					return;
 				}
 				double NextLevelExp = LevelSystem.ReqNextLevelExp(Level) - Exp;
 
-				DiscordMember User = await CommandObject.Guild.GetMemberAsync(CommandObject.Message.Author.Id);
+				SocketGuildUser User = Command_Object.Guild.GetUser(Command_Object.Author.Id);
 
-				DiscordEmbed UserStatusEmbed = new DiscordEmbedBuilder()
-						.WithTitle(string.Format(CommandObject.Language.StatusEmbed1, string.IsNullOrWhiteSpace(User.Nickname) ? User.Username : User.Nickname))
-						.WithDescription(string.Format(CommandObject.Language.StatusEmbed2, User.Username + "#" + User.Discriminator, User.Id, Exp, Level, NextLevelExp))
-						.WithColor(new DiscordColor(0x00B06B))
+				EmbedBuilder UserStatusEmbed = new EmbedBuilder()
+						.WithTitle(string.Format(Command_Object.Language.StatusEmbed1, string.IsNullOrWhiteSpace(User.Nickname) ? User.Username : User.Nickname))
+						.WithDescription(string.Format(Command_Object.Language.StatusEmbed2, User.Username + "#" + User.Discriminator, User.Id, Exp, Level, NextLevelExp))
+						.WithColor(new Color(0x00B06B))
 						.WithTimestamp(DateTime.Now)
-						.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
+						.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
 
-				await CommandObject.Message.Channel.SendMessageAsync(UserStatusEmbed);
+				await Command_Object.Channel.SendMessageAsync(embed: UserStatusEmbed.Build());
 				return;
 			}
 			else {
 				string UserText = msgs[0];
 				string UserIDString = UserText.TrimStart('<', '@', '!').TrimEnd('>');
 				if (!ulong.TryParse(UserIDString, out ulong UserID)) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.StatusUserCouldntParse);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.StatusUserCouldntParse);
 					return;
 				}
 
 				uint Level = Database.DatabaseMethods.UserDataMethods.LevelFind(UserID);
 				double Exp = Database.DatabaseMethods.UserDataMethods.ExpFind(UserID);
 				if (Exp == 0) {
-					await CommandObject.Message.Channel.SendMessageAsync(CommandObject.Language.StatusNotRegisted);
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.StatusNotRegisted);
 					return;
 				}
 				double NextLevelExp = LevelSystem.ReqNextLevelExp(Level) - Exp;
 
-				try {
-					DiscordMember User = await CommandObject.Guild.GetMemberAsync(UserID);
+				SocketGuildUser User = Command_Object.Guild.GetUser(UserID);
 
-					DiscordEmbed UserStatusEmbed = new DiscordEmbedBuilder()
-							.WithTitle(string.Format(CommandObject.Language.StatusEmbed1, string.IsNullOrWhiteSpace(User.Nickname) ? User.Username : User.Nickname))
-							.WithDescription(string.Format(CommandObject.Language.StatusEmbed2, User.Username + "#" + User.Discriminator, UserID, Exp, Level, NextLevelExp))
-							.WithColor(new DiscordColor(0x00B06B))
-							.WithTimestamp(DateTime.Now)
-							.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
+				if (User is null) {
+					EmbedBuilder UserStatusEmbed = new EmbedBuilder()
+						.WithTitle(string.Format(Command_Object.Language.StatusEmbed1, UserID.ToString()))
+						.WithDescription(string.Format(Command_Object.Language.StatusEmbed2, "Unknown", UserID, Exp, Level, NextLevelExp))
+						.WithColor(new Color(0x00B06B))
+						.WithTimestamp(DateTime.Now)
+						.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
 
-					await CommandObject.Message.Channel.SendMessageAsync(UserStatusEmbed);
+					await Command_Object.Channel.SendMessageAsync(embed: UserStatusEmbed.Build());
 				}
-				catch (NotFoundException) {
-					DiscordEmbed UserStatusEmbed = new DiscordEmbedBuilder()
-							.WithTitle(string.Format(CommandObject.Language.StatusEmbed1, UserID.ToString()))
-							.WithDescription(string.Format(CommandObject.Language.StatusEmbed2, "Unknown", UserID, Exp, Level, NextLevelExp))
-							.WithColor(new DiscordColor(0x00B06B))
-							.WithTimestamp(DateTime.Now)
-							.WithFooter(string.Format("{0} Bot", CommandObject.Client.CurrentUser.Username));
+				else {
+					EmbedBuilder UserStatusEmbed = new EmbedBuilder()
+						.WithTitle(string.Format(Command_Object.Language.StatusEmbed1, string.IsNullOrWhiteSpace(User.Nickname) ? User.Username : User.Nickname))
+						.WithDescription(string.Format(Command_Object.Language.StatusEmbed2, User.Username + "#" + User.Discriminator, UserID, Exp, Level, NextLevelExp))
+						.WithColor(new Color(0x00B06B))
+						.WithTimestamp(DateTime.Now)
+						.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
 
-					await CommandObject.Message.Channel.SendMessageAsync(UserStatusEmbed);
+					await Command_Object.Channel.SendMessageAsync(embed: UserStatusEmbed.Build());
 				}
 			}
 		}

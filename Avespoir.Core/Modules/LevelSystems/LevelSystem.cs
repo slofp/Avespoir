@@ -1,8 +1,8 @@
-﻿using Avespoir.Core.Language;
+﻿using Avespoir.Core.Extends;
+using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
+using Discord;
+using Discord.WebSocket;
 using System;
 using System.Threading.Tasks;
 
@@ -10,9 +10,9 @@ namespace Avespoir.Core.Modules.LevelSystems {
 
 	class LevelSystem {
 
-		internal static async Task Main(DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
+		internal static async Task Main(MessageObject Message_Object) {
 			Log.Debug("Level System Start");
-			StackMessage Stack_Messages = await new StackMessage(Message_Objects.Message).Start().ConfigureAwait(false);
+			StackMessage Stack_Messages = await new StackMessage(Message_Object).Start().ConfigureAwait(false);
 
 			if (!Stack_Messages.AllowExp) {
 				Log.Debug("Exp Not get");
@@ -20,11 +20,11 @@ namespace Avespoir.Core.Modules.LevelSystems {
 			}
 
 			double Exp = 0.00;
-			ulong UserID = Stack_Messages.StackDiscordMessages[0].Author.Id;
-			ulong EndUserID = Stack_Messages.StackDiscordMessages[^1].Author.Id;
+			ulong UserID = Stack_Messages.StackMessages[0].Author.Id;
+			ulong EndUserID = Stack_Messages.StackMessages[^1].Author.Id;
 			Log.Debug("Sender: " + UserID);
 			Log.Debug("EndSender: " + EndUserID);
-			foreach (DiscordMessage Stack_Message in Stack_Messages.StackDiscordMessages) {
+			foreach (IMessage Stack_Message in Stack_Messages.StackMessages) {
 				string MessageID = Stack_Message.Id.ToString();
 				string MessageContentSource = Stack_Message.Content;
 
@@ -32,11 +32,11 @@ namespace Avespoir.Core.Modules.LevelSystems {
 				Exp += ExpCalculator.ExpCalculate(MessageCount, MessageIDReplace);
 			}
 
-			await SendDB(UserID, Exp, Bot, Message_Objects).ConfigureAwait(false);
-			await SendDB(EndUserID, Exp, Bot, Message_Objects).ConfigureAwait(false);
+			await SendDB(UserID, Exp, Message_Object).ConfigureAwait(false);
+			await SendDB(EndUserID, Exp, Message_Object).ConfigureAwait(false);
 		}
 
-		static async Task SendDB(ulong UserID, double Exp, DiscordClient Bot, MessageCreateEventArgs Message_Objects) {
+		static async Task SendDB(ulong UserID, double Exp, MessageObject Message_Object) {
 			Exp += Database.DatabaseMethods.UserDataMethods.ExpFind(UserID);
 			uint BeforeLevel = Database.DatabaseMethods.UserDataMethods.LevelFind(UserID);
 			uint AfterLevel = LevelDecision(Exp, BeforeLevel);
@@ -45,7 +45,7 @@ namespace Avespoir.Core.Modules.LevelSystems {
 			Database.DatabaseMethods.UserDataMethods.DataUpsert(UserID, AfterLevel, Exp);
 
 			if (BeforeLevel < AfterLevel) {
-				ulong LogChannelID = Database.DatabaseMethods.GuildConfigMethods.LogChannelFind(Message_Objects.Guild.Id);
+				ulong LogChannelID = Database.DatabaseMethods.GuildConfigMethods.LogChannelFind(Message_Object.Guild.Id);
 				if (LogChannelID == 0) {
 					Log.Debug("LogChannel Not Found");
 					return;
@@ -54,7 +54,7 @@ namespace Avespoir.Core.Modules.LevelSystems {
 					Log.Debug("Send");
 					try {
 						GetLanguage Get_Language;
-						string GuildLanguageString = Database.DatabaseMethods.GuildConfigMethods.LanguageFind(Message_Objects.Guild.Id);
+						string GuildLanguageString = Database.DatabaseMethods.GuildConfigMethods.LanguageFind(Message_Object.Guild.Id);
 						if (GuildLanguageString == null) Get_Language = new GetLanguage(Database.Enums.Language.ja_JP);
 						else {
 							if (!Enum.TryParse(GuildLanguageString, true, out Database.Enums.Language GuildLanguage))
@@ -62,17 +62,17 @@ namespace Avespoir.Core.Modules.LevelSystems {
 							else Get_Language = new GetLanguage(GuildLanguage);
 						}
 
-						DiscordChannel LogChannel = Message_Objects.Guild.GetChannel(LogChannelID);
-						DiscordMember Member = await Message_Objects.Guild.GetMemberAsync(UserID).ConfigureAwait(false);
-						DiscordEmbed LevelUpEmbed = new DiscordEmbedBuilder()
-						.WithAuthor(Member.Username + "#" + Member.Discriminator, default, Member.AvatarUrl)
+						SocketTextChannel LogChannel = Message_Object.Guild.GetTextChannel(LogChannelID);
+						SocketGuildUser Member = Message_Object.Guild.GetUser(UserID);
+						EmbedBuilder LevelUpEmbed = new EmbedBuilder()
+						.WithAuthor(Member.Username + "#" + Member.Discriminator, default, Member.GetAvatarUrl(size: 1024))
 						.WithTitle(Get_Language.Language_Data.LevelUpEmbed1)
 						.WithDescription(string.Format(Get_Language.Language_Data.LevelUpEmbed2, Exp, BeforeLevel, AfterLevel))
-						.WithColor(new DiscordColor(0xFFFF00))
+						.WithColor(new Color(0xFFFF00))
 						.WithTimestamp(DateTime.Now)
-						.WithFooter(string.Format("{0} Bot", Bot.CurrentUser.Username));
+						.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
 
-						await LogChannel.SendMessageAsync(LevelUpEmbed);
+						await LogChannel.SendMessageAsync(embed: LevelUpEmbed.Build());
 					}
 					catch (Exception Error) {
 						Log.Error("", Error);

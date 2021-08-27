@@ -19,7 +19,7 @@ namespace Avespoir.Core.Main {
 					continue;
 				}
 
-				if (!float.TryParse(RepositoryTagSplit[1], out float TagVersion) || !float.TryParse(Client.VersionTag[1], out float CurrentVersion)) {
+				if (!float.TryParse(RepositoryTagSplit[1], out float TagVersion) || !float.TryParse(VersionInfo.VersionTag[1], out float CurrentVersion)) {
 					Log.Warning("Could not convert tag version to numeric");
 					continue;
 				}

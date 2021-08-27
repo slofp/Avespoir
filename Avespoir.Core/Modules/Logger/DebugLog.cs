@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace Avespoir.Core.Modules.Logger {
 
@@ -6,5 +7,8 @@ namespace Avespoir.Core.Modules.Logger {
 
 		[Conditional("DEBUG")]
 		internal static void Debug(object Message) => LoggerProperties.Log.Debug(Message);
+
+		[Conditional("DEBUG")]
+		internal static void Debug(object Message, Exception Error) => LoggerProperties.Log.Debug(Message, Error);
 	}
 }

@@ -1,32 +1,41 @@
 ﻿using Avespoir.Core.Database.Schemas;
-using LiteDB;
+using LinqToDB;
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Avespoir.Core.Database.DatabaseMethods {
 
 	class UserDataMethods {
 
-		internal static ILiteCollection<UserData> UserDataCollection =>
-			LiteDBClient.Database.GetCollection<UserData>(typeof(UserData).Name);
+		internal static ITable<UserData> UserDataTable =>
+			MySqlClient.Database.GetTable<UserData>();
 
-		internal static double ExpFind(ulong UserID) =>
-			UserDataCollection.FindOne(User_Data => User_Data.UserID == UserID)?.ExperiencePoint ?? 0;
+		internal static UserData FindOne(Func<UserData, bool> WhereFunc) => (
+			 from User_Data in UserDataTable
+			 where WhereFunc(User_Data)
+			 select User_Data
+			).FirstOrDefault();
+
+		internal static double ExpFind(ulong UserID) => 
+			FindOne(User_Data => User_Data.UserID == UserID)?.ExperiencePoint ?? 0;
 
 		internal static uint LevelFind(ulong UserID) =>
-			UserDataCollection.FindOne(User_Data => User_Data.UserID == UserID)?.Level ?? 1;
+			FindOne(User_Data => User_Data.UserID == UserID)?.Level ?? 1;
 
 		private static bool UserDataFind(ulong UserID, [MaybeNullWhen(true)] out UserData DBUserData) {
-			DBUserData = UserDataCollection.FindOne(User_Data => User_Data.UserID == UserID);
+			DBUserData = FindOne(User_Data => User_Data.UserID == UserID);
 
 			return DBUserData != null;
 		}
 
 		internal static void DataUpsert(ulong UserID, uint Level, double Exp) {
 			if (UserDataFind(UserID, out UserData DBUserData)) {
-				DBUserData.ExperiencePoint = Exp;
-				DBUserData.Level = Level;
-
-				UserDataCollection.Update(DBUserData);
+				UserDataTable
+				.Where(User_Data => User_Data.Id == DBUserData.Id)
+				.Set(User_Data => User_Data.ExperiencePoint, Exp)
+				.Set(User_Data => User_Data.Level, Level)
+				.Update();
 			}
 			else {
 				UserData InsertUserData = new UserData {
@@ -35,7 +44,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					Level = Level
 				};
 
-				UserDataCollection.Insert(InsertUserData);
+				UserDataTable.Value(x => x, InsertUserData).Insert();
 			}
 		}
 	}

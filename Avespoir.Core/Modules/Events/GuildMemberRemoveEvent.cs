@@ -1,9 +1,8 @@
 ﻿using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
+using Discord;
+using Discord.WebSocket;
 using System;
 using System.Threading.Tasks;
 
@@ -11,38 +10,38 @@ namespace Avespoir.Core.Modules.Events {
 
 	class GuildMemberRemoveEvent {
 
-		private static async Task BotProcess(DiscordClient Bot, GuildMemberRemoveEventArgs MemberObjects, GetLanguage Get_Language) {
+		private static async Task BotProcess(SocketGuildUser MemberObjects, GetLanguage Get_Language) {
 			ulong Guild_ChannelID = Database.DatabaseMethods.GuildConfigMethods.LogChannelFind(MemberObjects.Guild.Id);
 
 			if (Guild_ChannelID != 0) {
-				DiscordChannel GuildLogChannel = MemberObjects.Guild.GetChannel(Guild_ChannelID);
-				DiscordEmbed LogChannelEmbed = new Discord​Embed​Builder()
+				SocketTextChannel GuildLogChannel = MemberObjects.Guild.GetTextChannel(Guild_ChannelID);
+				Embed​Builder LogChannelEmbed = new Embed​Builder()
 					.WithTitle(Get_Language.Language_Data.IsBot)
 					.WithDescription(
 						string.Format(
 							Get_Language.Language_Data.Bot_BanDescription,
-							MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator,
-							MemberObjects.Member.Id
+							MemberObjects.Username + "#" + MemberObjects.Discriminator,
+							MemberObjects.Id
 						)
 					)
-					.WithColor(new DiscordColor(0x1971FF))
+					.WithColor(new Color(0x1971FF))
 					.WithTimestamp(DateTime.Now)
 					.WithFooter(
-						string.Format("{0} Bot", Bot.CurrentUser.Username)
+						string.Format("{0} Bot", Client.Bot.CurrentUser.Username)
 					)
 					.WithAuthor(Get_Language.Language_Data.BotRemoved);
-				await GuildLogChannel.SendMessageAsync(LogChannelEmbed);
+				await GuildLogChannel.SendMessageAsync(embed: LogChannelEmbed.Build());
 			}
 			else Log.Warning("Could not send from log channel");
 
-			Log.Debug($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} is Bot");
+			Log.Debug($"{MemberObjects.Username + "#" + MemberObjects.Discriminator} is Bot");
 			return;
 		}
 
-		private static async Task UserProcess(DiscordClient Bot, GuildMemberRemoveEventArgs MemberObjects, GetLanguage Get_Language) {
+		private static async Task UserProcess(SocketGuildUser MemberObjects, GetLanguage Get_Language) {
 			bool SelfLeave = false;
 
-			if (Database.DatabaseMethods.AllowUsersMethods.AllowUserFind(MemberObjects.Guild.Id, MemberObjects.Member.Id, out AllowUsers DBAllowUserID)) {
+			if (Database.DatabaseMethods.AllowUsersMethods.AllowUserFind(MemberObjects.Guild.Id, MemberObjects.Id, out AllowUsers DBAllowUserID)) {
 				Database.DatabaseMethods.AllowUsersMethods.AllowUserDelete(DBAllowUserID);
 				SelfLeave = true;
 			}
@@ -51,8 +50,8 @@ namespace Avespoir.Core.Modules.Events {
 
 			if (!Database.DatabaseMethods.GuildConfigMethods.LeaveBanFind(MemberObjects.Guild.Id)) {
 				if (Guild_ChannelID != 0) {
-					DiscordChannel GuildLogChannel = MemberObjects.Guild.GetChannel(Guild_ChannelID);
-					DiscordEmbed LogChannelEmbed = new Discord​Embed​Builder()
+					SocketTextChannel GuildLogChannel = MemberObjects.Guild.GetTextChannel(Guild_ChannelID);
+					Embed​Builder LogChannelEmbed = new Embed​Builder()
 						.WithTitle(
 							SelfLeave ? string.Empty :
 							Database.DatabaseMethods.GuildConfigMethods.WhitelistFind(MemberObjects.Guild.Id) ? Get_Language.Language_Data.DBDeleteLeave :
@@ -61,50 +60,50 @@ namespace Avespoir.Core.Modules.Events {
 						.WithDescription(
 							string.Format(
 								Get_Language.Language_Data.Bot_BanDescription,
-								MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator,
-								MemberObjects.Member.Id
+								MemberObjects.Username + "#" + MemberObjects.Discriminator,
+								MemberObjects.Id
 							)
 						)
-						.WithColor(new DiscordColor(SelfLeave ? 0xFF4B00 : 0xF6AA00))
+						.WithColor(new Color(SelfLeave ? 0xFF4B00u : 0xF6AA00u))
 						.WithTimestamp(DateTime.Now)
 						.WithFooter(
-							string.Format("{0} Bot", Bot.CurrentUser.Username)
+							string.Format("{0} Bot", Client.Bot.CurrentUser.Username)
 						)
 						.WithAuthor(Get_Language.Language_Data.Leaved);
-					await GuildLogChannel.SendMessageAsync(LogChannelEmbed);
+					await GuildLogChannel.SendMessageAsync(embed: LogChannelEmbed.Build());
 				}
 				else Log.Warning("Could not send from log channel");
 			}
 			else {
-				await MemberObjects.Member.BanAsync(default, Get_Language.Language_Data.BanReason);
+				await MemberObjects.BanAsync(default, Get_Language.Language_Data.BanReason);
 
 				if (Guild_ChannelID != 0) {
-					DiscordChannel GuildLogChannel = MemberObjects.Guild.GetChannel(Guild_ChannelID);
-					DiscordEmbed LogChannelEmbed = new Discord​Embed​Builder()
+					SocketTextChannel GuildLogChannel = MemberObjects.Guild.GetTextChannel(Guild_ChannelID);
+					Embed​Builder LogChannelEmbed = new Embed​Builder()
 						.WithTitle(Get_Language.Language_Data.Baned)
 						.WithDescription(
 							string.Format(
 								Get_Language.Language_Data.Bot_BanDescription,
-								MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator,
-								MemberObjects.Member.Id
+								MemberObjects.Username + "#" + MemberObjects.Discriminator,
+								MemberObjects.Id
 							)
 						)
-						.WithColor(new DiscordColor(0xFF4B00))
+						.WithColor(new Color(0xFF4B00))
 						.WithTimestamp(DateTime.Now)
 						.WithFooter(
-							string.Format("{0} Bot", Bot.CurrentUser.Username)
+							string.Format("{0} Bot", Client.Bot.CurrentUser.Username)
 						)
 						.WithAuthor(Get_Language.Language_Data.Leaved);
-					await GuildLogChannel.SendMessageAsync(LogChannelEmbed);
+					await GuildLogChannel.SendMessageAsync(embed: LogChannelEmbed.Build());
 				}
 				else Log.Warning("Could not send from log channel");
 			}
 
-			Log.Debug($"{MemberObjects.Member.Username + "#" + MemberObjects.Member.Discriminator} has leave the server");
+			Log.Debug($"{MemberObjects.Username + "#" + MemberObjects.Discriminator} has leave the server");
 			return;
 		}
 
-		internal static async Task Main(DiscordClient Bot, GuildMemberRemoveEventArgs MemberObjects) {
+		internal static async Task Main(SocketGuildUser MemberObjects) {
 			Log.Debug("GuildMemberRemoveEvent " + "Start...");
 
 			GetLanguage Get_Language;
@@ -116,8 +115,8 @@ namespace Avespoir.Core.Modules.Events {
 				else Get_Language = new GetLanguage(GuildLanguage);
 			}
 
-			if (MemberObjects.Member.IsBot) await BotProcess(Bot, MemberObjects, Get_Language).ConfigureAwait(false);
-			else await UserProcess(Bot, MemberObjects, Get_Language).ConfigureAwait(false);
+			if (MemberObjects.IsBot) await BotProcess(MemberObjects, Get_Language).ConfigureAwait(false);
+			else await UserProcess(MemberObjects, Get_Language).ConfigureAwait(false);
 
 			Log.Debug("GuildMemberRemoveEvent " + "End...");
 		}

@@ -1,5 +1,11 @@
 {
-  "Filename": "./AvespoirData.db",
+  "Server": "localhost",
 
-  "Password": ""
+  "Database": "Avespoir",
+
+  "User": "root",
+
+  "Password": "",
+
+  "OtherOptions": ""
 }
