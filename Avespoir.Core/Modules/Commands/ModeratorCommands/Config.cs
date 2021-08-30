@@ -54,12 +54,12 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 						return;
 					}
 
-					string AfterPublicPrefix = msgs[1];
-					string BeforePublicPrefix = Database.DatabaseMethods.GuildConfigMethods.PublicPrefixFind(Command_Object.Guild.Id);
-					if (BeforePublicPrefix == null) BeforePublicPrefix = CommandConfig.Prefix;
-					Database.DatabaseMethods.GuildConfigMethods.PublicPrefixUpsert(Command_Object.Guild.Id, AfterPublicPrefix);
+					string AfterPrefix = msgs[1];
+					string BeforePrefix = Database.DatabaseMethods.GuildConfigMethods.PrefixFind(Command_Object.Guild.Id);
+					if (BeforePrefix == null) BeforePrefix = CommandConfig.Prefix;
+					Database.DatabaseMethods.GuildConfigMethods.PrefixUpsert(Command_Object.Guild.Id, AfterPrefix);
 
-					await Command_Object.Channel.SendMessageAsync(string.Format(Command_Object.Language.ConfigPublicPrefixChange, BeforePublicPrefix, AfterPublicPrefix));
+					await Command_Object.Channel.SendMessageAsync(string.Format(Command_Object.Language.ConfigPublicPrefixChange, BeforePrefix, AfterPrefix));
 					break;
 				case "logchannel":
 					if (msgs.Length < 2 || string.IsNullOrWhiteSpace(msgs[1])) {

@@ -1,4 +1,4 @@
-namespace Avespoir.Core.Database.Enums {
+ï»¿namespace Avespoir.Core.Database.Enums {
 
 	internal enum RoleLevel {
 
@@ -8,7 +8,7 @@ namespace Avespoir.Core.Database.Enums {
 
 		Bot = 2,
 
-		// ‰B•Á‚µ‚Ü‚·
+		// éš è”½ã—ã¾ã™
 		Owner = int.MinValue
 	}
 }

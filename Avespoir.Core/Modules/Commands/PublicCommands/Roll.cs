@@ -1,4 +1,4 @@
-using Avespoir.Core.Abstructs;
+ï»¿using Avespoir.Core.Abstructs;
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Extends;
@@ -13,11 +13,11 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 	[Command("roll", RoleLevel.Public)]
 	class Roll : CommandAbstruct {
 
-		internal override LanguageDictionary Description => new LanguageDictionary("ƒ‰ƒ“ƒ_ƒ€‚Ì”’l‚ğ¶¬‚µ‚Ü‚·") {
+		internal override LanguageDictionary Description => new LanguageDictionary("ãƒ©ãƒ³ãƒ€ãƒ ã®æ•°å€¤ã‚’ç”Ÿæˆã—ã¾ã™") {
 			{ Database.Enums.Language.en_US, "Generate random numbers" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("{0}roll (Å‘å’l) (Å¬’l)") {
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}roll (æœ€å¤§å€¤) (æœ€å°å€¤)") {
 			{ Database.Enums.Language.en_US, "{0}roll (Maximum value) (Minimum value)" }
 		};
 

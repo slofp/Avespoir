@@ -19,12 +19,6 @@ namespace Avespoir.Core.Database.Schemas {
 		[Column("Prefix")]
 		public string Prefix { get; set; }
 
-		[Column("PublicPrefix")]
-		public string PublicPrefix { get; set; }
-
-		[Column("ModeratorPrefix")]
-		public string ModeratorPrefix { get; set; }
-
 		[Column("LogChannelId")]
 		public ulong LogChannelId { get; set; }
 

@@ -6,7 +6,7 @@ namespace Avespoir.Core {
 
 	public static class StartClient {
 		public static async Task Start() {
-			await UpdateChecker.GetUpdate();
+			await UpdateChecker.GetUpdate().ConfigureAwait(false);
 
 			MySqlClient.Main();
 			//await MongoDBClient.Main().ConfigureAwait(false);

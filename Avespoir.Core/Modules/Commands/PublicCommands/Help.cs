@@ -79,7 +79,7 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 					.WithDescription(string.Format(Command_Object.Language.HelpCommandPrefix, GuildPrefix))
 					.AddField(
 						Command_Object.Language.HelpConfigArgs,
-						"`" + "whitelist" + " | " + "leaveban" + " | " + "publicprefix" + " | " + "moderatorprefix" + " | " + "logchannel" + " | " + "language" + " | " + "level" + "`"
+						"`" + "whitelist" + " | " + "leaveban" + " | " + "prefix" + " | " + "logchannel" + " | " + "language" + " | " + "level" + "`"
 					)
 					.WithColor(new Color(0xF6AA00))
 					.WithTimestamp(DateTime.Now)
