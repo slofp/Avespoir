@@ -11,7 +11,7 @@ namespace Avespoir.Core.Configs {
 
 		internal static DiscordSocketConfig WebSocketConfig() => new DiscordSocketConfig() {
 			#if DEBUG
-			DefaultRetryMode = RetryMode.AlwaysFail,
+			DefaultRetryMode = RetryMode.AlwaysRetry,
 			LogLevel = LogSeverity.Debug
 			#else
 			DefaultRetryMode = RetryMode.AlwaysRetry,

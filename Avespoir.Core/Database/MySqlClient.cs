@@ -45,11 +45,31 @@ namespace Avespoir.Core.Database {
 		internal static void Main() {
 			Log.Info("Connecting to database...");
 
-			Database = new DataConnection(ProviderName.MySql, MySqlConfigs.ConnectionString);
+			Database = new DataConnection(new LinqToDB.Configuration.LinqToDbConnectionOptionsBuilder().UseConnectionString(ProviderName.MySql, MySqlConfigs.ConnectionString).Build());
+			Database.OnConnectionOpened += Database_OnConnectionOpened;
+			Database.OnClosed += Database_OnClosed;
+			Database.OnClosing += Database_OnClosing;
 
 			Log.Info("Connected to database!");
 
 			Init();
+		}
+
+		private static void Database_OnClosing(object sender, EventArgs e) {
+			Log.Info("Database connection closing...");
+		}
+
+		private static void Database_OnClosed(object sender, EventArgs e) {
+			Log.Info("Database connection closed.");
+		}
+
+		private static void Database_OnConnectionOpened(DataConnection arg1, System.Data.IDbConnection arg2) {
+			Log.Info("Database connection opened.");
+		}
+
+		internal static void DBUpdate() {
+			DeleteDBAccess();
+			Main();
 		}
 
 		internal static void DeleteDBAccess() {

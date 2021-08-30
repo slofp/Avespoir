@@ -12,8 +12,25 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 		internal static ITable<Roles> RolesTable =>
 			MySqlClient.Database.GetTable<Roles>();
 
-		internal static Roles FindOne(Func<Roles, bool> WhereFunc) =>
-			RolesTable.Where(WhereFunc).FirstOrDefault();
+		internal static Roles FindOne(Func<Roles, bool> WhereFunc) {
+			try {
+				MySqlClient.Database.BeginTransaction();
+				Roles Result = RolesTable.Where(WhereFunc).FirstOrDefault();
+				MySqlClient.Database.CommitTransaction();
+
+				return Result;
+			}
+			catch (MySql.Data.MySqlClient.MySqlException) {
+				MySqlClient.DBUpdate();
+
+				return FindOne(WhereFunc);
+			}
+			catch (Exception) {
+				MySqlClient.Database.RollbackTransaction();
+
+				throw;
+			}
+		}
 
 		internal static bool RoleExist(ulong GuildID, ulong Uuid) => RoleFind(GuildID, Uuid, out Roles _);
 
@@ -40,64 +57,130 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 		}
 
 		internal static bool RolesListFind(ulong GuildID, [MaybeNullWhen(true)] out List<Roles> DBRoles) {
-			DBRoles = (
-				from Role in RolesTable
-				where Role.GuildID == GuildID
-				select Role
-			).ToList();
+			try {
+				MySqlClient.Database.BeginTransaction();
+				DBRoles = (
+					from Role in RolesTable
+					where Role.GuildID == GuildID
+					select Role
+				).ToList();
 
-			return DBRoles != null;
+				MySqlClient.Database.CommitTransaction();
+
+				return DBRoles != null;
+			}
+			catch (MySql.Data.MySqlClient.MySqlException) {
+				MySqlClient.DBUpdate();
+
+				return RolesListFind(GuildID, out DBRoles);
+			}
+			catch (Exception) {
+				MySqlClient.Database.RollbackTransaction();
+
+				throw;
+			}
 		}
 
 		internal static bool RolesListFind(ulong GuildID, Enums.RoleLevel RoleLevel, [MaybeNullWhen(true)] out List<Roles> DBRoles) {
-			DBRoles = (
-				from Role in RolesTable
-				where Role.GuildID == GuildID
-				where Role.RoleLevel == Enum.GetName(typeof(Enums.RoleLevel), RoleLevel)
-				select Role
-			).ToList();
+			try {
+				MySqlClient.Database.BeginTransaction();
+				DBRoles = (
+					from Role in RolesTable
+					where Role.GuildID == GuildID
+					where Role.RoleLevel == Enum.GetName(typeof(Enums.RoleLevel), RoleLevel)
+					select Role
+				).ToList();
+				MySqlClient.Database.CommitTransaction();
 
-			return DBRoles != null;
+				return DBRoles != null;
+			}
+			catch (MySql.Data.MySqlClient.MySqlException) {
+				MySqlClient.DBUpdate();
+
+				return RolesListFind(GuildID, RoleLevel, out DBRoles);
+			}
+			catch (Exception) {
+				MySqlClient.Database.RollbackTransaction();
+
+				throw;
+			}
 		}
 
 		internal static bool RoleUpdate(ulong GuildID, ulong Uuid, uint RoleNum, string RoleLevel) {
-			if (RoleFind(GuildID, Uuid, out Roles DBRole)) {
+			try {
+				if (RoleFind(GuildID, Uuid, out Roles DBRole)) {
+					MySqlClient.Database.BeginTransaction();
+					RolesTable
+					.Where(Role => Role.Id == DBRole.Id)
+					.Set(Role => Role.RoleNum, RoleNum)
+					.Set(Role => Role.RoleLevel, RoleLevel)
+					.Update();
 
-				RolesTable
-				.Where(Role => Role.Id == DBRole.Id)
-				.Set(Role => Role.RoleNum, RoleNum)
-				.Set(Role => Role.RoleLevel, RoleLevel)
-				.Update();
+					MySqlClient.Database.CommitTransaction();
 
-				return true;
+					return true;
+				}
+				else return false;
 			}
-			else return false;
+			catch (MySql.Data.MySqlClient.MySqlException) {
+				MySqlClient.DBUpdate();
+
+				return RoleUpdate(GuildID, Uuid, RoleNum, RoleLevel);
+			}
+			catch (Exception) {
+				MySqlClient.Database.RollbackTransaction();
+
+				return false;
+			}
 		}
 
 		internal static Roles RoleInsert(ulong GuildID, ulong Uuid, uint RoleNum, string RoleLevel) {
-			Roles InsertRole = new Roles {
-				GuildID = GuildID,
-				Uuid = Uuid,
-				RoleNum = RoleNum,
-				RoleLevel = RoleLevel
-			};
+			try {
+				Roles InsertRole = new Roles {
+					GuildID = GuildID,
+					Uuid = Uuid,
+					RoleNum = RoleNum,
+					RoleLevel = RoleLevel
+				};
 
-			RolesTable
-			.Value(x => x.GuildID, InsertRole.GuildID)
-			.Value(x => x.Uuid, InsertRole.Uuid)
-			.Value(x => x.RoleNum, InsertRole.RoleNum)
-			.Value(x => x.RoleLevel, InsertRole.RoleLevel)
-			.Insert();
+				MySqlClient.Database.BeginTransaction();
+				RolesTable
+				.Value(x => x.GuildID, InsertRole.GuildID)
+				.Value(x => x.Uuid, InsertRole.Uuid)
+				.Value(x => x.RoleNum, InsertRole.RoleNum)
+				.Value(x => x.RoleLevel, InsertRole.RoleLevel)
+				.Insert();
 
-			return InsertRole;
+				MySqlClient.Database.CommitTransaction();
+
+				return InsertRole;
+			}
+			catch (MySql.Data.MySqlClient.MySqlException) {
+				MySqlClient.DBUpdate();
+
+				return RoleInsert(GuildID, Uuid, RoleNum, RoleLevel);
+			}
+			catch (Exception) {
+				MySqlClient.Database.RollbackTransaction();
+
+				throw;
+			}
 		}
 
 		internal static bool RoleDelete(Roles Role) {
 			try {
+				MySqlClient.Database.BeginTransaction();
 				RolesTable.Where(Role_ => Role_.Id == Role.Id).Delete();
+				MySqlClient.Database.CommitTransaction();
 				return true;
 			}
+			catch (MySql.Data.MySqlClient.MySqlException) {
+				MySqlClient.DBUpdate();
+
+				return RoleDelete(Role);
+			}
 			catch (Exception) {
+				MySqlClient.Database.RollbackTransaction();
 				return false;
 			}
 		}
