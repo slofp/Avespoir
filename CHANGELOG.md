@@ -7,6 +7,12 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
+## [Beta 4.5](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.5) - 2021-09-07
+
+### Fixed
+
+* Discord Bot Connection Error
+
 ## [Beta 4.4](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.4) - 2021-08-30
 
 ### Fixed

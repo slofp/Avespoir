@@ -35,34 +35,80 @@ namespace Avespoir.Core.Modules.Events {
 				}
 			}
 
-			Log.Info($"{Bot.CurrentUser.Username}(ShardID: {Bot.ShardId}) Bot Ready!");
+			Task.Run(() => StartStatus()).ConfigureAwait(false);
+			Task.Run(() => StartVCCheck()).ConfigureAwait(false);
+			//Task.Run(() => AutoReconnect()).ConfigureAwait(false);
 
-			StartStatus().ConfigureAwait(false);
-			StartVCCheck().ConfigureAwait(false);
+			//StartStatus().ConfigureAwait(false);
+			//StartVCCheck().ConfigureAwait(false);
+			//AutoReconnect().ConfigureAwait(false);
+			Log.Info($"{Bot.CurrentUser.Username}(ShardID: {Bot.ShardId}) Bot Ready!");
 			Log.Debug("ReadyEvent " + "End...");
 			return Task.CompletedTask;
 		}
 
-		static async Task StartStatus() {
-			while (!ExitCheck) {
-				await Client.Bot.SetGameAsync(CommandConfig.Prefix + "help").ConfigureAwait(false);
-				await Client.Bot.SetStatusAsync(UserStatus.Online).ConfigureAwait(false);
+		static async Task AutoReconnect() {
+			DateTime StartTime = DateTime.Now;
 
-				await Task.Delay(1000).ConfigureAwait(false);
+			TimeSpan Min_30 = new TimeSpan(0, 0, 30); // とりあえず30秒
+			Log.Info("AutoRestarter Start");
+			try {
+				while (!ExitCheck) {
+					if (DateTime.Now - StartTime >= Min_30) {
+						Log.Info("Reconnecting...");
+						ExitCheck = true;
+						await Task.Delay(1000).ConfigureAwait(false);
+
+						await Client.Bot.StopAsync().ConfigureAwait(false);
+						await Client.Bot.LogoutAsync().ConfigureAwait(false);
+
+						ExitCheck = false;
+
+						await Client.Bot.LoginAsync(TokenType.Bot, ClientConfig.Token).ConfigureAwait(false);
+						await Client.Bot.StartAsync().ConfigureAwait(false);
+						return;
+					}
+
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+			}
+			catch (Exception Error) {
+				Log.Error("AutoRestarter Error", Error);
+			}
+
+			Log.Info("AutoRestarter Exit");
+		}
+
+		static async Task StartStatus() {
+			try {
+				while (!ExitCheck) {
+					await Client.Bot.SetGameAsync(CommandConfig.Prefix + "help").ConfigureAwait(false);
+					await Client.Bot.SetStatusAsync(UserStatus.Online).ConfigureAwait(false);
+
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+			}
+			catch (Exception Error) {
+				Log.Error("Startstatus Error", Error);
 			}
 		}
 
 		static async Task StartVCCheck() {
-			while (!ExitCheck) {
-				if (Client.ConnectedVoiceChannel_Dict.Count == 0) continue;
+			try {
+				while (!ExitCheck) {
+					if (Client.ConnectedVoiceChannel_Dict.Count == 0) continue;
 
-				foreach (KeyValuePair<ulong, VCInfo> ConnectedVoiceChannel in Client.ConnectedVoiceChannel_Dict) {
-					if (DateTime.Now - ConnectedVoiceChannel.Value.LastUpdateDate >= TimeSpan.FromMinutes(10)) {
-						await ConnectedVoiceChannel.Value.Finalize().ConfigureAwait(false);
+					foreach (KeyValuePair<ulong, VCInfo> ConnectedVoiceChannel in Client.ConnectedVoiceChannel_Dict) {
+						if (DateTime.Now - ConnectedVoiceChannel.Value.LastUpdateDate >= TimeSpan.FromMinutes(10)) {
+							await ConnectedVoiceChannel.Value.Finalize().ConfigureAwait(false);
 
-						Log.Info("Disconnected from VC after 10 minutes");
+							Log.Info("Disconnected from VC after 10 minutes");
+						}
 					}
 				}
+			}
+			catch (Exception Error) {
+				Log.Error("StartVCCheck Error", Error);
 			}
 		}
 	}
