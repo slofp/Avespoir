@@ -5,7 +5,9 @@ using Avespoir.Core.Exceptions;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,7 +42,7 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			string EmojiName = msgs[0];
 
 			try {
-				IEnumerator<Attachment> Attachment = Command_Object.Attachments.GetEnumerator();
+				IEnumerator<DiscordAttachment> Attachment = Command_Object.Attachments.GetEnumerator();
 				Uri ImageUrl;
 				if (Attachment.MoveNext()) ImageUrl = new Uri(Attachment.Current.Url);
 				else throw new UrlNotFoundException();
@@ -49,7 +51,7 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 				byte[] Imagebyte = await GetImage.DownloadDataTaskAsync(ImageUrl);
 				Stream EmojiImage = new MemoryStream(Imagebyte);
 
-				GuildEmote Emoji = await Command_Object.Guild.CreateEmoteAsync(EmojiName, new Image(EmojiImage));
+				DiscordGuildEmoji Emoji = await Command_Object.Guild.CreateEmojiAsync(EmojiName, EmojiImage).ConfigureAwait(false);
 				await Command_Object.Channel.SendMessageAsync(string.Format(Command_Object.Language.EmojiSuccess, ConvertEmoji(Emoji), Emoji.Name));
 			}
 			catch (UrlNotFoundException) {

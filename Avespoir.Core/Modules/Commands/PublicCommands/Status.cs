@@ -5,8 +5,9 @@ using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.LevelSystems;
 using Avespoir.Core.Modules.Utils;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Threading.Tasks;
 
@@ -34,12 +35,12 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 				}
 				double NextLevelExp = LevelSystem.ReqNextLevelExp(Level) - Exp;
 
-				SocketGuildUser User = Command_Object.Guild.GetUser(Command_Object.Author.Id);
+				DiscordMember User = await Command_Object.Guild.GetMemberAsync(Command_Object.Author.Id).ConfigureAwait(false);
 
-				EmbedBuilder UserStatusEmbed = new EmbedBuilder()
+				DiscordEmbedBuilder UserStatusEmbed = new DiscordEmbedBuilder()
 						.WithTitle(string.Format(Command_Object.Language.StatusEmbed1, string.IsNullOrWhiteSpace(User.Nickname) ? User.Username : User.Nickname))
 						.WithDescription(string.Format(Command_Object.Language.StatusEmbed2, User.Username + "#" + User.Discriminator, User.Id, Exp, Level, NextLevelExp))
-						.WithColor(new Color(0x00B06B))
+						.WithColor(new DiscordColor(0x00B06B))
 						.WithTimestamp(DateTime.Now)
 						.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
 
@@ -62,23 +63,23 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 				}
 				double NextLevelExp = LevelSystem.ReqNextLevelExp(Level) - Exp;
 
-				SocketGuildUser User = Command_Object.Guild.GetUser(UserID);
+				DiscordMember User = await Command_Object.Guild.GetMemberAsync(UserID).ConfigureAwait(false);
 
 				if (User is null) {
-					EmbedBuilder UserStatusEmbed = new EmbedBuilder()
+					DiscordEmbedBuilder UserStatusEmbed = new DiscordEmbedBuilder()
 						.WithTitle(string.Format(Command_Object.Language.StatusEmbed1, UserID.ToString()))
 						.WithDescription(string.Format(Command_Object.Language.StatusEmbed2, "Unknown", UserID, Exp, Level, NextLevelExp))
-						.WithColor(new Color(0x00B06B))
+						.WithColor(new DiscordColor(0x00B06B))
 						.WithTimestamp(DateTime.Now)
 						.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
 
 					await Command_Object.Channel.SendMessageAsync(embed: UserStatusEmbed.Build());
 				}
 				else {
-					EmbedBuilder UserStatusEmbed = new EmbedBuilder()
+					DiscordEmbedBuilder UserStatusEmbed = new DiscordEmbedBuilder()
 						.WithTitle(string.Format(Command_Object.Language.StatusEmbed1, string.IsNullOrWhiteSpace(User.Nickname) ? User.Username : User.Nickname))
 						.WithDescription(string.Format(Command_Object.Language.StatusEmbed2, User.Username + "#" + User.Discriminator, UserID, Exp, Level, NextLevelExp))
-						.WithColor(new Color(0x00B06B))
+						.WithColor(new DiscordColor(0x00B06B))
 						.WithTimestamp(DateTime.Now)
 						.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
 

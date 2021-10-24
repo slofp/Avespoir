@@ -3,7 +3,9 @@ using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Modules.Logger;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -88,7 +90,7 @@ namespace Avespoir.Core.Modules.Commands {
 
 				if (Database.DatabaseMethods.RolesMethods.RolesListFind(Command_Object.Guild.Id, RoleLevel.Moderator, out List<Roles> DBRoleList)) {
 					foreach (Roles DBRole in DBRoleList) {
-						foreach (SocketRole GuildRole in Command_Object.Member.Roles) {
+						foreach (DiscordRole GuildRole in Command_Object.Member.Roles) {
 							if (GuildRole.Id == DBRole.Uuid) {
 								ModCheck = true;
 								break;

@@ -4,7 +4,9 @@ using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Commands.PublicCommands {
@@ -36,12 +38,12 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 				return;
 			}
 
-			SocketGuildUser FoundMember = Command_Object.Guild.GetUser(Userid);
+			DiscordMember FoundMember = await Command_Object.Guild.GetMemberAsync(Userid).ConfigureAwait(false);
 			if (FoundMember is null) {
 				await Command_Object.Channel.SendMessageAsync(Command_Object.Language.FindNotFound);
 			}
 			else {
-				string ResultString = string.Format(Command_Object.Language.FindResult, FoundMember.Username + "#" + FoundMember.Discriminator, FoundMember.JoinedAt, Command_Object.Guild.OwnerId == FoundMember.Id ? "yes" : "no", FoundMember.GetAvatarUrl(size: 1024));
+				string ResultString = string.Format(Command_Object.Language.FindResult, FoundMember.Username + "#" + FoundMember.Discriminator, FoundMember.JoinedAt, Command_Object.Guild.OwnerId == FoundMember.Id ? "yes" : "no", FoundMember.GetAvatarUrl(ImageFormat.Auto ,1024));
 				await Command_Object.Channel.SendMessageAsync(ResultString);
 			}
 		}

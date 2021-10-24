@@ -5,7 +5,9 @@ using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -94,9 +96,9 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 					return;
 				}
 
-				Roles InsertRoleData = Database.DatabaseMethods.RolesMethods.RoleInsert(Command_Object.Guild.Id, msgs_ID, msgs_RoleNum, Enum.GetName(typeof(RoleLevel), intRoleLevel));
+				Roles InsertRoleData = Database.DatabaseMethods.RolesMethods.RoleInsert(Command_Object.Guild.Id, msgs_ID, msgs_RoleNum, intRoleLevel);
 
-				SocketRole GuildRole = Command_Object.Guild.GetRole(InsertRoleData.Uuid);
+				DiscordRole GuildRole = Command_Object.Guild.GetRole(InsertRoleData.Uuid);
 				string ResultText = string.Format(Command_Object.Language.DBRoleAddSuccess, InsertRoleData.Uuid, GuildRole.Name, InsertRoleData.RoleNum, InsertRoleData.RoleLevel);
 				await Command_Object.Channel.SendMessageAsync(ResultText);
 			}

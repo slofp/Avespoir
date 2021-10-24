@@ -1,5 +1,7 @@
 ﻿using Avespoir.Core.Database.Schemas;
-using LinqToDB;
+using Avespoir.Core.Modules.Logger;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -8,74 +10,41 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 
 	class GuildConfigMethods {
 
-		internal static ITable<GuildConfig> GuildConfigTable =>
-			MySqlClient.Database.GetTable<GuildConfig>();
-
-		internal static GuildConfig FindOne(Func<GuildConfig, bool> WhereFunc) {
-			try {
-				MySqlClient.Database.BeginTransaction();
-				GuildConfig Result = GuildConfigTable.Where(WhereFunc).FirstOrDefault();
-				MySqlClient.Database.CommitTransaction();
-
-				return Result;
-			}
-			catch (MySql.Data.MySqlClient.MySqlException) {
-				MySqlClient.DBUpdate();
-
-				return FindOne(WhereFunc);
-			}
-			catch (Exception) {
-				MySqlClient.Database.RollbackTransaction();
-
-				throw;
-			}
-		}
+		private static GuildConfig GuildConfigFind(ulong GuildID) => (
+			from Guild_Config in MongoDBClient.GuildConfigCollection.AsQueryable()
+			where Guild_Config.GuildID == GuildID
+			select Guild_Config
+		).FirstOrDefault();
 
 		internal static bool WhitelistFind(ulong GuildID) =>
-			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.WhiteList ?? false;
+			GuildConfigFind(GuildID)?.WhiteList ?? false;
 
 		internal static bool LeaveBanFind(ulong GuildID) =>
-			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.LeaveBan ?? false;
+			GuildConfigFind(GuildID)?.LeaveBan ?? false;
 
 		internal static string PrefixFind(ulong GuildID) =>
-			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.Prefix;
+			GuildConfigFind(GuildID)?.Prefix;
 
 		internal static ulong LogChannelFind(ulong GuildID) =>
-			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.LogChannelId ?? 0;
+			GuildConfigFind(GuildID)?.LogChannelId ?? 0;
 
-		internal static string LanguageFind(ulong GuildID) =>
-			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.Language;
+		internal static Enums.Language LanguageFind(ulong GuildID) =>
+			GuildConfigFind(GuildID)?.Language ?? Enums.Language.ja_JP;
 
 		internal static bool LevelSwitchFind(ulong GuildID) =>
-			FindOne(Guild_Config => Guild_Config.GuildID == GuildID)?.LevelSwitch ?? true;
+			GuildConfigFind(GuildID)?.LevelSwitch ?? true;
 
 		private static bool GuildConfigFind(ulong GuildID, [MaybeNullWhen(true)] out GuildConfig DBGuildConfig) {
-			DBGuildConfig = FindOne(Guild_Config => Guild_Config.GuildID == GuildID);
+			DBGuildConfig = GuildConfigFind(GuildID);
 
 			return DBGuildConfig != null;
 		}
 
 		internal static void WhitelistUpsert(ulong GuildID, bool AfterWhitelist) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
-					.Set(Guild_Config => Guild_Config.WhiteList, AfterWhitelist)
-					.Update();
-
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					WhitelistUpsert(GuildID, AfterWhitelist);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				UpdateDefinition<GuildConfig> UpdateDef = Builders<GuildConfig>.Update
+					.Set(Guild_Config => Guild_Config.WhiteList, AfterWhitelist);
+				MongoDBClient.GuildConfigCollection.UpdateOne(Guild_Config => Guild_Config.Id == DBGuildConfig.Id, UpdateDef);
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -83,47 +52,15 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					WhiteList = AfterWhitelist
 				};
 
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Value(x => x.GuildID, InsertGuildConfig.GuildID)
-					.Value(x => x.WhiteList, InsertGuildConfig.WhiteList)
-					.Insert();
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					WhitelistUpsert(GuildID, AfterWhitelist);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				MongoDBClient.GuildConfigCollection.InsertOne(InsertGuildConfig);
 			}
 		}
 
 		internal static void LeaveBanUpsert(ulong GuildID, bool AfterLeaveBan) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
-					.Set(Guild_Config => Guild_Config.LeaveBan, AfterLeaveBan)
-					.Update();
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					LeaveBanUpsert(GuildID, AfterLeaveBan);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				UpdateDefinition<GuildConfig> UpdateDef = Builders<GuildConfig>.Update
+					.Set(Guild_Config => Guild_Config.LeaveBan, AfterLeaveBan);
+				MongoDBClient.GuildConfigCollection.UpdateOne(Guild_Config => Guild_Config.Id == DBGuildConfig.Id, UpdateDef);
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -131,47 +68,15 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					LeaveBan = AfterLeaveBan
 				};
 
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Value(x => x.GuildID, InsertGuildConfig.GuildID)
-					.Value(x => x.LeaveBan, InsertGuildConfig.LeaveBan)
-					.Insert();
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					LeaveBanUpsert(GuildID, AfterLeaveBan);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				MongoDBClient.GuildConfigCollection.InsertOne(InsertGuildConfig);
 			}
 		}
 
 		internal static void PrefixUpsert(ulong GuildID, string AfterPrefix) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
-					.Set(Guild_Config => Guild_Config.Prefix, AfterPrefix)
-					.Update();
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					PrefixUpsert(GuildID, AfterPrefix);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				UpdateDefinition<GuildConfig> UpdateDef = Builders<GuildConfig>.Update
+					.Set(Guild_Config => Guild_Config.Prefix, AfterPrefix);
+				MongoDBClient.GuildConfigCollection.UpdateOne(Guild_Config => Guild_Config.Id == DBGuildConfig.Id, UpdateDef);
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -179,47 +84,15 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					Prefix = AfterPrefix
 				};
 
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Value(x => x.GuildID, InsertGuildConfig.GuildID)
-					.Value(x => x.Prefix, InsertGuildConfig.Prefix)
-					.Insert();
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					PrefixUpsert(GuildID, AfterPrefix);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				MongoDBClient.GuildConfigCollection.InsertOne(InsertGuildConfig);
 			}
 		}
 
 		internal static void LogChannelIdUpsert(ulong GuildID, ulong AfterLogChannelId) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
-					.Set(Guild_Config => Guild_Config.LogChannelId, AfterLogChannelId)
-					.Update();
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					LogChannelIdUpsert(GuildID, AfterLogChannelId);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				UpdateDefinition<GuildConfig> UpdateDef = Builders<GuildConfig>.Update
+					.Set(Guild_Config => Guild_Config.LogChannelId, AfterLogChannelId);
+				MongoDBClient.GuildConfigCollection.UpdateOne(Guild_Config => Guild_Config.Id == DBGuildConfig.Id, UpdateDef);
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -227,95 +100,31 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					LogChannelId = AfterLogChannelId
 				};
 
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Value(x => x.GuildID, InsertGuildConfig.GuildID)
-					.Value(x => x.LogChannelId, InsertGuildConfig.LogChannelId)
-					.Insert();
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					LogChannelIdUpsert(GuildID, AfterLogChannelId);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				MongoDBClient.GuildConfigCollection.InsertOne(InsertGuildConfig);
 			}
 		}
 
 		internal static void LanguageUpsert(ulong GuildID, Enums.Language AfterLanguage) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
-					.Set(Guild_Config => Guild_Config.Language, Enum.GetName(typeof(Enums.Language), AfterLanguage))
-					.Update();
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					LanguageUpsert(GuildID, AfterLanguage);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				UpdateDefinition<GuildConfig> UpdateDef = Builders<GuildConfig>.Update
+					.Set(Guild_Config => Guild_Config.Language, AfterLanguage);
+				MongoDBClient.GuildConfigCollection.UpdateOne(Guild_Config => Guild_Config.Id == DBGuildConfig.Id, UpdateDef);
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
 					GuildID = GuildID,
-					Language = Enum.GetName(typeof(Enums.Language), AfterLanguage)
+					Language = AfterLanguage
 				};
 
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Value(x => x.GuildID, InsertGuildConfig.GuildID)
-					.Value(x => x.Language, InsertGuildConfig.Language)
-					.Insert();
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					LanguageUpsert(GuildID, AfterLanguage);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				MongoDBClient.GuildConfigCollection.InsertOne(InsertGuildConfig);
 			}
 		}
 
 		internal static void LevelSwitchUpsert(ulong GuildID, bool AfterLevelSwitch) {
 			if (GuildConfigFind(GuildID, out GuildConfig DBGuildConfig)) {
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Where(Guild_Config => Guild_Config.Id == DBGuildConfig.Id)
-					.Set(Guild_Config => Guild_Config.LevelSwitch, AfterLevelSwitch)
-					.Update();
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					LevelSwitchUpsert(GuildID, AfterLevelSwitch);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				UpdateDefinition<GuildConfig> UpdateDef = Builders<GuildConfig>.Update
+					.Set(Guild_Config => Guild_Config.LevelSwitch, AfterLevelSwitch);
+				MongoDBClient.GuildConfigCollection.UpdateOne(Guild_Config => Guild_Config.Id == DBGuildConfig.Id, UpdateDef);
 			}
 			else {
 				GuildConfig InsertGuildConfig = new GuildConfig {
@@ -323,24 +132,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 					LevelSwitch = AfterLevelSwitch
 				};
 
-				try {
-					MySqlClient.Database.BeginTransaction();
-					GuildConfigTable
-					.Value(x => x.GuildID, InsertGuildConfig.GuildID)
-					.Value(x => x.LevelSwitch, InsertGuildConfig.LevelSwitch)
-					.Insert();
-					MySqlClient.Database.CommitTransaction();
-				}
-				catch (MySql.Data.MySqlClient.MySqlException) {
-					MySqlClient.DBUpdate();
-
-					LevelSwitchUpsert(GuildID, AfterLevelSwitch);
-				}
-				catch (Exception) {
-					MySqlClient.Database.RollbackTransaction();
-
-					throw;
-				}
+				MongoDBClient.GuildConfigCollection.InsertOne(InsertGuildConfig);
 			}
 		}
 	}

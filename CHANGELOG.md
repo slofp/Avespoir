@@ -7,6 +7,18 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
+## [Beta 4.6](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.6) - 2021-10-24
+
+### Changed
+
+* Discord API Library (Discord.Net -> DSharpPlus)
+
+* Main Database (MySql/MariaDB -> MongoDB)
+
+### Removed
+
+* Music Command (Remaking...)
+
 ## [Beta 4.5](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.5) - 2021-09-07
 
 ### Fixed

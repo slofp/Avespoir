@@ -6,7 +6,7 @@
     <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU</Platforms>
     <SignAssembly>false</SignAssembly>
-		<Version>2.1.4.5</Version>
+		<Version>2.1.4.6</Version>
 		<Authors>(Fairy)Phy</Authors>
 		<Company>Secineralyr</Company>
   </PropertyGroup>
@@ -37,11 +37,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.4.0" />
-    <PackageReference Include="linq2db" Version="3.4.3" />
-    <PackageReference Include="linq2db.MySql" Version="3.4.3" />
+    <PackageReference Include="DSharpPlus" Version="4.1.0" />
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.13.2" />
     <PackageReference Include="Octokit" Version="0.50.0" />
     <PackageReference Include="Tababular" Version="4.0.0" />
   </ItemGroup>

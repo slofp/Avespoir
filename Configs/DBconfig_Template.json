@@ -1,5 +1,5 @@
 {
-  "Server": "localhost",
+  "ServerUrl": "localhost",
 
   "Database": "Avespoir",
 
@@ -7,5 +7,7 @@
 
   "Password": "",
 
-  "OtherOptions": ""
+  "Mechanism": "SCRAM-SHA-256",
+
+  "Port": 27017
 }

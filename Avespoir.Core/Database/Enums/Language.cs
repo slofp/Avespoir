@@ -1,6 +1,6 @@
 ﻿namespace Avespoir.Core.Database.Enums {
 
-	internal enum Language {
+	public enum Language {
 
 		ja_JP = 0,
 

@@ -1,31 +1,32 @@
-﻿using LinqToDB.Mapping;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Avespoir.Core.Database.Schemas {
 
 	public class GuildConfig {
 
-		[PrimaryKey, Identity]
-		public int Id { get; set; }
+		[BsonId]
+		public ObjectId Id { get; set; }
 
-		[Column("Guildid"), NotNull]
+		[BsonElement("Guildid")]
 		public ulong GuildID { get; set; }
 
-		[Column("WhiteList")]
+		[BsonElement("WhiteList")]
 		public bool WhiteList { get; set; }
 
-		[Column("LeaveBan")]
+		[BsonElement("LeaveBan")]
 		public bool LeaveBan { get; set; }
 
-		[Column("Prefix")]
+		[BsonElement("Prefix")]
 		public string Prefix { get; set; }
 
-		[Column("LogChannelId")]
+		[BsonElement("LogChannelId")]
 		public ulong LogChannelId { get; set; }
 
-		[Column("Language")]
-		public string Language { get; set; }
+		[BsonElement("Language"), BsonRepresentation(BsonType.String)]
+		public Enums.Language Language { get; set; }
 
-		[Column("LevelSwitch")]
+		[BsonElement("LevelSwitch")]
 		public bool LevelSwitch { get; set; }
 	}
 }

@@ -1,4 +1,6 @@
-﻿using Discord.WebSocket;
+﻿using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +9,7 @@ namespace Avespoir.Core.Modules.Utils {
 
 	static class SocketGuildExtension {
 
+		/*
 		internal static Union<SocketTextChannel, SocketVoiceChannel> GetTextOrVoiceChannel(this SocketGuild Guild, ulong Id) {
 			SocketTextChannel TextChannel = Guild.GetTextChannel(Id);
 			if (!(TextChannel is null)) return TextChannel;
@@ -16,5 +19,6 @@ namespace Avespoir.Core.Modules.Utils {
 
 			return new Union<SocketTextChannel, SocketVoiceChannel>(null);
 		}
+		*/
 	}
 }

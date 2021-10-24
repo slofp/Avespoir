@@ -1,22 +1,23 @@
-﻿using LinqToDB.Mapping;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Avespoir.Core.Database.Schemas {
 
 	public class AllowUsers {
 
-		[PrimaryKey, Identity]
-		public int Id { get; set; }
+		[BsonId]
+		public ObjectId Id { get; set; }
 
-		[Column("Guildid"), NotNull]
+		[BsonElement("Guildid")]
 		public ulong GuildID { get; set; }
 
-		[Column("Name")]
+		[BsonElement("Name")]
 		public string Name { get; set; }
 
-		[Column("uuid"), NotNull]
+		[BsonElement("uuid")]
 		public ulong Uuid { get; set; }
 
-		[Column("RoleNum"), NotNull]
+		[BsonElement("RoleNum")]
 		public uint RoleNum { get; set; }
 	}
 }
