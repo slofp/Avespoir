@@ -1,8 +1,8 @@
 ﻿using Avespoir.Core.Configs;
-using Avespoir.Core.Modules.Audio;
 using Avespoir.Core.Modules.Logger;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,16 +13,21 @@ namespace Avespoir.Core.Modules.Events {
 
 		internal static bool ExitCheck = false;
 
-		internal static Task Main(DiscordSocketClient Bot) {
+		private static readonly DiscordActivity StartingAct = new DiscordActivity("Starting...", ActivityType.Playing);
+
+		private static DiscordActivity ReadyAct => new DiscordActivity(CommandConfig.Prefix + "help", ActivityType.Playing);
+
+		internal static Task Main(DiscordClient Bot, ReadyEventArgs _) {
 			Log.Debug("ReadyEvent " + "Start...");
 
-			Log.Debug($"Logged in Shards Count: {Client.Bot.Shards.Count}");
-			if (Client.Bot.Shards.Count == 1) {
-				Bot.SetGameAsync("Starting...").ConfigureAwait(false);
-				Bot.SetStatusAsync(UserStatus.DoNotDisturb).ConfigureAwait(false);
+			Log.Debug(string.Format("ShardCount: {0}, ShardId: {1}", Bot.ShardCount, Bot.ShardId));
 
-				foreach (SocketGuild Guild in Bot.Guilds) {
-					foreach (SocketVoiceChannel VoiceChannel in Guild.VoiceChannels) {
+			Log.Debug($"Logged in Shards Count: {Bot.ShardId}");
+			if (Bot.ShardId == 0) {
+				Bot.UpdateStatusAsync(StartingAct, UserStatus.DoNotDisturb).ConfigureAwait(false);
+
+				/*foreach (DiscordGuild Guild in Bot.Guilds.Values) {
+					foreach (SocketVoiceChannel VoiceChannel in Guild.VoiceStates.) {
 						Log.Debug($"UserCount: {VoiceChannel.Users.Count}");
 						foreach (SocketGuildUser User in VoiceChannel.Users) {
 							if (User.Id == Bot.CurrentUser.Id) {
@@ -32,58 +37,23 @@ namespace Avespoir.Core.Modules.Events {
 							}
 						}
 					}
-				}
+				}*/
 			}
 
 			Task.Run(() => StartStatus()).ConfigureAwait(false);
-			Task.Run(() => StartVCCheck()).ConfigureAwait(false);
-			//Task.Run(() => AutoReconnect()).ConfigureAwait(false);
+			//Task.Run(() => StartVCCheck()).ConfigureAwait(false);
 
 			//StartStatus().ConfigureAwait(false);
 			//StartVCCheck().ConfigureAwait(false);
-			//AutoReconnect().ConfigureAwait(false);
 			Log.Info($"{Bot.CurrentUser.Username}(ShardID: {Bot.ShardId}) Bot Ready!");
 			Log.Debug("ReadyEvent " + "End...");
 			return Task.CompletedTask;
 		}
 
-		static async Task AutoReconnect() {
-			DateTime StartTime = DateTime.Now;
-
-			TimeSpan Min_30 = new TimeSpan(0, 0, 30); // とりあえず30秒
-			Log.Info("AutoRestarter Start");
-			try {
-				while (!ExitCheck) {
-					if (DateTime.Now - StartTime >= Min_30) {
-						Log.Info("Reconnecting...");
-						ExitCheck = true;
-						await Task.Delay(1000).ConfigureAwait(false);
-
-						await Client.Bot.StopAsync().ConfigureAwait(false);
-						await Client.Bot.LogoutAsync().ConfigureAwait(false);
-
-						ExitCheck = false;
-
-						await Client.Bot.LoginAsync(TokenType.Bot, ClientConfig.Token).ConfigureAwait(false);
-						await Client.Bot.StartAsync().ConfigureAwait(false);
-						return;
-					}
-
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
-			}
-			catch (Exception Error) {
-				Log.Error("AutoRestarter Error", Error);
-			}
-
-			Log.Info("AutoRestarter Exit");
-		}
-
 		static async Task StartStatus() {
 			try {
 				while (!ExitCheck) {
-					await Client.Bot.SetGameAsync(CommandConfig.Prefix + "help").ConfigureAwait(false);
-					await Client.Bot.SetStatusAsync(UserStatus.Online).ConfigureAwait(false);
+					await Client.Bot.UpdateStatusAsync(ReadyAct, UserStatus.Online).ConfigureAwait(false);
 
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
@@ -93,6 +63,7 @@ namespace Avespoir.Core.Modules.Events {
 			}
 		}
 
+		/*
 		static async Task StartVCCheck() {
 			try {
 				while (!ExitCheck) {
@@ -111,5 +82,6 @@ namespace Avespoir.Core.Modules.Events {
 				Log.Error("StartVCCheck Error", Error);
 			}
 		}
+		*/
 	}
 }

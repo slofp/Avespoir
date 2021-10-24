@@ -1,7 +1,9 @@
 ﻿using Avespoir.Core.Extends;
 using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,16 +12,16 @@ namespace Avespoir.Core.Modules.LevelSystems {
 
 	class StackMessage {
 
-		internal List<IMessage> StackMessages = new List<IMessage>();
+		internal List<DiscordMessage> StackMessages = new List<DiscordMessage>();
 
 		internal bool AllowExp { get; set; } = true;
 
 		private long LastMessageTick = 0;
 
-		private readonly IMessage FirstMessageObject;
+		private readonly DiscordMessage FirstMessageObject;
 
 		internal StackMessage(MessageObject FirstMessageObject) {
-			this.FirstMessageObject = FirstMessageObject.SourceSocketMessage;
+			this.FirstMessageObject = FirstMessageObject.SourceMessageCreateEventArgs.Message;
 
 			AddStackMessage(this.FirstMessageObject);
 		}
@@ -35,7 +37,7 @@ namespace Avespoir.Core.Modules.LevelSystems {
 				while (DateTime.Now.Ticks - LastMessageTick < Math.Pow(10, 7) * 60) {
 					if (AwaitMessage_Info.Status == AwaitMessageStatus.Pending) continue;
 
-					IMessage WaitedMessage = await FirstMessageObject.Channel.GetMessageAsync(AwaitMessage_Info.MessageID).ConfigureAwait(false);
+					DiscordMessage WaitedMessage = await FirstMessageObject.Channel.GetMessageAsync(AwaitMessage_Info.MessageID).ConfigureAwait(false);
 
 					if (WaitedMessage.Author.Id != StackMessages[0].Author.Id) {
 						Log.Debug("Stack End"); // It's responding, but it's not working.
@@ -62,7 +64,7 @@ namespace Avespoir.Core.Modules.LevelSystems {
 			}
 		}
 
-		private void AddStackMessage(IMessage Message) {
+		private void AddStackMessage(DiscordMessage Message) {
 			LastMessageTick = Message.Timestamp.Ticks;
 
 			StackMessages.Add(Message);

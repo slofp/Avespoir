@@ -1,6 +1,6 @@
 ﻿namespace Avespoir.Core.Database.Enums {
 
-	internal enum RoleLevel {
+	public enum RoleLevel {
 
 		Public = 0,
 

@@ -1,5 +1,5 @@
-﻿using Discord;
-using Discord.WebSocket;
+﻿using DSharpPlus;
+using Microsoft.Extensions.Logging;
 
 namespace Avespoir.Core.Configs {
 
@@ -9,13 +9,12 @@ namespace Avespoir.Core.Configs {
 
 		internal static ulong BotownerId { get; set; } = 0;
 
-		internal static DiscordSocketConfig WebSocketConfig() => new DiscordSocketConfig() {
+		internal static DiscordConfiguration WebSocketConfig() => new DiscordConfiguration() {
+			Intents = DiscordIntents.All,
+			TokenType = TokenType.Bot,
+			Token = Token,
 			#if DEBUG
-			DefaultRetryMode = RetryMode.AlwaysRetry,
-			LogLevel = LogSeverity.Debug
-			#else
-			DefaultRetryMode = RetryMode.AlwaysRetry,
-			LogLevel = LogSeverity.Info
+			MinimumLogLevel = LogLevel.Trace
 			#endif
 		};
 	}

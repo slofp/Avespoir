@@ -5,7 +5,9 @@ using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -53,7 +55,7 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
 				Database.DatabaseMethods.RolesMethods.RoleDelete(DBRolesID);
 
-				SocketRole GuildRole = Command_Object.Guild.GetRole(DBRolesID.Uuid);
+				DiscordRole GuildRole = Command_Object.Guild.GetRole(DBRolesID.Uuid);
 				string ResultText = string.Format(Command_Object.Language.DBRoleDeleteSuccess, GuildRole.Name, DBRolesID.Uuid);
 				await Command_Object.Channel.SendMessageAsync(ResultText);
 			}

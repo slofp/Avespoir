@@ -5,8 +5,9 @@ using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -68,22 +69,22 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 				DBAllowUsersID.RoleNum = msgs_RoleNum;
 				Database.DatabaseMethods.AllowUsersMethods.AllowUserUpdate(DBAllowUsersID);
 
-				SocketGuildUser GuildMember = Command_Object.Guild.GetUser(msgs_ID);
+				DiscordMember GuildMember = await Command_Object.Guild.GetMemberAsync(msgs_ID).ConfigureAwait(false);
 
-				SocketRole GuildAfterRole = Command_Object.Guild.GetRole(DBRolesNum.Uuid);
-				await GuildMember.AddRoleAsync(GuildAfterRole);
+				DiscordRole GuildAfterRole = Command_Object.Guild.GetRole(DBRolesNum.Uuid);
+				await GuildMember.GrantRoleAsync(GuildAfterRole).ConfigureAwait(false);
 
-				SocketRole GuildBeforeRole = Command_Object.Guild.GetRole(DBBeforeRolesNum.Uuid);
-				await GuildMember.RemoveRoleAsync(GuildBeforeRole);
+				DiscordRole GuildBeforeRole = Command_Object.Guild.GetRole(DBBeforeRolesNum.Uuid);
+				await GuildMember.RevokeRoleAsync(GuildBeforeRole).ConfigureAwait(false);
 
 				string ResultText = string.Format(Command_Object.Language.DBUserChangeRoleSuccess, GuildMember.Username + "#" + GuildMember.Discriminator, GuildBeforeRole.Name, GuildAfterRole.Name);
 				await Command_Object.Channel.SendMessageAsync(ResultText);
 
-				RoleLevel DBRoleLevel = Enum.Parse<RoleLevel>(DBRolesNum.RoleLevel);
+				RoleLevel DBRoleLevel = DBRolesNum.RoleLevel;
 				bool GuildLeaveBan = Database.DatabaseMethods.GuildConfigMethods.LeaveBanFind(Command_Object.Guild.Id);
 				if (GuildLeaveBan) {
 					if (DBRoleLevel == RoleLevel.Public) {
-						EmbedBuilder WelcomeEmbed = new Embed​Builder()
+						DiscordEmbedBuilder WelcomeEmbed = new DiscordEmbed​Builder()
 							.WithTitle(string.Format(Command_Object.Language.DBUserChangeRoleEmbedTitle, GuildAfterRole.Name))
 							.AddField(
 								Command_Object.Language.DMEmbed_Public1,
@@ -97,7 +98,7 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 								Command_Object.Language.DMEmbed_LeaveBan1,
 								string.Format(Command_Object.Language.DMEmbed_LeaveBan2, GuildAfterRole.Name)
 							)
-							.WithColor(new Color(0x00B06B))
+							.WithColor(new DiscordColor(0x00B06B))
 							.WithFooter(
 								string.Format("{0} Bot", Client.Bot.CurrentUser.Username)
 							);
@@ -106,7 +107,7 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 						return;
 					}
 					else if (DBRoleLevel == RoleLevel.Moderator) {
-						EmbedBuilder WelcomeEmbed = new Embed​Builder()
+						DiscordEmbedBuilder WelcomeEmbed = new DiscordEmbed​Builder()
 							.WithTitle(string.Format(Command_Object.Language.DBUserChangeRoleEmbedTitle, GuildAfterRole.Name))
 							.AddField(
 								Command_Object.Language.DMEmbed_Moderator1,
@@ -124,7 +125,7 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 								Command_Object.Language.DMEmbed_LeaveBan1,
 								string.Format(Command_Object.Language.DMEmbed_LeaveBan2, GuildAfterRole.Name)
 							)
-							.WithColor(new Color(0x00B06B))
+							.WithColor(new DiscordColor(0x00B06B))
 							.WithFooter(
 								string.Format("{0} Bot", Client.Bot.CurrentUser.Username)
 							);
@@ -135,7 +136,7 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 				}
 				else {
 					if (DBRoleLevel == RoleLevel.Public) {
-						EmbedBuilder WelcomeEmbed = new EmbedBuilder()
+						DiscordEmbedBuilder WelcomeEmbed = new DiscordEmbedBuilder()
 							.WithTitle(string.Format(Command_Object.Language.DBUserChangeRoleEmbedTitle, GuildAfterRole.Name))
 							.AddField(
 								Command_Object.Language.DMEmbed_Public1,
@@ -145,7 +146,7 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 								Command_Object.Language.DMEmbed_Public3,
 								Command_Object.Language.DMEmbed_Public4
 							)
-							.WithColor(new Color(0x00B06B))
+							.WithColor(new DiscordColor(0x00B06B))
 							.WithFooter(
 								string.Format("{0} Bot", Client.Bot.CurrentUser.Username)
 							);
@@ -154,7 +155,7 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 						return;
 					}
 					else if (DBRoleLevel == RoleLevel.Moderator) {
-						EmbedBuilder WelcomeEmbed = new Embed​Builder()
+						DiscordEmbedBuilder WelcomeEmbed = new DiscordEmbed​Builder()
 							.WithTitle(string.Format(Command_Object.Language.DBUserChangeRoleEmbedTitle, GuildAfterRole.Name))
 							.AddField(
 								Command_Object.Language.DMEmbed_Moderator1,
@@ -168,7 +169,7 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 								Command_Object.Language.DMEmbed_Moderator5,
 								Command_Object.Language.DMEmbed_Moderator6
 							)
-							.WithColor(new Color(0x00B06B))
+							.WithColor(new DiscordColor(0x00B06B))
 							.WithFooter(
 								string.Format("{0} Bot", Client.Bot.CurrentUser.Username)
 							);

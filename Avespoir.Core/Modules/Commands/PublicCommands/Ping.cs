@@ -3,7 +3,9 @@ using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
-using Discord.Rest;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Threading.Tasks;
 
@@ -21,7 +23,7 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 		};
 
 		internal override async Task Execute(CommandObject Command_Object) {
-			RestUserMessage BotResponse = await Command_Object.Channel.SendMessageAsync(Command_Object.Language.PingWait);
+			DiscordMessage BotResponse = await Command_Object.Channel.SendMessageAsync(Command_Object.Language.PingWait);
 
 			long MessageTick = Command_Object.Timestamp.Ticks;
 			long ResponseTick = BotResponse.Timestamp.Ticks;

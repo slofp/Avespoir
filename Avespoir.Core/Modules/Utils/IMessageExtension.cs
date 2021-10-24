@@ -1,11 +1,13 @@
-﻿using Discord;
+﻿using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Utils {
 
-	static class IMessageExtension {
+	static class DiscordMessageExtension {
 
-		internal static async Task<IMessage> AwaitMessage(this IMessage Message, ulong AllowAuthorID, int Timeout) {
+		internal static async Task<DiscordMessage> AwaitMessage(this DiscordMessage Message, ulong AllowAuthorID, int Timeout) {
 			AwaitMessageInfo AwaitMessage_Info = new AwaitMessageInfo(AllowAuthorID);
 
 			AwaitMessage_Info.Init(Message);
@@ -17,7 +19,7 @@ namespace Avespoir.Core.Modules.Utils {
 
 					if (AwaitMessage_Info.Status == AwaitMessageStatus.Pending) continue;
 
-					IMessage WaitedMessage = await Message.Channel.GetMessageAsync(AwaitMessage_Info.MessageID).ConfigureAwait(false);
+					DiscordMessage WaitedMessage = await Message.Channel.GetMessageAsync(AwaitMessage_Info.MessageID).ConfigureAwait(false);
 
 					return WaitedMessage;
 				}

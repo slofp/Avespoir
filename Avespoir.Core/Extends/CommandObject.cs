@@ -1,4 +1,5 @@
-﻿using Avespoir.Core.Language;
+﻿using Avespoir.Core.Database.DatabaseMethods;
+using Avespoir.Core.Language;
 using System;
 
 namespace Avespoir.Core.Extends {
@@ -13,15 +14,9 @@ namespace Avespoir.Core.Extends {
 
 		internal CommandObject(MessageObject Message_Object) : base(Message_Object) {
 			CommandArgs = Content.Trim().Split(" ");
-			string GuildLanguageString = !IsPrivate ? Database.DatabaseMethods.GuildConfigMethods.LanguageFind(Guild.Id) : null;
-			if (GuildLanguageString != null && Enum.TryParse(GuildLanguageString, true, out Database.Enums.Language GuildLanguage)) {
-				Language = new GetLanguage(GuildLanguage).Language_Data;
-				LanguageType = GuildLanguage;
-			}
-			else {
-				Language = new GetLanguage(Database.Enums.Language.ja_JP).Language_Data;
-				LanguageType = Database.Enums.Language.ja_JP;
-			}
+			Database.Enums.Language GuildLanguage = !IsPrivate ? GuildConfigMethods.LanguageFind(Guild.Id) : Database.Enums.Language.ja_JP;
+			Language = new GetLanguage(GuildLanguage).Language_Data;
+			LanguageType = GuildLanguage;
 		}
 	}
 }

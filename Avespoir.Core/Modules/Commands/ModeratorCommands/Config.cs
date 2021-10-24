@@ -1,6 +1,7 @@
 ﻿using Avespoir.Core.Abstructs;
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Configs;
+using Avespoir.Core.Database.DatabaseMethods;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
@@ -35,16 +36,16 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
 			switch (config_arg) {
 				case "whitelist":
-					bool BeforeWhitelist = Database.DatabaseMethods.GuildConfigMethods.WhitelistFind(Command_Object.Guild.Id);
+					bool BeforeWhitelist = GuildConfigMethods.WhitelistFind(Command_Object.Guild.Id);
 					bool AfterWhitelist = !BeforeWhitelist;
-					Database.DatabaseMethods.GuildConfigMethods.WhitelistUpsert(Command_Object.Guild.Id, AfterWhitelist);
+					GuildConfigMethods.WhitelistUpsert(Command_Object.Guild.Id, AfterWhitelist);
 
 					await Command_Object.Channel.SendMessageAsync(AfterWhitelist ? Command_Object.Language.ConfigWhitelistTrue : Command_Object.Language.ConfigWhitelistFalse);
 					break;
 				case "leaveban":
-					bool BeforeLeaveBan = Database.DatabaseMethods.GuildConfigMethods.LeaveBanFind(Command_Object.Guild.Id);
+					bool BeforeLeaveBan = GuildConfigMethods.LeaveBanFind(Command_Object.Guild.Id);
 					bool AfterLeaveBan = !BeforeLeaveBan;
-					Database.DatabaseMethods.GuildConfigMethods.LeaveBanUpsert(Command_Object.Guild.Id, AfterLeaveBan);
+					GuildConfigMethods.LeaveBanUpsert(Command_Object.Guild.Id, AfterLeaveBan);
 
 					await Command_Object.Channel.SendMessageAsync(AfterLeaveBan ? Command_Object.Language.ConfigLeaveBanTrue : Command_Object.Language.ConfigLeaveBanFalse);
 					break;
@@ -55,9 +56,9 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 					}
 
 					string AfterPrefix = msgs[1];
-					string BeforePrefix = Database.DatabaseMethods.GuildConfigMethods.PrefixFind(Command_Object.Guild.Id);
+					string BeforePrefix = GuildConfigMethods.PrefixFind(Command_Object.Guild.Id);
 					if (BeforePrefix == null) BeforePrefix = CommandConfig.Prefix;
-					Database.DatabaseMethods.GuildConfigMethods.PrefixUpsert(Command_Object.Guild.Id, AfterPrefix);
+					GuildConfigMethods.PrefixUpsert(Command_Object.Guild.Id, AfterPrefix);
 
 					await Command_Object.Channel.SendMessageAsync(string.Format(Command_Object.Language.ConfigPublicPrefixChange, BeforePrefix, AfterPrefix));
 					break;
@@ -71,8 +72,8 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 						return;
 					}
 
-					ulong BeforeLogChannelID = Database.DatabaseMethods.GuildConfigMethods.LogChannelFind(Command_Object.Guild.Id);
-					Database.DatabaseMethods.GuildConfigMethods.LogChannelIdUpsert(Command_Object.Guild.Id, AfterLogChannelID);
+					ulong BeforeLogChannelID = GuildConfigMethods.LogChannelFind(Command_Object.Guild.Id);
+					GuildConfigMethods.LogChannelIdUpsert(Command_Object.Guild.Id, AfterLogChannelID);
 
 					if (BeforeLogChannelID == 0) {
 						await Command_Object.Channel.SendMessageAsync(string.Format(Command_Object.Language.ConfigLogChannelIDSet, AfterLogChannelID));
@@ -94,22 +95,17 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 						return;
 					}
 
-					string BeforeLanguage = Database.DatabaseMethods.GuildConfigMethods.LanguageFind(Command_Object.Guild.Id);
-					Database.DatabaseMethods.GuildConfigMethods.LanguageUpsert(Command_Object.Guild.Id, AfterLanguage);
+					Database.Enums.Language BeforeLanguage = GuildConfigMethods.LanguageFind(Command_Object.Guild.Id);
+					GuildConfigMethods.LanguageUpsert(Command_Object.Guild.Id, AfterLanguage);
 
 					GetLanguage GetAfterLanguage = new GetLanguage(AfterLanguage);
 
-					if (BeforeLanguage == null) {
-						await Command_Object.Channel.SendMessageAsync(string.Format(GetAfterLanguage.Language_Data.ConfigLanguageSet, Enum.GetName(typeof(Database.Enums.Language), AfterLanguage).Replace('_', '-')));
-					}
-					else {
-						await Command_Object.Channel.SendMessageAsync(string.Format(GetAfterLanguage.Language_Data.ConfigLanguageChange, BeforeLanguage.Replace('_', '-'), Enum.GetName(typeof(Database.Enums.Language), AfterLanguage).Replace('_', '-')));
-					}
+					await Command_Object.Channel.SendMessageAsync(string.Format(GetAfterLanguage.Language_Data.ConfigLanguageChange, Enum.GetName(typeof(Database.Enums.Language), BeforeLanguage).Replace('_', '-'), Enum.GetName(typeof(Database.Enums.Language), AfterLanguage).Replace('_', '-')));
 					break;
 				case "level":
-					bool BeforeLevelSwitch = Database.DatabaseMethods.GuildConfigMethods.LevelSwitchFind(Command_Object.Guild.Id);
+					bool BeforeLevelSwitch = GuildConfigMethods.LevelSwitchFind(Command_Object.Guild.Id);
 					bool AfterLevelSwitch = !BeforeLevelSwitch;
-					Database.DatabaseMethods.GuildConfigMethods.LevelSwitchUpsert(Command_Object.Guild.Id, AfterLevelSwitch);
+					GuildConfigMethods.LevelSwitchUpsert(Command_Object.Guild.Id, AfterLevelSwitch);
 
 					await Command_Object.Channel.SendMessageAsync(AfterLevelSwitch ? Command_Object.Language.ConfigLevelSwitchTrue : Command_Object.Language.ConfigLevelSwitchFalse);
 					break;

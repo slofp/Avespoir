@@ -5,12 +5,14 @@ using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Avespoir.Core.Modules.Utils.SocketGuildExtension;
+using DSharpPlus.Exceptions;
 
 namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
@@ -31,9 +33,9 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			if (msgs.Length == 0) {
 				Log.Debug("Channel is null");
 
-				SocketTextChannel DefaultChannel = Command_Object.Guild.DefaultChannel;
+				DiscordChannel DefaultChannel = Command_Object.Guild.GetDefaultChannel();
 				Console.WriteLine(DefaultChannel.Name);
-				IInviteMetadata Invite = await DefaultChannel.CreateInviteAsync();
+				DiscordInvite Invite = await DefaultChannel.CreateInviteAsync();
 
 				string InviteUrl = "https://discord.gg/" + Invite.Code;
 				string Message = string.Format(Command_Object.Language.InviteResult, InviteUrl);
@@ -48,26 +50,18 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 				return;
 			}
 
-			Union<SocketTextChannel, SocketVoiceChannel> GetUnionChannel = Command_Object.Guild.GetTextOrVoiceChannel(InviteID); // Get方法がVoiceとTextで分かれているためそこの処理が必要だ
-
-			switch (GetUnionChannel.CurrentType) {
-				case Union<SocketTextChannel, SocketVoiceChannel>.BoxedType.T1:
-					SocketTextChannel GetTextChannel = GetUnionChannel;
-					await SendInvite(Command_Object, await GetTextChannel.CreateInviteAsync());
-					break;
-				case Union<SocketTextChannel, SocketVoiceChannel>.BoxedType.T2:
-					SocketVoiceChannel GetVoiceChannel = GetUnionChannel;
-					await SendInvite(Command_Object, await GetVoiceChannel.CreateInviteAsync());
-					break;
-				case Union<SocketTextChannel, SocketVoiceChannel>.BoxedType.OtherOrNull:
-					Log.Warning("Channel ID is not found");
-					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.InviteChannelIdNotFound);
-					break;
+			try {
+				DiscordChannel GetDiscordChannel = Command_Object.Guild.GetChannel(InviteID);
+				await SendInvite(Command_Object, await GetDiscordChannel.CreateInviteAsync());
+			}
+			catch (ServerErrorException) {
+				Log.Warning("Channel ID is not found");
+				await Command_Object.Channel.SendMessageAsync(Command_Object.Language.InviteChannelIdNotFound);
 			}
 		}
 
-		async Task SendInvite(CommandObject Command_Object, IInviteMetadata InviteMetadata) {
-			string InviteUrl = "https://discord.gg/" + InviteMetadata.Code;
+		async Task SendInvite(CommandObject Command_Object, DiscordInvite Invite) {
+			string InviteUrl = "https://discord.gg/" + Invite.Code;
 			string Message = string.Format(Command_Object.Language.InviteResult, InviteUrl);
 			await Command_Object.Channel.SendMessageAsync(Message);
 		}

@@ -1,20 +1,20 @@
-﻿using LinqToDB.Mapping;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Avespoir.Core.Database.Schemas {
 
-	[Table(Name = "UserData")]
 	public class UserData {
 
-		[PrimaryKey, Identity]
-		public int Id { get; set; }
+		[BsonId]
+		public ObjectId Id { get; set; }
 
-		[Column("User_id"), NotNull]
+		[BsonElement("User_id")]
 		public ulong UserID { get; set; }
 
-		[Column("Level")]
+		[BsonElement("Level")]
 		public uint Level { get; set; }
 
-		[Column("Experience-point")]
+		[BsonElement("Experience-point")]
 		public double ExperiencePoint { get; set; }
 	}
 }

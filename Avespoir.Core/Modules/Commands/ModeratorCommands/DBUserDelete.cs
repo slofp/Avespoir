@@ -5,7 +5,9 @@ using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -48,9 +50,9 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
 					Database.DatabaseMethods.AllowUsersMethods.AllowUserDelete(DBAllowUsersID);
 					try {
-						SocketGuildUser DeleteGuildMember = Command_Object.Guild.GetUser(DBAllowUsersID.Uuid);
+						DiscordMember DeleteGuildMember = await Command_Object.Guild.GetMemberAsync(DBAllowUsersID.Uuid).ConfigureAwait(false);
 						string KickReason = string.Format(Command_Object.Language.KickReason, Command_Object.Member.Username + "#" + Command_Object.Member.Discriminator);
-						await DeleteGuildMember.KickAsync(KickReason);
+						await DeleteGuildMember.RemoveAsync(KickReason).ConfigureAwait(false);
 					}
 					finally {
 						string ResultText = string.Format(Command_Object.Language.DBUserDeleteSuccess, DBAllowUsersID.Name, DBAllowUsersID.Uuid);

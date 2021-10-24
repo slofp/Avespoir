@@ -5,7 +5,9 @@ using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Utils;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -79,7 +81,7 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
 				AllowUsers InsertAllowUserData = Database.DatabaseMethods.AllowUsersMethods.AllowUserInsert(Command_Object.Guild.Id, msgs_ID, msgs_Name, msgs_RoleNum);
 
-				SocketRole GuildRole = Command_Object.Guild.GetRole(DBRolesNum.Uuid);
+				DiscordRole GuildRole = Command_Object.Guild.GetRole(DBRolesNum.Uuid);
 				string ResultText = string.Format(Command_Object.Language.DBUserAddSuccess, InsertAllowUserData.Name, InsertAllowUserData.Uuid, InsertAllowUserData.RoleNum, GuildRole.Name);
 				await Command_Object.Channel.SendMessageAsync(ResultText);
 			}

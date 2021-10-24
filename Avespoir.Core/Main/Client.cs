@@ -1,7 +1,6 @@
 ﻿using Avespoir.Core.Configs;
-using Avespoir.Core.Modules.Audio;
 using Avespoir.Core.Modules.Events;
-using Discord.WebSocket;
+using DSharpPlus;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,34 +9,32 @@ namespace Avespoir.Core {
 
 	class Client {
 
-		internal static Dictionary<ulong, VCInfo> ConnectedVoiceChannel_Dict = new Dictionary<ulong, VCInfo>();
+		//internal static Dictionary<ulong, VCInfo> ConnectedVoiceChannel_Dict = new Dictionary<ulong, VCInfo>();
 
-		internal static readonly DiscordShardedClient Bot = new DiscordShardedClient(ClientConfig.WebSocketConfig());
+		internal static readonly DiscordClient Bot = new DiscordClient(ClientConfig.WebSocketConfig());
 
 		internal static async Task Main() {
-			Bot.ShardReady += ReadyEvent.Main;
+			Bot.Ready += ReadyEvent.Main;
 
-			Bot.MessageReceived += MessageEvent.Main;
+			Bot.MessageCreated += MessageEvent.Main;
 
-			Bot.UserJoined += GuildMemberAddEvent.Main;
+			Bot.GuildMemberAdded += GuildMemberAddEvent.Main;
 
-			Bot.UserLeft += GuildMemberRemoveEvent.Main;
+			Bot.GuildMemberRemoved += GuildMemberRemoveEvent.Main;
 
-			Bot.Log += LogEvents.LogEvent;
+			Bot.Resumed += LogEvents.Resumed;
 
-			Bot.LoggedIn += LogEvents.LoggedInEvent;
+			Bot.SocketClosed += LogEvents.SocketClosed;
 
-			Bot.LoggedOut += LogEvents.LoggedOutEvent;
+			Bot.SocketErrored += LogEvents.SocketErrored;
 
-			Bot.ShardConnected += LogEvents.ConnectedEvent;
+			Bot.SocketOpened += LogEvents.SocketOpened;
 
-			Bot.ShardDisconnected += LogEvents.DisconnectedEvent;
+			Bot.UnknownEvent += LogEvents.UnknownEvent;
 
-			Bot.ShardLatencyUpdated += LogEvents.LatencyUpdated;
+			Bot.Heartbeated += LogEvents.Heartbeated;
 
-			await Bot.LoginAsync(Discord.TokenType.Bot, ClientConfig.Token).ConfigureAwait(false);
-
-			await Bot.StartAsync().ConfigureAwait(false);
+			await Bot.ConnectAsync().ConfigureAwait(false);
 
 			AppDomain.CurrentDomain.ProcessExit += ConsoleExitEvent.Main;
 

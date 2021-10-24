@@ -1,6 +1,7 @@
 ﻿using Avespoir.Core.Extends;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -26,14 +27,14 @@ namespace Avespoir.Core.Modules.Logger {
 				Message_Log.AppendFormat("\n[Message] Content: {0}, ID: {1}", Message_Object.Content, Message_Object.Id);
 
 				if (Message_Object.MentionedUsers.Count > 0) {
-					IEnumerator<SocketUser> MentionedUsers = Message_Object.MentionedUsers.GetEnumerator();
+					IEnumerator<DiscordUser> MentionedUsers = Message_Object.MentionedUsers.GetEnumerator();
 
 					StringBuilder MentionedUsers_Log = new StringBuilder("\n[MentionedUsers] ");
 					bool MentionedUser_Next = MentionedUsers.MoveNext();
 					int UserCount = 0;
 					while (MentionedUser_Next) {
 						try {
-							SocketUser MentionedUser = MentionedUsers.Current;
+							DiscordUser MentionedUser = MentionedUsers.Current;
 							StringBuilder MentionedUser_Log = new StringBuilder().AppendFormat("{0}#{1}", MentionedUser.Username, MentionedUser.Discriminator);
 
 							MentionedUser_Next = MentionedUsers.MoveNext();
@@ -63,14 +64,14 @@ namespace Avespoir.Core.Modules.Logger {
 				}
 
 				if (Message_Object.MentionedRoles.Count > 0) {
-					IEnumerator<SocketRole> MentionedRoles = Message_Object.MentionedRoles.GetEnumerator();
+					IEnumerator<DiscordRole> MentionedRoles = Message_Object.MentionedRoles.GetEnumerator();
 
 					StringBuilder MentionedRoles_Log = new StringBuilder("\n[MentionedRoles] ");
 					bool MentionedRole_Next = MentionedRoles.MoveNext();
 					int RoleCount = 0;
 					while (MentionedRole_Next) {
 						try {
-							SocketRole MentionedRole = MentionedRoles.Current;
+							DiscordRole MentionedRole = MentionedRoles.Current;
 							StringBuilder MentionedRole_Log = new StringBuilder(MentionedRole.Name);
 
 							MentionedRole_Next = MentionedRoles.MoveNext();
@@ -101,14 +102,14 @@ namespace Avespoir.Core.Modules.Logger {
 				}
 
 				if (Message_Object.MentionedChannels.Count > 0) {
-					IEnumerator<SocketGuildChannel> MentionedChannels = Message_Object.MentionedChannels.GetEnumerator();
+					IEnumerator<DiscordChannel> MentionedChannels = Message_Object.MentionedChannels.GetEnumerator();
 
 					StringBuilder MentionedChannels_Log = new StringBuilder("\n[MentionedChannels] ");
 					bool MentionedChannel_Next = MentionedChannels.MoveNext();
 					int ChannelCount = 0;
 					while (MentionedChannel_Next) {
 						try {
-							SocketGuildChannel MentionedChannel = MentionedChannels.Current;
+							DiscordChannel MentionedChannel = MentionedChannels.Current;
 							StringBuilder MentionedChannel_Log = new StringBuilder(MentionedChannel.Name);
 
 							MentionedChannel_Next = MentionedChannels.MoveNext();
@@ -139,12 +140,12 @@ namespace Avespoir.Core.Modules.Logger {
 			}
 
 			if (Message_Object.Attachments.Count > 0) {
-				IEnumerator<Attachment> MessageAttachments = Message_Object.Attachments.GetEnumerator();
+				IEnumerator<DiscordAttachment> MessageAttachments = Message_Object.Attachments.GetEnumerator();
 
 				StringBuilder MessageAttachments_Log = new StringBuilder("\n[MessageAttachments] ");
 				bool MessageAttachment_Next = MessageAttachments.MoveNext();
 				while (MessageAttachment_Next) {
-					Attachment MessageAttachment = MessageAttachments.Current;
+					DiscordAttachment MessageAttachment = MessageAttachments.Current;
 					StringBuilder MessageAttachment_Log = new StringBuilder().AppendFormat("Url: {0} ProxyUrl: {1}", MessageAttachment.Url, MessageAttachment.ProxyUrl);
 					MessageAttachment_Next = MessageAttachments.MoveNext();
 					if (MessageAttachment_Next) MessageAttachment_Log.Append(", ");

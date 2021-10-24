@@ -1,6 +1,8 @@
 ﻿using Avespoir.Core.Modules.Events;
 using Avespoir.Core.Modules.Logger;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System.Collections.Generic;
 
 namespace Avespoir.Core.Modules.Utils {
@@ -35,7 +37,7 @@ namespace Avespoir.Core.Modules.Utils {
 			this.UserID = UserID;
 		}
 
-		internal void Init(IMessage Message) {
+		internal void Init(DiscordMessage Message) {
 			if (!MessageEvent.AwaitMessageInfo_List_Dict.ContainsKey(Message.Channel.Id))
 				MessageEvent.AwaitMessageInfo_List_Dict.Add(Message.Channel.Id, new List<AwaitMessageInfo>());
 
@@ -43,7 +45,7 @@ namespace Avespoir.Core.Modules.Utils {
 		}
 
 		// NOT DESTRUCTOR
-		internal void Finalize_(IMessage Message) {
+		internal void Finalize_(DiscordMessage Message) {
 			if (MessageEvent.AwaitMessageInfo_List_Dict.TryGetValue(Message.Channel.Id, out List<AwaitMessageInfo> AwaitMessageInfo_List)) {
 				if (!AwaitMessageInfo_List.Remove(this)) Log.Warning("AwaitMessageInfo not Exist?????");
 				if (AwaitMessageInfo_List.Count == 0) MessageEvent.AwaitMessageInfo_List_Dict.Remove(Message.Channel.Id);

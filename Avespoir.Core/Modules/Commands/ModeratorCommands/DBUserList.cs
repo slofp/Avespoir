@@ -4,8 +4,9 @@ using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
-using Discord;
-using Discord.WebSocket;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tababular;
@@ -30,7 +31,7 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 			foreach (AllowUsers DBAllowUser in DBAllowUsersList) {
 				Database.DatabaseMethods.RolesMethods.RoleFind(Command_Object.Guild.Id, DBAllowUser.RoleNum, out Roles DBRole);
 
-				SocketRole GuildRole = Command_Object.Guild.GetRole(DBRole.Uuid);
+				DiscordRole GuildRole = Command_Object.Guild.GetRole(DBRole.Uuid);
 
 				DBAllowUsersObjects.Add(new { RegisteredName = DBAllowUser.Name, UserID = DBAllowUser.Uuid, Role = GuildRole.Name });
 			}

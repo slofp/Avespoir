@@ -5,7 +5,9 @@ using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Events;
 using Avespoir.Core.Modules.Logger;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Commands.BotownerCommands {
@@ -18,7 +20,7 @@ namespace Avespoir.Core.Modules.Commands.BotownerCommands {
 		internal override LanguageDictionary Usage => new LanguageDictionary("{0}exit");
 
 		internal override async Task Execute(CommandObject Command_Object) {
-			await Command_Object.Author.SendMessageAsync("Logging out...");
+			await Command_Object.Channel.SendMessageAsync("Logging out...").ConfigureAwait(false);
 			Log.Info("Logging out...");
 
 			await ConsoleExitEvent.Main(0).ConfigureAwait(false);

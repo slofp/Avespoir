@@ -5,9 +5,12 @@ using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
-using Discord;
+using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Threading.Tasks;
+using Avespoir.Core.Database.DatabaseMethods;
 
 namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
@@ -25,12 +28,12 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 		internal override async Task Execute(CommandObject Command_Object) {
 			await Command_Object.Channel.SendMessageAsync(string.Format(Command_Object.Language.DMMention, Command_Object.Member.Mention));
 
-			string GuildPrefix = Database.DatabaseMethods.GuildConfigMethods.PrefixFind(Command_Object.Guild.Id);
+			string GuildPrefix = GuildConfigMethods.PrefixFind(Command_Object.Guild.Id);
 			if (GuildPrefix == null) GuildPrefix = CommandConfig.Prefix;
 
-			EmbedBuilder PublicEmbed = new EmbedBuilder();
-			EmbedBuilder ModeratorEmbed = new EmbedBuilder();
-			EmbedBuilder BotownerEmbed = new EmbedBuilder();
+			DiscordEmbedBuilder PublicEmbed = new DiscordEmbedBuilder();
+			DiscordEmbedBuilder ModeratorEmbed = new DiscordEmbedBuilder();
+			DiscordEmbedBuilder BotownerEmbed = new DiscordEmbedBuilder();
 			foreach (CommandInfo Command_Info in CommandInfo.GetCommandInfo()) {
 				if (Command_Info.Command_Attribute.CommandName == null) continue;
 
@@ -61,7 +64,7 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			PublicEmbed
 				.WithTitle(Command_Object.Language.HelpPublicCommand)
 				.WithDescription(string.Format(Command_Object.Language.HelpCommandPrefix, GuildPrefix))
-				.WithColor(new Color(0x00B06B))
+				.WithColor(new DiscordColor(0x00B06B))
 				.WithTimestamp(DateTime.Now)
 				.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
 			await Command_Object.Member.SendMessageAsync(embed: PublicEmbed.Build());
@@ -69,9 +72,8 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			RoleLevel DBRoleLevel =
 					Command_Object.Author.Id == Command_Object.Guild.Owner.Id ||
 					Command_Object.Author.Id == ClientConfig.BotownerId ? RoleLevel.Moderator :
-					Database.DatabaseMethods.AllowUsersMethods.AllowUserFind(Command_Object.Guild.Id, Command_Object.Author.Id, out AllowUsers DBAllowUsersID) &&
-					Database.DatabaseMethods.RolesMethods.RoleFind(Command_Object.Guild.Id, DBAllowUsersID.RoleNum, out Roles DBRolesNum) ? (RoleLevel) Enum.Parse(typeof(RoleLevel), DBRolesNum.RoleLevel) :
-					RoleLevel.Public;
+					AllowUsersMethods.AllowUserFind(Command_Object.Guild.Id, Command_Object.Author.Id, out AllowUsers DBAllowUsersID) &&
+					RolesMethods.RoleFind(Command_Object.Guild.Id, DBAllowUsersID.RoleNum, out Roles DBRolesNum) ? DBRolesNum.RoleLevel : RoleLevel.Public;
 
 			if (DBRoleLevel == RoleLevel.Moderator) { // CommandObject.Message.Author.Id == CommandObject.Guild.Owner.Id
 				ModeratorEmbed
@@ -81,7 +83,7 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 						Command_Object.Language.HelpConfigArgs,
 						"`" + "whitelist" + " | " + "leaveban" + " | " + "prefix" + " | " + "logchannel" + " | " + "language" + " | " + "level" + "`"
 					)
-					.WithColor(new Color(0xF6AA00))
+					.WithColor(new DiscordColor(0xF6AA00))
 					.WithTimestamp(DateTime.Now)
 					.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
 				await Command_Object.Member.SendMessageAsync(embed: ModeratorEmbed.Build());
@@ -91,7 +93,7 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 				BotownerEmbed
 					.WithTitle("Botowner Commands")
 					.WithDescription(string.Format("Prefix is {0}", CommandConfig.Prefix))
-					.WithColor(new Color(0x1971FF))
+					.WithColor(new DiscordColor(0x1971FF))
 					.WithTimestamp(DateTime.Now)
 					.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
 				await Command_Object.Member.SendMessageAsync(embed: BotownerEmbed.Build());

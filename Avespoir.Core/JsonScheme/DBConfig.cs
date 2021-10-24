@@ -6,48 +6,57 @@ namespace Avespoir.Core.JsonScheme {
 
 		#region Database Config
 
-		public string Server {
+		public string ServerUrl {
 			get {
-				return MySqlConfigs.Server;
+				return MongoDBConfigs.ServerUrl;
 			}
 			set {
-				MySqlConfigs.Server = value;
+				MongoDBConfigs.ServerUrl = value;
 			}
 		}
 
 		public string Database {
 			get {
-				return MySqlConfigs.Database;
+				return MongoDBConfigs.Database;
 			}
 			set {
-				MySqlConfigs.Database = value;
+				MongoDBConfigs.Database = value;
 			}
 		}
 
 		public string User {
 			get {
-				return MySqlConfigs.User;
+				return MongoDBConfigs.User;
 			}
 			set {
-				MySqlConfigs.User = value;
+				MongoDBConfigs.User = value;
 			}
 		}
 
 		public string Password {
 			get {
-				return MySqlConfigs.Password;
+				return MongoDBConfigs.Password;
 			}
 			set {
-				MySqlConfigs.Password = value;
+				MongoDBConfigs.Password = value;
 			}
 		}
 
-		public string OtherOptions {
+		public string Mechanism {
 			get {
-				return MySqlConfigs.OtherOptions;
+				return MongoDBConfigs.Mechanism;
 			}
 			set {
-				MySqlConfigs.OtherOptions = value;
+				MongoDBConfigs.Mechanism = value;
+			}
+		}
+
+		public int Port {
+			get {
+				return MongoDBConfigs.Port;
+			}
+			set {
+				MongoDBConfigs.Port = value;
 			}
 		}
 

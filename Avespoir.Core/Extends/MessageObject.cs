@@ -1,5 +1,6 @@
-﻿using Discord;
-using Discord.WebSocket;
+﻿using DSharpPlus;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -10,9 +11,17 @@ namespace Avespoir.Core.Extends {
 
 	class MessageObject /*: IMessage*/ {
 
-		internal SocketMessage SourceSocketMessage { get; }
+		internal MessageCreateEventArgs SourceMessageCreateEventArgs { get; }
 
-		#region IMessage Extend
+		internal enum MessageSource {
+			Bot,
+
+			System,
+
+			User,
+
+			Webhook
+		}
 
 		//internal MessageType Type { get; }
 
@@ -22,9 +31,9 @@ namespace Avespoir.Core.Extends {
 
 		internal bool IsPinned { get; }
 
-		internal bool IsSuppressed { get; }
-
 		internal bool MentionedEveryone { get; }
+
+		internal bool Handled { get; }
 
 		internal string Content { get; }
 
@@ -32,37 +41,35 @@ namespace Avespoir.Core.Extends {
 
 		internal DateTimeOffset? EditedTimestamp { get; }
 
-		internal ISocketMessageChannel Channel { get; }
+		internal DiscordChannel Channel { get; }
 
-		internal SocketUser Author { get; }
+		internal DiscordUser Author { get; }
 
-		internal IReadOnlyCollection<Attachment> Attachments { get; }
+		internal IReadOnlyList<DiscordAttachment> Attachments { get; }
 
-		internal IReadOnlyCollection<Embed> Embeds { get; }
+		internal IReadOnlyList<DiscordEmbed> Embeds { get; }
 
-		internal IReadOnlyCollection<ITag> Tags { get; }
+		internal IReadOnlyList<DiscordChannel> MentionedChannels { get; }
 
-		internal IReadOnlyCollection<SocketGuildChannel> MentionedChannels { get; }
+		internal IReadOnlyList<ulong> MentionedChannelIds => MentionedChannels.Select(x => x.Id).ToImmutableArray();
 
-		internal IReadOnlyCollection<ulong> MentionedChannelIds => MentionedChannels.Select(x => x.Id).ToImmutableArray();
+		internal IReadOnlyList<DiscordRole> MentionedRoles { get; }
 
-		internal IReadOnlyCollection<SocketRole> MentionedRoles { get; }
+		internal IReadOnlyList<ulong> MentionedRoleIds => MentionedRoles.Select(x => x.Id).ToImmutableArray();
 
-		internal IReadOnlyCollection<ulong> MentionedRoleIds => MentionedRoles.Select(x => x.Id).ToImmutableArray();
+		internal IReadOnlyList<DiscordUser> MentionedUsers { get; }
 
-		internal IReadOnlyCollection<SocketUser> MentionedUsers { get; }
+		internal IReadOnlyList<ulong> MentionedUserIds => MentionedUsers.Select(x => x.Id).ToImmutableArray();
 
-		internal IReadOnlyCollection<ulong> MentionedUserIds => MentionedUsers.Select(x => x.Id).ToImmutableArray();
+		internal DiscordMessageActivity Activity { get; }
 
-		internal MessageActivity Activity { get; }
+		internal DiscordMessageApplication Application { get; }
 
-		internal MessageApplication Application { get; }
+		internal DiscordMessageReference Reference { get; }
 
-		internal MessageReference Reference { get; }
+		internal IReadOnlyList<DiscordReaction> Reactions { get; }
 
-		internal IReadOnlyDictionary<IEmote, ReactionMetadata> Reactions { get; }
-
-		internal IReadOnlyCollection<Sticker> Stickers { get; }
+		internal IReadOnlyList<DiscordMessageSticker> Stickers { get; }
 
 		internal MessageFlags? Flags { get; }
 
@@ -70,69 +77,72 @@ namespace Avespoir.Core.Extends {
 
 		internal ulong Id { get; }
 
-		internal Task AddReactionAsync(IEmote emote, RequestOptions options = null)
-			=> SourceSocketMessage.AddReactionAsync(emote, options);
+		internal Task CreateReactionAsync(DiscordEmoji Emoji)
+			=> SourceMessageCreateEventArgs.Message.CreateReactionAsync(Emoji);
 
-		internal Task DeleteAsync(RequestOptions options = null)
-			=> SourceSocketMessage.DeleteAsync(options);
+		internal Task DeleteAsync(string Reason = null)
+			=> SourceMessageCreateEventArgs.Message.DeleteAsync(Reason);
 
-		internal IAsyncEnumerable<IReadOnlyCollection<IUser>> GetReactionUsersAsync(IEmote emoji, int limit, RequestOptions options = null)
-			=> SourceSocketMessage.GetReactionUsersAsync(emoji, limit, options);
+		internal Task<IReadOnlyList<DiscordUser>> GetReactionsAsync(DiscordEmoji Emoji, int Limit, ulong? After = null)
+			=> SourceMessageCreateEventArgs.Message.GetReactionsAsync(Emoji, Limit, After);
 
-		internal Task RemoveAllReactionsAsync(RequestOptions options = null)
-			=> SourceSocketMessage.RemoveAllReactionsAsync(options);
+		internal Task RemoveAllReactionsAsync(string Reason = null)
+			=> SourceMessageCreateEventArgs.Message.DeleteAllReactionsAsync(Reason);
 
-		internal Task RemoveAllReactionsForEmoteAsync(IEmote emote, RequestOptions options = null)
-			=> SourceSocketMessage.RemoveAllReactionsForEmoteAsync(emote, options);
+		internal Task RemoveAllReactionsForEmoteAsync(DiscordEmoji Emoji)
+			=> SourceMessageCreateEventArgs.Message.DeleteReactionsEmojiAsync(Emoji);
 
-		internal Task RemoveReactionAsync(IEmote emote, IUser user, RequestOptions options = null)
-			=> SourceSocketMessage.RemoveReactionAsync(emote, user, options);
-
-		internal Task RemoveReactionAsync(IEmote emote, ulong userId, RequestOptions options = null)
-			=> SourceSocketMessage.RemoveReactionAsync(emote, userId, options);
-
-		#endregion
+		internal Task RemoveReactionAsync(DiscordEmoji Emoji, DiscordUser User, string Reason = null)
+			=> SourceMessageCreateEventArgs.Message.DeleteReactionAsync(Emoji, User, Reason);
 
 		internal bool IsPrivate { get; }
 
-		internal SocketGuild Guild { get; }
+		internal DiscordGuild Guild { get; }
 
-		internal SocketGuildUser Member { get; }
+		internal DiscordMember Member { get; }
 
-		internal MessageObject(SocketMessage Message) {
-			SourceSocketMessage = Message;
-			Activity = Message.Activity;
-			Application = Message.Application;
-			Attachments = Message.Attachments;
-			Author = Message.Author;
-			Channel = Message.Channel;
-			Content = Message.Content;
-			CreatedAt = Message.CreatedAt;
-			EditedTimestamp = Message.EditedTimestamp;
-			Embeds = Message.Embeds;
-			Flags = Message.Flags;
-			Id = Message.Id;
-			IsPinned = Message.IsPinned;
-			IsSuppressed = Message.IsSuppressed;
-			IsTTS = Message.IsTTS;
-			MentionedChannels = Message.MentionedChannels;
-			MentionedEveryone = Message.MentionedEveryone;
-			MentionedRoles = Message.MentionedRoles;
-			MentionedUsers = Message.MentionedUsers;
-			Reactions = Message.Reactions;
-			Reference = Message.Reference;
-			Source = Message.Source;
-			Stickers = Message.Stickers;
-			Tags = Message.Tags;
-			Timestamp = Message.Timestamp;
+		internal MessageObject(MessageCreateEventArgs Args) {
+			SourceMessageCreateEventArgs = Args;
+			Activity = Args.Message.Activity;
+			Application = Args.Message.Application;
+			Attachments = Args.Message.Attachments;
+			Author = Args.Author;
+			Channel = Args.Channel;
+			Content = Args.Message.Content;
+			CreatedAt = Args.Message.CreationTimestamp;
+			EditedTimestamp = Args.Message.EditedTimestamp;
+			Embeds = Args.Message.Embeds;
+			Flags = Args.Message.Flags;
+			Id = Args.Message.Id;
+			IsPinned = Args.Message.Pinned;
+			IsTTS = Args.Message.IsTTS;
+			MentionedChannels = Args.MentionedChannels;
+			MentionedEveryone = Args.Message.MentionEveryone;
+			MentionedRoles = Args.MentionedRoles;
+			MentionedUsers = Args.MentionedUsers;
+			Reactions = Args.Message.Reactions;
+			Reference = Args.Message.Reference;
+			Stickers = Args.Message.Stickers;
+			Timestamp = Args.Message.Timestamp;
+			Handled = Args.Handled;
 
-			IsPrivate = Channel is IPrivateChannel;
-			Guild = (Channel as SocketGuildChannel)?.Guild;
-			Member = Guild?.GetUser(Author.Id);
+
+			if (Args.Message.Author.IsSystem is bool IsSystem && IsSystem)
+				Source = MessageSource.System;
+			else if (Args.Message.Author.IsBot is bool IsBot && IsBot)
+				Source = MessageSource.Bot;
+			else if (Args.Message.Author.IsCurrent is bool IsCurrent && IsCurrent)
+				Source = MessageSource.System;
+			else if (Args.Message.WebhookMessage is bool IsWebhook && IsWebhook)
+				Source = MessageSource.Webhook;
+
+			IsPrivate = Channel.IsPrivate;
+			Guild = Args.Guild;
+			Member = Args.Guild?.Members.Where(MemberData => MemberData.Key == Args.Author.Id).Select(MemberData => MemberData.Value).FirstOrDefault();
 		}
 
 		protected MessageObject(MessageObject SourceMessageObject) {
-			SourceSocketMessage = SourceMessageObject.SourceSocketMessage;
+			SourceMessageCreateEventArgs = SourceMessageObject.SourceMessageCreateEventArgs;
 			Activity = SourceMessageObject.Activity;
 			Application = SourceMessageObject.Application;
 			Attachments = SourceMessageObject.Attachments;
@@ -145,7 +155,6 @@ namespace Avespoir.Core.Extends {
 			Flags = SourceMessageObject.Flags;
 			Id = SourceMessageObject.Id;
 			IsPinned = SourceMessageObject.IsPinned;
-			IsSuppressed = SourceMessageObject.IsSuppressed;
 			IsTTS = SourceMessageObject.IsTTS;
 			MentionedChannels = SourceMessageObject.MentionedChannels;
 			MentionedEveryone = SourceMessageObject.MentionedEveryone;
@@ -155,7 +164,6 @@ namespace Avespoir.Core.Extends {
 			Reference = SourceMessageObject.Reference;
 			Source = SourceMessageObject.Source;
 			Stickers = SourceMessageObject.Stickers;
-			Tags = SourceMessageObject.Tags;
 			Timestamp = SourceMessageObject.Timestamp;
 
 			IsPrivate = SourceMessageObject.IsPrivate;
