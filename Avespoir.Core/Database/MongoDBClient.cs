@@ -15,6 +15,9 @@ namespace Avespoir.Core.Database {
 		internal static IMongoCollection<AllowUsers> AllowUsersCollection =>
 			Database.GetCollection<AllowUsers>(typeof(AllowUsers).Name);
 
+		internal static IMongoCollection<PendingUsers> PendingUsersCollection =>
+			Database.GetCollection<PendingUsers>(typeof(PendingUsers).Name);
+
 		internal static IMongoCollection<GuildConfig> GuildConfigCollection =>
 			Database.GetCollection<GuildConfig>(typeof(GuildConfig).Name);
 

@@ -11,22 +11,30 @@ using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Avespoir.Core.Database.DatabaseMethods;
 
 namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 
-	//[Command("db-useradd", RoleLevel.Moderator)]
-	class DBUserAdd : CommandAbstruct {
+	[Command("db-usersubmit", RoleLevel.Moderator)]
+	class DBUserSubmit : CommandAbstruct {
 
 		internal override LanguageDictionary Description => new LanguageDictionary("Userデータベースにユーザーを追加します") {
 			{ Database.Enums.Language.en_US, "Add a user to the User database" }
 		};
 
-		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-useradd [名前] [ユーザーID] [役職登録番号]") {
-			{ Database.Enums.Language.en_US, "{0}db-useradd [Name] [UserID] [Role Number]" }
+		internal override LanguageDictionary Usage => new LanguageDictionary("{0}db-usersubmit [名前] [ユーザーID] [役職登録番号]") {
+			{ Database.Enums.Language.en_US, "{0}db-usersubmit [Name] [UserID] [Role Number]" }
 		};
 
 		internal override async Task Execute(CommandObject Command_Object) {
 			try {
+				ulong Log_ChannelID = GuildConfigMethods.LogChannelFind(Command_Object.Guild.Id);
+				if (Log_ChannelID == 0) {
+					await Command_Object.Channel.SendMessageAsync("ログチャンネルが登録されてません");
+					return;
+				}
+				DiscordChannel Log_Channel = Command_Object.Guild.GetChannel(Log_ChannelID);
+
 				string[] msgs = Command_Object.CommandArgs.Remove(0);
 				if (msgs.Length == 0) {
 					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.EmptyText);
@@ -59,17 +67,27 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 					return;
 				}
 
-				if (Database.DatabaseMethods.AllowUsersMethods.AllowUserExist(Command_Object.Guild.Id, msgs_Name)) {
+				if (AllowUsersMethods.AllowUserExist(Command_Object.Guild.Id, msgs_Name)) {
 					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.NameRegisted);
 					return;
 				}
 
-				if (Database.DatabaseMethods.AllowUsersMethods.AllowUserExist(Command_Object.Guild.Id, msgs_ID)) {
+				if (AllowUsersMethods.AllowUserExist(Command_Object.Guild.Id, msgs_ID)) {
 					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.IdRegisted);
 					return;
 				}
 
-				if (!Database.DatabaseMethods.RolesMethods.RoleFind(Command_Object.Guild.Id, msgs_RoleNum, out Roles DBRolesNum)) {
+				if (PendingUsersMethods.PendingUserExist(Command_Object.Guild.Id, msgs_Name)) {
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.NameRegisted);
+					return;
+				}
+
+				if (PendingUsersMethods.PendingUserExist(Command_Object.Guild.Id, msgs_ID)) {
+					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.IdRegisted);
+					return;
+				}
+
+				if (!RolesMethods.RoleFind(Command_Object.Guild.Id, msgs_RoleNum, out Roles DBRolesNum)) {
 					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RoleNumberNotFound);
 					return;
 				}
@@ -79,11 +97,25 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 					return;
 				}
 
-				AllowUsers InsertAllowUserData = Database.DatabaseMethods.AllowUsersMethods.AllowUserInsert(Command_Object.Guild.Id, msgs_ID, msgs_Name, msgs_RoleNum);
+				DiscordEmbedBuilder SubmitEmbed = new DiscordEmbedBuilder();
 
 				DiscordRole GuildRole = Command_Object.Guild.GetRole(DBRolesNum.Uuid);
-				string ResultText = string.Format(Command_Object.Language.DBUserAddSuccess, InsertAllowUserData.Name, InsertAllowUserData.Uuid, InsertAllowUserData.RoleNum, GuildRole.Name);
-				await Command_Object.Channel.SendMessageAsync(ResultText);
+				SubmitEmbed
+					.WithTitle("ユーザー登録の申請がされました")
+					.WithDescription("このユーザーを入れることを許可しない場合は**7日後までに**下のリアクションを押してください！")
+					.AddField(
+						"登録情報",
+						string.Format("名前; {0}\nUuid: {1}\nRole: {2}", msgs_Name, msgs_ID, GuildRole.Name)
+					)
+					.WithColor(new DiscordColor(0x1971FF))
+					.WithTimestamp(DateTime.Now)
+					.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
+				DiscordMessage EmbedMessage = await Log_Channel.SendMessageAsync(embed: SubmitEmbed.Build());
+				await EmbedMessage.CreateReactionAsync(DiscordEmoji.FromUnicode("❌"));
+
+				PendingUsersMethods.PendingUserInsert(Command_Object.Guild.Id, msgs_ID, msgs_Name, msgs_RoleNum, EmbedMessage.Id);
+
+				await Command_Object.Channel.SendMessageAsync("申請が完了しました！詳細はサーバーログを確認してください！");
 			}
 			catch (IndexOutOfRangeException) {
 				await Command_Object.Channel.SendMessageAsync(Command_Object.Language.TypingMissed);

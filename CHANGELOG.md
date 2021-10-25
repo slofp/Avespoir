@@ -7,6 +7,32 @@ If it changes significantly or very much, the first digit will move.
 
 ***
 
+## [Beta 4.7](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.7) - 2021-10-25
+
+### Added
+
+* Allow user submit system
+
+* PendingUsers Scheme
+
+* db-usersubmit command
+
+* MessageReactionAddEvent
+
+* MessageDeletedEvent
+
+### Fixed
+
+* db-usercrole bug fix
+
+* AllowUsersMethods.AllowUsersUpdate Error fix
+
+* IDPattern regex
+
+### Disabled
+
+* db-useradd command
+
 ## [Beta 4.6](https://github.com/Fairy-Phy/Avespoir/tree/Beta-4.6) - 2021-10-24
 
 ### Changed

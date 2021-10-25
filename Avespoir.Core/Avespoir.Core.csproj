@@ -6,7 +6,7 @@
     <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU</Platforms>
     <SignAssembly>false</SignAssembly>
-		<Version>2.1.4.6</Version>
+		<Version>2.1.4.7</Version>
 		<Authors>(Fairy)Phy</Authors>
 		<Company>Secineralyr</Company>
   </PropertyGroup>

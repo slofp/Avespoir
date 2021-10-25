@@ -67,7 +67,9 @@ namespace Avespoir.Core.Modules.Commands.ModeratorCommands {
 						await Command_Object.Channel.SendMessageAsync(string.Format(Command_Object.Language.ConfigEmptyValue, config_arg));
 						return;
 					}
-					if (!ulong.TryParse(msgs[1], out ulong AfterLogChannelID)) {
+					string Replace_Text = msgs[1];
+					if (PatternMatch.MatchID(Replace_Text)) Replace_Text = PatternMatch.ExtructID(msgs[1]);
+					if (!ulong.TryParse(Replace_Text, out ulong AfterLogChannelID)) {
 						await Command_Object.Channel.SendMessageAsync(Command_Object.Language.IdCouldntParse);
 						return;
 					}

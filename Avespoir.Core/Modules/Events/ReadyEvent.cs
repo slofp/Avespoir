@@ -6,6 +6,8 @@ using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Avespoir.Core.Database.Schemas;
+using Avespoir.Core.Database.DatabaseMethods;
 
 namespace Avespoir.Core.Modules.Events {
 
@@ -41,6 +43,7 @@ namespace Avespoir.Core.Modules.Events {
 			}
 
 			Task.Run(() => StartStatus()).ConfigureAwait(false);
+			Task.Run(() => StartPendingConfirm()).ConfigureAwait(false);
 			//Task.Run(() => StartVCCheck()).ConfigureAwait(false);
 
 			//StartStatus().ConfigureAwait(false);
@@ -60,6 +63,44 @@ namespace Avespoir.Core.Modules.Events {
 			}
 			catch (Exception Error) {
 				Log.Error("Startstatus Error", Error);
+			}
+		}
+
+		static async Task StartPendingConfirm() {
+			try {
+				while (!ExitCheck) {
+					List<PendingUsers> PendingUserList = PendingUsersMethods.PendingUserList();
+					for (int i = 0; i < PendingUserList.Count; i++) {
+						PendingUsers PendingUser = PendingUserList[i];
+						if (DateTime.Now > PendingUser.PendingStart.AddDays(7)) {
+							AllowUsersMethods.AllowUserInsert(PendingUser.GuildID, PendingUser.Uuid, PendingUser.Name, PendingUser.RoleNum);
+							PendingUsersMethods.PendingUserDelete(PendingUser);
+
+							ulong Log_ChannelID = GuildConfigMethods.LogChannelFind(PendingUser.GuildID);
+							if (Log_ChannelID == 0) {
+								Log.Error("Not found LogChannel");
+								return;
+							}
+							DiscordGuild Guild = await Client.Bot.GetGuildAsync(PendingUser.GuildID).ConfigureAwait(false);
+							DiscordChannel Log_Channel = Guild.GetChannel(Log_ChannelID);
+
+							DiscordEmbedBuilder SubmitEmbed = new DiscordEmbedBuilder();
+
+							SubmitEmbed
+								.WithTitle("ユーザー登録の申請が受理されました")
+								.WithDescription("申請が受理され正式に登録されました")
+								.WithColor(new DiscordColor(0x00B06B))
+								.WithTimestamp(DateTime.Now)
+								.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
+							await Log_Channel.SendMessageAsync(embed: SubmitEmbed.Build()).ConfigureAwait(false);
+						}
+					}
+
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+			}
+			catch (Exception Error) {
+				Log.Error("StartPendingConfirm Error", Error);
 			}
 		}
 

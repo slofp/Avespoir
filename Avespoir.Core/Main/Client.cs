@@ -34,6 +34,10 @@ namespace Avespoir.Core {
 
 			Bot.Heartbeated += LogEvents.Heartbeated;
 
+			Bot.MessageReactionAdded += MessageReactionAddedEvent.Main;
+
+			Bot.MessageDeleted += MessageDeletedEvent.Main;
+
 			await Bot.ConnectAsync().ConfigureAwait(false);
 
 			AppDomain.CurrentDomain.ProcessExit += ConsoleExitEvent.Main;
