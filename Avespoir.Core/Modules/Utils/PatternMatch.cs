@@ -6,7 +6,7 @@ namespace Avespoir.Core.Modules.Utils {
 
 		static readonly string URLPattern = @"(http|https?)://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+";
 
-		static readonly string IDPattern = @"<(@!|@&|#|a:[\S]+:|:[\S]+:)[0-9]+>";
+		static readonly string IDPattern = @"<(@!|@&|#|a:[\S]+:|:[\S]+:)([0-9]+)>";
 
 		static readonly string CodePattern = @"```(.|\s)+```";
 
@@ -41,6 +41,9 @@ namespace Avespoir.Core.Modules.Utils {
 
 		internal static string ReplaceID(string Text, string Replacement)
 			=> Regex.Replace(Text, IDPattern, Replacement);
+
+		internal static string ExtructID(string Text)
+			=> Regex.Match(Text, IDPattern).Groups[2].Value.Trim();
 
 		internal static string ReplaceCode(string Text, string Replacement)
 			=> Regex.Replace(Text, CodePattern, Replacement);

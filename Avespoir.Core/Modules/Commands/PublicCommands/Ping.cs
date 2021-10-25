@@ -29,6 +29,9 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			long ResponseTick = BotResponse.Timestamp.Ticks;
 			long PingTick = ResponseTick - MessageTick;
 
+			Logger.Log.Debug(Command_Object.Timestamp.Millisecond);
+			Logger.Log.Debug(BotResponse.Timestamp.Millisecond);
+
 			TimeSpan PingSpan = new TimeSpan(PingTick);
 			double Ping = PingSpan.TotalMilliseconds;
 

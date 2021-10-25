@@ -10,14 +10,15 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 
 	class AllowUsersMethods {
 
-		internal static bool AllowUserExist(ulong GuildID, ulong Uuid) => AllowUserFind(GuildID, Uuid, out AllowUsers _);
+		internal static bool AllowUserExist(ulong GuildID, ulong Uuid) => AllowUserFind(GuildID, Uuid, out _);
 
-		internal static bool AllowUserExist(ulong GuildID, string Name) => AllowUserFind(GuildID, Name, out AllowUsers _);
+		internal static bool AllowUserExist(ulong GuildID, string Name) => AllowUserFind(GuildID, Name, out _);
 
 		internal static bool AllowUserFind(ulong GuildID, ulong Uuid, [MaybeNullWhen(true)] out AllowUsers DBAllowUser) {
 			DBAllowUser = (
 				from AllowUser in MongoDBClient.AllowUsersCollection.AsQueryable()
-				where AllowUser.GuildID == GuildID & AllowUser.Uuid == Uuid
+				where AllowUser.GuildID == GuildID
+				where AllowUser.Uuid == Uuid
 				select AllowUser
 			).FirstOrDefault();
 
@@ -27,7 +28,8 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 		internal static bool AllowUserFind(ulong GuildID, string Name, [MaybeNullWhen(true)] out AllowUsers DBAllowUser) {
 			DBAllowUser = (
 				from AllowUser in MongoDBClient.AllowUsersCollection.AsQueryable()
-				where AllowUser.GuildID == GuildID & AllowUser.Name == Name
+				where AllowUser.GuildID == GuildID
+				where AllowUser.Name == Name
 				select AllowUser
 			).FirstOrDefault();
 
@@ -59,13 +61,8 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 			else return false;
 		}
 
-		internal static bool AllowUserUpdate(AllowUsers DBAllowUser) {
-			UpdateDefinition<AllowUsers> UpdateDef = Builders<AllowUsers>.Update
-				.Set(x => x, DBAllowUser);
-			MongoDBClient.AllowUsersCollection.UpdateOne(AllowUser => AllowUser.Id == DBAllowUser.Id, UpdateDef);
-
-			return true;
-		}
+		internal static bool AllowUserUpdate(AllowUsers DBAllowUser) =>
+			AllowUserUpdate(DBAllowUser.GuildID, DBAllowUser.Uuid, DBAllowUser.Name, DBAllowUser.RoleNum);
 
 		internal static AllowUsers AllowUserInsert(ulong GuildID, ulong Uuid, string Name, uint RoleNum) {
 			AllowUsers InsertAllowUser = new AllowUsers {

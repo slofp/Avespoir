@@ -49,11 +49,11 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 			return DBRole != null;
 		}
 
-		internal static bool RoleExist(ulong GuildID, ulong Uuid) => RoleFind(GuildID, Uuid, out Roles _);
+		internal static bool RoleExist(ulong GuildID, ulong Uuid) => RoleFind(GuildID, Uuid, out _);
 
-		internal static bool RoleExist(ulong GuildID, uint RoleNum) => RoleFind(GuildID, RoleNum, out Roles _);
+		internal static bool RoleExist(ulong GuildID, uint RoleNum) => RoleFind(GuildID, RoleNum, out _);
 
-		internal static bool RoleExist(ulong GuildID, Enums.RoleLevel RoleLevel) => RoleFind(GuildID, RoleLevel, out Roles _);
+		internal static bool RoleExist(ulong GuildID, Enums.RoleLevel RoleLevel) => RoleFind(GuildID, RoleLevel, out _);
 
 		internal static bool RolesListFind(ulong GuildID, [MaybeNullWhen(true)] out List<Roles> DBRoles) {
 			DBRoles = (
