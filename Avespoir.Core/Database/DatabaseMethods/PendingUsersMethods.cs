@@ -14,7 +14,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 
 		internal static bool PendingUserExist(ulong GuildID, string Name) => PendingUserFind(GuildID, Name, out _);
 
-		private static bool PendingUserFind(ulong GuildID, ulong Uuid, [MaybeNullWhen(true)] out PendingUsers DBPendingUser) {
+		private static bool PendingUserFind(ulong GuildID, ulong Uuid, [MaybeNullWhen(false)] out PendingUsers DBPendingUser) {
 			DBPendingUser = (
 				from PendingUser in MongoDBClient.PendingUsersCollection.AsQueryable()
 				where PendingUser.GuildID == GuildID
@@ -25,7 +25,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 			return DBPendingUser != null;
 		}
 
-		private static bool PendingUserFind(ulong GuildID, string Name, [MaybeNullWhen(true)] out PendingUsers DBPendingUser) {
+		private static bool PendingUserFind(ulong GuildID, string Name, [MaybeNullWhen(false)] out PendingUsers DBPendingUser) {
 			DBPendingUser = (
 				from PendingUser in MongoDBClient.PendingUsersCollection.AsQueryable()
 				where PendingUser.GuildID == GuildID
@@ -36,7 +36,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 			return DBPendingUser != null;
 		}
 
-		internal static bool PendingUserFind(ulong MessageID, [MaybeNullWhen(true)] out PendingUsers DBPendingUser) {
+		internal static bool PendingUserFind(ulong MessageID, [MaybeNullWhen(false)] out PendingUsers DBPendingUser) {
 			DBPendingUser = (
 				from PendingUser in MongoDBClient.PendingUsersCollection.AsQueryable()
 				where PendingUser.MessageID == MessageID

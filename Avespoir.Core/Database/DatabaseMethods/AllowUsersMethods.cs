@@ -14,7 +14,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 
 		internal static bool AllowUserExist(ulong GuildID, string Name) => AllowUserFind(GuildID, Name, out _);
 
-		internal static bool AllowUserFind(ulong GuildID, ulong Uuid, [MaybeNullWhen(true)] out AllowUsers DBAllowUser) {
+		internal static bool AllowUserFind(ulong GuildID, ulong Uuid, [MaybeNullWhen(false)] out AllowUsers DBAllowUser) {
 			DBAllowUser = (
 				from AllowUser in MongoDBClient.AllowUsersCollection.AsQueryable()
 				where AllowUser.GuildID == GuildID
@@ -25,7 +25,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 			return DBAllowUser != null;
 		}
 
-		internal static bool AllowUserFind(ulong GuildID, string Name, [MaybeNullWhen(true)] out AllowUsers DBAllowUser) {
+		internal static bool AllowUserFind(ulong GuildID, string Name, [MaybeNullWhen(false)] out AllowUsers DBAllowUser) {
 			DBAllowUser = (
 				from AllowUser in MongoDBClient.AllowUsersCollection.AsQueryable()
 				where AllowUser.GuildID == GuildID
@@ -36,7 +36,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 			return DBAllowUser != null;
 		}
 
-		internal static bool AllowUsersListFind(ulong GuildID, [MaybeNullWhen(true)] out List<AllowUsers> DBAllowUsers) {
+		internal static bool AllowUsersListFind(ulong GuildID, [MaybeNullWhen(false)] out List<AllowUsers> DBAllowUsers) {
 			DBAllowUsers = (
 				from AllowUser in MongoDBClient.AllowUsersCollection.AsQueryable()
 				where AllowUser.GuildID == GuildID

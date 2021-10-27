@@ -34,7 +34,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 		internal static bool LevelSwitchFind(ulong GuildID) =>
 			GuildConfigFind(GuildID)?.LevelSwitch ?? true;
 
-		private static bool GuildConfigFind(ulong GuildID, [MaybeNullWhen(true)] out GuildConfig DBGuildConfig) {
+		private static bool GuildConfigFind(ulong GuildID, [MaybeNullWhen(false)] out GuildConfig DBGuildConfig) {
 			DBGuildConfig = GuildConfigFind(GuildID);
 
 			return DBGuildConfig != null;

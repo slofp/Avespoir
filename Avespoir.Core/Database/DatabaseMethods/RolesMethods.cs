@@ -31,19 +31,19 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 			select Role
 		).FirstOrDefault();
 
-		internal static bool RoleFind(ulong GuildID, ulong Uuid, [MaybeNullWhen(true)] out Roles DBRole) {
+		internal static bool RoleFind(ulong GuildID, ulong Uuid, [MaybeNullWhen(false)] out Roles DBRole) {
 			DBRole = RoleFind(GuildID, Uuid);
 
 			return DBRole != null;
 		}
 
-		internal static bool RoleFind(ulong GuildID, uint RoleNum, [MaybeNullWhen(true)] out Roles DBRole) {
+		internal static bool RoleFind(ulong GuildID, uint RoleNum, [MaybeNullWhen(false)] out Roles DBRole) {
 			DBRole = RoleFind(GuildID, RoleNum);
 
 			return DBRole != null;
 		}
 
-		internal static bool RoleFind(ulong GuildID, Enums.RoleLevel RoleLevel, [MaybeNullWhen(true)] out Roles DBRole) {
+		internal static bool RoleFind(ulong GuildID, Enums.RoleLevel RoleLevel, [MaybeNullWhen(false)] out Roles DBRole) {
 			DBRole = RoleFind(GuildID, RoleLevel);
 
 			return DBRole != null;
@@ -55,7 +55,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 
 		internal static bool RoleExist(ulong GuildID, Enums.RoleLevel RoleLevel) => RoleFind(GuildID, RoleLevel, out _);
 
-		internal static bool RolesListFind(ulong GuildID, [MaybeNullWhen(true)] out List<Roles> DBRoles) {
+		internal static bool RolesListFind(ulong GuildID, [MaybeNullWhen(false)] out List<Roles> DBRoles) {
 			DBRoles = (
 				from Role in MongoDBClient.RolesCollection.AsQueryable()
 				where Role.GuildID == GuildID
@@ -65,7 +65,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 			return DBRoles != null;
 		}
 
-		internal static bool RolesListFind(ulong GuildID, Enums.RoleLevel RoleLevel, [MaybeNullWhen(true)] out List<Roles> DBRoles) {
+		internal static bool RolesListFind(ulong GuildID, Enums.RoleLevel RoleLevel, [MaybeNullWhen(false)] out List<Roles> DBRoles) {
 			DBRoles = (
 					from Role in MongoDBClient.RolesCollection.AsQueryable()
 					where Role.GuildID == GuildID

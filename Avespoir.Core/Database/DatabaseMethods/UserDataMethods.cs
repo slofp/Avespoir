@@ -21,7 +21,7 @@ namespace Avespoir.Core.Database.DatabaseMethods {
 		internal static uint LevelFind(ulong UserID) =>
 			UserDataFind(UserID)?.Level ?? 1;
 
-		private static bool UserDataFind(ulong UserID, [MaybeNullWhen(true)] out UserData DBUserData) {
+		private static bool UserDataFind(ulong UserID, [MaybeNullWhen(false)] out UserData DBUserData) {
 			DBUserData = UserDataFind(UserID);
 
 			return DBUserData != null;
