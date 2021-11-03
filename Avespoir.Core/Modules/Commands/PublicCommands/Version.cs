@@ -23,8 +23,7 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
 		internal override async Task Execute(CommandObject Command_Object) {
 			string VersionString = string.Format(Command_Object.Language.Version, Client.Bot.CurrentUser.Username, VersionInfo.Version);
-			VisualGenerator Visual = new VisualGenerator();
-			Visual.AddEmbed("", VersionString, EmbedColorAsset.NormalColor);
+			VisualGenerator Visual = new VisualGenerator().AddEmbed(VersionString);
 			await Command_Object.Channel.SendMessageAsync(Visual.Generate());
 		}
 	}
