@@ -10,6 +10,8 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Entities;
 using System;
 using System.Threading.Tasks;
+using Avespoir.Core.Modules.Visualize;
+using Avespoir.Core.Modules.Assets;
 
 namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
@@ -26,39 +28,43 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
 		internal override async Task Execute(CommandObject Command_Object) {
 			string[] msgs = Command_Object.CommandArgs.Remove(0);
+
+			VisualGenerator Visual = new VisualGenerator();
 			if (msgs.Length == 0) {
 				uint Level = Database.DatabaseMethods.UserDataMethods.LevelFind(Command_Object.Author.Id);
 				double Exp = Database.DatabaseMethods.UserDataMethods.ExpFind(Command_Object.Author.Id);
 				if (Exp == 0) {
-					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.StatusNotRegisted);
+					Visual.AddEmbed(Command_Object.Language.StatusNotRegisted, EmbedColorAsset.FailedColor);
+					await Command_Object.Channel.SendMessageAsync(Visual.Generate());
 					return;
 				}
 				double NextLevelExp = LevelSystem.ReqNextLevelExp(Level) - Exp;
 
 				DiscordMember User = await Command_Object.Guild.GetMemberAsync(Command_Object.Author.Id).ConfigureAwait(false);
 
-				DiscordEmbedBuilder UserStatusEmbed = new DiscordEmbedBuilder()
-						.WithTitle(string.Format(Command_Object.Language.StatusEmbed1, string.IsNullOrWhiteSpace(User.Nickname) ? User.Username : User.Nickname))
-						.WithDescription(string.Format(Command_Object.Language.StatusEmbed2, User.Username + "#" + User.Discriminator, User.Id, Exp, Level, NextLevelExp))
-						.WithColor(new DiscordColor(0x00B06B))
-						.WithTimestamp(DateTime.Now)
-						.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
+				Visual.AddEmbed(
+					string.Format(Command_Object.Language.StatusEmbed1, string.IsNullOrWhiteSpace(User.Nickname) ? User.Username : User.Nickname),
+					string.Format(Command_Object.Language.StatusEmbed2, User.Username + "#" + User.Discriminator, User.Id, Exp, Level, NextLevelExp),
+					EmbedColorAsset.SuccessColor
+				);
 
-				await Command_Object.Channel.SendMessageAsync(embed: UserStatusEmbed.Build());
+				await Command_Object.Channel.SendMessageAsync(Visual.Generate());
 				return;
 			}
 			else {
 				string UserText = msgs[0];
 				string UserIDString = UserText.TrimStart('<', '@', '!').TrimEnd('>');
 				if (!ulong.TryParse(UserIDString, out ulong UserID)) {
-					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.StatusUserCouldntParse);
+					Visual.AddEmbed(Command_Object.Language.StatusUserCouldntParse, EmbedColorAsset.FailedColor);
+					await Command_Object.Channel.SendMessageAsync(Visual.Generate());
 					return;
 				}
 
 				uint Level = Database.DatabaseMethods.UserDataMethods.LevelFind(UserID);
 				double Exp = Database.DatabaseMethods.UserDataMethods.ExpFind(UserID);
 				if (Exp == 0) {
-					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.StatusNotRegisted);
+					Visual.AddEmbed(Command_Object.Language.StatusNotRegisted, EmbedColorAsset.FailedColor);
+					await Command_Object.Channel.SendMessageAsync(Visual.Generate());
 					return;
 				}
 				double NextLevelExp = LevelSystem.ReqNextLevelExp(Level) - Exp;
@@ -66,24 +72,22 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 				DiscordMember User = await Command_Object.Guild.GetMemberAsync(UserID).ConfigureAwait(false);
 
 				if (User is null) {
-					DiscordEmbedBuilder UserStatusEmbed = new DiscordEmbedBuilder()
-						.WithTitle(string.Format(Command_Object.Language.StatusEmbed1, UserID.ToString()))
-						.WithDescription(string.Format(Command_Object.Language.StatusEmbed2, "Unknown", UserID, Exp, Level, NextLevelExp))
-						.WithColor(new DiscordColor(0x00B06B))
-						.WithTimestamp(DateTime.Now)
-						.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
+					Visual.AddEmbed(
+						string.Format(Command_Object.Language.StatusEmbed1, UserID.ToString()),
+						string.Format(Command_Object.Language.StatusEmbed2, "Unknown", UserID, Exp, Level, NextLevelExp),
+						EmbedColorAsset.SuccessColor
+					);
 
-					await Command_Object.Channel.SendMessageAsync(embed: UserStatusEmbed.Build());
+					await Command_Object.Channel.SendMessageAsync(Visual.Generate());
 				}
 				else {
-					DiscordEmbedBuilder UserStatusEmbed = new DiscordEmbedBuilder()
-						.WithTitle(string.Format(Command_Object.Language.StatusEmbed1, string.IsNullOrWhiteSpace(User.Nickname) ? User.Username : User.Nickname))
-						.WithDescription(string.Format(Command_Object.Language.StatusEmbed2, User.Username + "#" + User.Discriminator, UserID, Exp, Level, NextLevelExp))
-						.WithColor(new DiscordColor(0x00B06B))
-						.WithTimestamp(DateTime.Now)
-						.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
+					Visual.AddEmbed(
+						string.Format(Command_Object.Language.StatusEmbed1, string.IsNullOrWhiteSpace(User.Nickname) ? User.Username : User.Nickname),
+						string.Format(Command_Object.Language.StatusEmbed2, User.Username + "#" + User.Discriminator, UserID, Exp, Level, NextLevelExp),
+						EmbedColorAsset.SuccessColor
+					);
 
-					await Command_Object.Channel.SendMessageAsync(embed: UserStatusEmbed.Build());
+					await Command_Object.Channel.SendMessageAsync(Visual.Generate());
 				}
 			}
 		}
