@@ -1,6 +1,7 @@
 ﻿using Avespoir.Core.Configs;
 using Avespoir.Core.Modules.Events;
 using DSharpPlus;
+using DSharpPlus.VoiceNext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -37,6 +38,8 @@ namespace Avespoir.Core {
 			Bot.MessageReactionAdded += MessageReactionAddedEvent.Main;
 
 			Bot.MessageDeleted += MessageDeletedEvent.Main;
+
+			Bot.UseVoiceNext();
 
 			await Bot.ConnectAsync().ConfigureAwait(false);
 
