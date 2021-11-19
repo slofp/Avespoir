@@ -4,6 +4,8 @@ using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Main;
+using Avespoir.Core.Modules.Assets;
+using Avespoir.Core.Modules.Visualize;
 using System.Threading.Tasks;
 
 namespace Avespoir.Core.Modules.Commands.PublicCommands {
@@ -21,7 +23,8 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
 		internal override async Task Execute(CommandObject Command_Object) {
 			string VersionString = string.Format(Command_Object.Language.Version, Client.Bot.CurrentUser.Username, VersionInfo.Version);
-			await Command_Object.Channel.SendMessageAsync(VersionString);
+			VisualGenerator Visual = new VisualGenerator().AddEmbed(VersionString);
+			await Command_Object.Channel.SendMessageAsync(Visual.Generate());
 		}
 	}
 }

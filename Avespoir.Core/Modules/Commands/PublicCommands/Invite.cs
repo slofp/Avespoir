@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Avespoir.Core.Modules.Utils.SocketGuildExtension;
 using DSharpPlus.Exceptions;
+using Avespoir.Core.Modules.Visualize;
 
 namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
@@ -37,16 +38,14 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 				Console.WriteLine(DefaultChannel.Name);
 				DiscordInvite Invite = await DefaultChannel.CreateInviteAsync();
 
-				string InviteUrl = "https://discord.gg/" + Invite.Code;
-				string Message = string.Format(Command_Object.Language.InviteResult, InviteUrl);
-				await Command_Object.Channel.SendMessageAsync(Message);
+				await SendInvite(Command_Object, Invite);
 				return;
 			}
 
 			string InviteText = msgs[0];
 			string InviteIDString = InviteText.TrimStart('<', '#').TrimEnd('>');
 			if (!ulong.TryParse(InviteIDString, out ulong InviteID)) {
-				await Command_Object.Channel.SendMessageAsync(Command_Object.Language.InviteChannelNotFound);
+				await Command_Object.Channel.SendMessageAsync(new VisualGenerator().AddEmbed(Command_Object.Language.InviteChannelNotFound).Generate());
 				return;
 			}
 
@@ -56,7 +55,7 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			}
 			catch (ServerErrorException) {
 				Log.Warning("Channel ID is not found");
-				await Command_Object.Channel.SendMessageAsync(Command_Object.Language.InviteChannelIdNotFound);
+				await Command_Object.Channel.SendMessageAsync(new VisualGenerator().AddEmbed(Command_Object.Language.InviteChannelIdNotFound).Generate());
 			}
 		}
 

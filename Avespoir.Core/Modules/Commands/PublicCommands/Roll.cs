@@ -3,7 +3,9 @@ using Avespoir.Core.Attributes;
 using Avespoir.Core.Database.Enums;
 using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
+using Avespoir.Core.Modules.Assets;
 using Avespoir.Core.Modules.Utils;
+using Avespoir.Core.Modules.Visualize;
 using System;
 using System.Threading.Tasks;
 using static Avespoir.Core.Modules.Utils.RamdomLong;
@@ -23,31 +25,37 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
 		internal override async Task Execute(CommandObject Command_Object) {
 			string[] msgs = Command_Object.CommandArgs.Remove(0);
+			VisualGenerator Visual = new VisualGenerator();
 			if (msgs.Length == 0) {
 				Random random = new Random();
+				Visual.AddEmbed(random.NextLong(100).ToString());
 
-				await Command_Object.Channel.SendMessageAsync(random.NextLong(100).ToString()).ConfigureAwait(false);
+				await Command_Object.Channel.SendMessageAsync(Visual.Generate()).ConfigureAwait(false);
 			}
 			else if (msgs.Length == 1) {
 				string Maxstring = msgs[0].Split('.')[0];
 				if (!long.TryParse(Maxstring, out long Maxvalue)) {
-					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RollMaxCouldntParse).ConfigureAwait(false);
+					Visual.AddEmbed(Command_Object.Language.RollMaxCouldntParse);
+					await Command_Object.Channel.SendMessageAsync(Visual.Generate()).ConfigureAwait(false);
 				}
 				else {
 					Random random = new Random();
 
 					try {
 						if (Maxvalue == 0) {
-							await Command_Object.Channel.SendMessageAsync("0").ConfigureAwait(false);
+							Visual.AddEmbed("0");
+							await Command_Object.Channel.SendMessageAsync(Visual.Generate()).ConfigureAwait(false);
 						}
 						else {
 							long Resultvalue = random.NextLong(Maxvalue);
 
-							await Command_Object.Channel.SendMessageAsync(Resultvalue.ToString()).ConfigureAwait(false);
+							Visual.AddEmbed(Resultvalue.ToString());
+							await Command_Object.Channel.SendMessageAsync(Visual.Generate()).ConfigureAwait(false);
 						}
 					}
 					catch (ArgumentOutOfRangeException) {
-						await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RollMaxCouldntParse).ConfigureAwait(false);
+						Visual.AddEmbed(Command_Object.Language.RollMaxCouldntParse);
+						await Command_Object.Channel.SendMessageAsync(Visual.Generate()).ConfigureAwait(false);
 					}
 				}
 			}
@@ -55,25 +63,30 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 				string Maxstring = msgs[0].Split('.')[0];
 				string Minstring = msgs[1].Split('.')[0];
 				if (!long.TryParse(Maxstring, out long Maxvalue)) {
-					await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RollMaxCouldntParse).ConfigureAwait(false);
+					Visual.AddEmbed(Command_Object.Language.RollMaxCouldntParse);
+					await Command_Object.Channel.SendMessageAsync(Visual.Generate()).ConfigureAwait(false);
 				}
 				else {
 					if (!long.TryParse(Minstring, out long Minvalue)) {
-						await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RollMinCouldntParse).ConfigureAwait(false);
+						Visual.AddEmbed(Command_Object.Language.RollMinCouldntParse);
+						await Command_Object.Channel.SendMessageAsync(Visual.Generate()).ConfigureAwait(false);
 					}
 					else {
 						try {
 							if (Minvalue == Maxvalue) {
-								await Command_Object.Channel.SendMessageAsync(Maxvalue.ToString()).ConfigureAwait(false);
+								Visual.AddEmbed(Maxvalue.ToString());
+								await Command_Object.Channel.SendMessageAsync(Visual.Generate()).ConfigureAwait(false);
 							}
 							else {
 								Random random = new Random();
 
-								await Command_Object.Channel.SendMessageAsync(random.NextLong(Minvalue, Maxvalue).ToString()).ConfigureAwait(false);
+								Visual.AddEmbed(random.NextLong(Minvalue, Maxvalue).ToString());
+								await Command_Object.Channel.SendMessageAsync(Visual.Generate()).ConfigureAwait(false);
 							}
 						}
 						catch (ArgumentOutOfRangeException) {
-							await Command_Object.Channel.SendMessageAsync(Command_Object.Language.RollMaxMinCouldntParse).ConfigureAwait(false);
+							Visual.AddEmbed(Command_Object.Language.RollMaxMinCouldntParse);
+							await Command_Object.Channel.SendMessageAsync(Visual.Generate()).ConfigureAwait(false);
 						}
 					}
 				}

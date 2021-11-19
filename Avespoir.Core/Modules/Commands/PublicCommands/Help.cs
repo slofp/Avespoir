@@ -1,4 +1,5 @@
-﻿using Avespoir.Core.Abstructs;
+﻿using System.Collections.Generic;
+using Avespoir.Core.Abstructs;
 using Avespoir.Core.Attributes;
 using Avespoir.Core.Configs;
 using Avespoir.Core.Database.Enums;
@@ -11,6 +12,8 @@ using DSharpPlus.Entities;
 using System;
 using System.Threading.Tasks;
 using Avespoir.Core.Database.DatabaseMethods;
+using Avespoir.Core.Modules.Visualize;
+using Avespoir.Core.Modules.Assets;
 
 namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
@@ -31,43 +34,35 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			string GuildPrefix = GuildConfigMethods.PrefixFind(Command_Object.Guild.Id);
 			if (GuildPrefix == null) GuildPrefix = CommandConfig.Prefix;
 
-			DiscordEmbedBuilder PublicEmbed = new DiscordEmbedBuilder();
-			DiscordEmbedBuilder ModeratorEmbed = new DiscordEmbedBuilder();
-			DiscordEmbedBuilder BotownerEmbed = new DiscordEmbedBuilder();
+			VisualGenerator Visual = new VisualGenerator();
+
+			Dictionary<string, string> PublicFields = new Dictionary<string, string>();
+			Dictionary<string, string> ModeratorFields = new Dictionary<string, string>();
+			Dictionary<string, string> BotownerFields = new Dictionary<string, string>();
 			foreach (CommandInfo Command_Info in CommandInfo.GetCommandInfo()) {
 				if (Command_Info.Command_Attribute.CommandName == null) continue;
 
 				switch (Command_Info.Command_Attribute.CommandRoleLevel) {
 					case RoleLevel.Public:
-						PublicEmbed.AddField(
+						PublicFields.Add(
 							Command_Info.Command.Description[Command_Object.LanguageType],
 							string.Format($"`{Command_Info.Command.Usage[Command_Object.LanguageType]}`", GuildPrefix)
 						);
 						break;
 					case RoleLevel.Moderator:
-						ModeratorEmbed.AddField(
+						ModeratorFields.Add(
 							Command_Info.Command.Description[Command_Object.LanguageType],
 							string.Format($"`{Command_Info.Command.Usage[Command_Object.LanguageType]}`", GuildPrefix)
 						);
 						break;
 					case RoleLevel.Owner:
-						BotownerEmbed.AddField(
+						BotownerFields.Add(
 							Command_Info.Command.Description[Command_Object.LanguageType],
 							string.Format($"`{Command_Info.Command.Usage[Command_Object.LanguageType]}`", CommandConfig.Prefix)
 						);
 						break;
-					default:
-						break;
 				}
 			}
-
-			PublicEmbed
-				.WithTitle(Command_Object.Language.HelpPublicCommand)
-				.WithDescription(string.Format(Command_Object.Language.HelpCommandPrefix, GuildPrefix))
-				.WithColor(new DiscordColor(0x00B06B))
-				.WithTimestamp(DateTime.Now)
-				.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
-			await Command_Object.Member.SendMessageAsync(embed: PublicEmbed.Build());
 
 			RoleLevel DBRoleLevel =
 					Command_Object.Author.Id == Command_Object.Guild.Owner.Id ||
@@ -75,29 +70,46 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 					AllowUsersMethods.AllowUserFind(Command_Object.Guild.Id, Command_Object.Author.Id, out AllowUsers DBAllowUsersID) &&
 					RolesMethods.RoleFind(Command_Object.Guild.Id, DBAllowUsersID.RoleNum, out Roles DBRolesNum) ? DBRolesNum.RoleLevel : RoleLevel.Public;
 
+			Visual.AddEmbed(
+				Command_Object.Language.HelpPublicCommand,
+				string.Format(Command_Object.Language.HelpCommandPrefix, GuildPrefix),
+				EmbedColorAsset.SuccessColor,
+				Embed => {
+					foreach ((string Name, string Value) in PublicFields)
+						Embed.AddField(Name, Value);
+				}
+			);
+
 			if (DBRoleLevel == RoleLevel.Moderator) { // CommandObject.Message.Author.Id == CommandObject.Guild.Owner.Id
-				ModeratorEmbed
-					.WithTitle(Command_Object.Language.HelpModeratorCommand)
-					.WithDescription(string.Format(Command_Object.Language.HelpCommandPrefix, GuildPrefix))
-					.AddField(
-						Command_Object.Language.HelpConfigArgs,
-						"`" + "whitelist" + " | " + "leaveban" + " | " + "prefix" + " | " + "logchannel" + " | " + "language" + " | " + "level" + "`"
-					)
-					.WithColor(new DiscordColor(0xF6AA00))
-					.WithTimestamp(DateTime.Now)
-					.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
-				await Command_Object.Member.SendMessageAsync(embed: ModeratorEmbed.Build());
+				Visual.AddEmbed(
+					Command_Object.Language.HelpModeratorCommand,
+					string.Format(Command_Object.Language.HelpCommandPrefix, GuildPrefix),
+					EmbedColorAsset.DangerColor,
+					Embed => {
+						foreach ((string Name, string Value) in ModeratorFields)
+							Embed.AddField(Name, Value);
+
+						Embed.AddField(
+							Command_Object.Language.HelpConfigArgs,
+							"`" + "whitelist" + " | " + "leaveban" + " | " + "prefix" + " | " + "logchannel" + " | " + "language" + " | " + "level" + "`"
+						);
+					}
+				);
 			}
 
 			if (Command_Object.Author.Id == ClientConfig.BotownerId) {
-				BotownerEmbed
-					.WithTitle("Botowner Commands")
-					.WithDescription(string.Format("Prefix is {0}", CommandConfig.Prefix))
-					.WithColor(new DiscordColor(0x1971FF))
-					.WithTimestamp(DateTime.Now)
-					.WithFooter(string.Format("{0} Bot", Client.Bot.CurrentUser.Username));
-				await Command_Object.Member.SendMessageAsync(embed: BotownerEmbed.Build());
+				Visual.AddEmbed(
+					"Botowner Commands",
+					string.Format("Prefix is {0}", CommandConfig.Prefix),
+					EmbedColorAsset.NormalColor,
+					Embed => {
+						foreach ((string Name, string Value) in BotownerFields)
+							Embed.AddField(Name, Value);
+					}
+				);
 			}
+
+			await Command_Object.Member.SendMessageAsync(Visual.Generate());
 		}
 	}
 }

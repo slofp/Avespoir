@@ -73,6 +73,33 @@ namespace Avespoir.Core.Modules.Visualize {
 		}
 
 		/// <summary>
+		/// レガシーコマンド用Embedを作成します
+		/// </summary>
+		/// <remarks>タイムスタンプとフッターは事前に自動挿入されます</remarks>
+		/// <param name="Text">テキスト</param>
+		/// <param name="Color">色(デフォルトでノーマルカラー)、<seealso cref="Assets.EmbedColorAsset"/>に標準的な色があります</param>
+		/// <param name="Custom">それ以外に設定したい項目がある場合にこれで指定できます</param>
+		internal VisualGenerator AddEmbed(string Text, DiscordColor? Color = null, Action<DiscordEmbedBuilder> Custom = null) {
+			DiscordColor col = Color is DiscordColor NNColor ? NNColor : Assets.EmbedColorAsset.NormalColor;
+
+			DiscordEmbedBuilder EmbedBuilder =
+				new DiscordEmbedBuilder()
+				.WithDescription(Text)
+				.WithColor(col)
+				.WithTimestamp(DateTime.Now)
+				.WithFooter(
+					string.Format("{0} Bot", Client.Bot.CurrentUser.Username),
+					Client.Bot.CurrentUser.GetAvatarUrl(ImageFormat.Auto)
+				);
+
+			if (!(Custom is null)) Custom(EmbedBuilder);
+
+			Embeds.Add(EmbedBuilder.Build());
+
+			return this;
+		}
+
+		/// <summary>
 		/// 基本的なEmbedを作成します
 		/// </summary>
 		/// <remarks>タイムスタンプとフッターは事前に自動挿入されます</remarks>
@@ -80,7 +107,7 @@ namespace Avespoir.Core.Modules.Visualize {
 		/// <param name="Description">説明</param>
 		/// <param name="Color">色、<seealso cref="Assets.EmbedColorAsset"/>に標準的な色があります</param>
 		/// <param name="Custom">それ以外に設定したい項目がある場合にこれで指定できます</param>
-		internal void AddEmbed(string Title, string Description, DiscordColor Color, Action<DiscordEmbedBuilder> Custom = null) {
+		internal VisualGenerator AddEmbed(string Title, string Description, DiscordColor Color, Action<DiscordEmbedBuilder> Custom = null) {
 			DiscordEmbedBuilder EmbedBuilder =
 				new DiscordEmbedBuilder()
 				.WithTitle(Title)
@@ -95,6 +122,8 @@ namespace Avespoir.Core.Modules.Visualize {
 			if (!(Custom is null)) Custom(EmbedBuilder);
 
 			Embeds.Add(EmbedBuilder.Build());
+
+			return this;
 		}
 
 		/// <summary>
@@ -102,7 +131,7 @@ namespace Avespoir.Core.Modules.Visualize {
 		/// </summary>
 		/// <remarks>タイムスタンプとフッターは事前に自動挿入されます</remarks>
 		/// <param name="Custom">カスタマイズ用Actionです</param>
-		internal void AddEmbed(Action<DiscordEmbedBuilder> Custom) {
+		internal VisualGenerator AddEmbed(Action<DiscordEmbedBuilder> Custom) {
 			DiscordEmbedBuilder EmbedBuilder =
 				new DiscordEmbedBuilder()
 				.WithTimestamp(DateTime.Now)
@@ -114,6 +143,8 @@ namespace Avespoir.Core.Modules.Visualize {
 			Custom(EmbedBuilder);
 
 			Embeds.Add(EmbedBuilder.Build());
+
+			return this;
 		}
 
 		/// <summary>
@@ -125,9 +156,11 @@ namespace Avespoir.Core.Modules.Visualize {
 		/// <param name="Disabled">ボタンを押させないか</param>
 		/// <param name="Emoji">前後かに入れられる絵文字</param>
 		/// <exception cref="IndexOutOfRangeException">コンポーネント数が25個超えた場合発生します</exception>
-		internal void AddButton(ButtonStyle Style, string CustomID, string Text, bool Disabled = false, DiscordComponentEmoji Emoji = null) {
+		internal VisualGenerator AddButton(ButtonStyle Style, string CustomID, string Text, bool Disabled = false, DiscordComponentEmoji Emoji = null) {
 			if (Components.Count >= 25) throw new IndexOutOfRangeException("Cannot add more than 25 components.");
 			Components.Add(new DiscordButtonComponent(Style, CustomID, Text, Disabled, Emoji));
+
+			return this;
 		}
 
 		/// <summary>
@@ -135,9 +168,11 @@ namespace Avespoir.Core.Modules.Visualize {
 		/// </summary>
 		/// <remarks>作成する際は<seealso cref="SelectMenuBuilder"/>を使用することをおすすめします</remarks>
 		/// <param name="SelectMenu"></param>
-		internal void AddSelectMenu(DiscordSelectComponent SelectMenu) {
+		internal VisualGenerator AddSelectMenu(DiscordSelectComponent SelectMenu) {
 			if (Components.Count >= 25) throw new IndexOutOfRangeException("Cannot add more than 25 components.");
 			Components.Add(SelectMenu);
+
+			return this;
 		}
 
 		/// <summary>
@@ -145,7 +180,11 @@ namespace Avespoir.Core.Modules.Visualize {
 		/// </summary>
 		/// <param name="FileName">ファイル名</param>
 		/// <param name="FileStream">ファイルのストリーム</param>
-		internal void AddFile(string FileName, Stream FileStream) => Files.Add(FileName, FileStream);
+		internal VisualGenerator AddFile(string FileName, Stream FileStream) {
+			Files.Add(FileName, FileStream);
+
+			return this;
+		}
 
 		/// <summary>
 		/// リプライの設定をします
@@ -153,21 +192,25 @@ namespace Avespoir.Core.Modules.Visualize {
 		/// <param name="ReplyMessageId">リプライ元のメッセージID</param>
 		/// <param name="MentionReply">リプライ時にメンションをつけるか</param>
 		/// <param name="FailOnInvalidReply">メッセージIDが見つからない場合例外を返すか</param>
-		internal void SetReply(ulong ReplyMessageId, bool MentionReply = false, bool FailOnInvalidReply = false) {
+		internal VisualGenerator SetReply(ulong ReplyMessageId, bool MentionReply = false, bool FailOnInvalidReply = false) {
 			SettedReply = true;
 			this.ReplyMessageId = ReplyMessageId;
 			this.MentionReply = MentionReply;
 			this.FailOnInvalidReply = FailOnInvalidReply;
+
+			return this;
 		}
 
 		/// <summary>
 		/// リプライの設定をリセットします
 		/// </summary>
-		internal void ResetReply() {
+		internal VisualGenerator ResetReply() {
 			SettedReply = false;
 			ReplyMessageId = 0;
 			MentionReply = false;
 			FailOnInvalidReply = false;
+
+			return this;
 		}
 	}
 }

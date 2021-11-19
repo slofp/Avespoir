@@ -8,6 +8,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Entities;
 using System;
 using System.Threading.Tasks;
+using Avespoir.Core.Modules.Visualize;
 
 namespace Avespoir.Core.Modules.Commands.PublicCommands {
 
@@ -23,6 +24,7 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 		};
 
 		internal override async Task Execute(CommandObject Command_Object) {
+			/* Update made it unusable?
 			DiscordMessage BotResponse = await Command_Object.Channel.SendMessageAsync(Command_Object.Language.PingWait);
 
 			long MessageTick = Command_Object.Timestamp.Ticks;
@@ -36,6 +38,9 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			double Ping = PingSpan.TotalMilliseconds;
 
 			await BotResponse.ModifyAsync(MessagePropertie => MessagePropertie.Content = $"{Ping}ms");
+			*/
+
+			await Command_Object.Channel.SendMessageAsync(new VisualGenerator().AddEmbed("Pong!").Generate()).ConfigureAwait(false);
 		}
 	}
 }
