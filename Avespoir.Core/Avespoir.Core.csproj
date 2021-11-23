@@ -44,7 +44,12 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.13.2" />
     <PackageReference Include="Octokit" Version="0.50.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
     <PackageReference Include="Tababular" Version="4.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Avespoir.AITalk\Avespoir.AITalk\Avespoir.AITalk.csproj" />
+  </ItemGroup>
+
 
 </Project>

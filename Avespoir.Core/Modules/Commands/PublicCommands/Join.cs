@@ -45,55 +45,29 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			}
 
 			try {
-				VoiceNextConnection connection = await VoiceChannel.ConnectAsync();
+				VoiceNextConnection Connection = await VoiceChannel.ConnectAsync();
 
-				Uri VoiceUrl;
-				VoiceUrl = new Uri(@"http://127.0.0.1:8080/api/speechtext");
-				Log.Debug(VoiceUrl.ToString());
+				using var voiceroid = new AITalk.Voiceroid2(@"C:/Program Files (x86)/AHS/VOICEROID2", "ORXJC6AIWAUKDpDbH2al");
+				var Param = new AITalk.SpeakParameter {
+					Text = msgs[0]
+				};
 
-				HttpWebRequest PostVoice = (HttpWebRequest) WebRequest.Create(VoiceUrl);
-				PostVoice.Method = "POST";
-				PostVoice.ContentType = "application/json";
-
-				using (var streamWriter = new StreamWriter(PostVoice.GetRequestStream())) {
-					string json = $"{{ \"Text\": \"{msgs[0]}\" }} ";
-
-					streamWriter.Write(json);
+				byte[] VoiceBytes = voiceroid.KanaToDiscordPCM(Param, "ffmpeg");
+				if (VoiceBytes is null) {
+					await Command_Object.Channel.SendMessageAsync("nullでした");
+					Client.Bot.GetVoiceNext().GetConnection(Command_Object.Guild).Disconnect();
+					return;
 				}
 
-				Guid CacheId = Guid.NewGuid();
-				Log.Debug(CacheId);
+				VoiceTransmitSink Transmit = Connection.GetTransmitSink();
 
-				HttpWebResponse GetVoice = (HttpWebResponse) await PostVoice.GetResponseAsync();
-				Log.Debug(GetVoice.ContentType);
+				await Transmit.WriteAsync(VoiceBytes).ConfigureAwait(false);
+				//await VoiceStream.CopyToAsync(Transmit);
+				await Transmit.FlushAsync().ConfigureAwait(false);
 
-				byte[] Buffer = new byte[1024];
-				int ReadLength;
-				Stream VoiceStream = GetVoice.GetResponseStream();
-				using (FileStream Cache = new FileStream($"./{CacheId}", FileMode.Create, FileAccess.Write))
-					while ((ReadLength = VoiceStream.Read(Buffer, 0, Buffer.Length)) > 0)
-						Cache.Write(Buffer, 0, ReadLength);
-
-				var ffmpeg = Process.Start(new ProcessStartInfo {
-					FileName = "./ffmpeg",
-					Arguments = $@"-i ./{CacheId} -ac 2 -f s16le -ar 48000 pipe:1",
-					RedirectStandardOutput = true,
-					UseShellExecute = false
-				});
-
-				Stream pcm = ffmpeg.StandardOutput.BaseStream;
-
-				VoiceTransmitSink transmit = connection.GetTransmitSink();
-
-				await pcm.CopyToAsync(transmit);
-
-				await connection.WaitForPlaybackFinishAsync();
+				await Connection.WaitForPlaybackFinishAsync();
 
 				Client.Bot.GetVoiceNext().GetConnection(Command_Object.Guild).Disconnect();
-
-				File.Delete($"./{CacheId}");
-
-
 			}
 			catch (Exception error) {
 				Log.Error(error);
