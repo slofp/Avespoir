@@ -7,6 +7,7 @@ using Avespoir.Core.Extends;
 using Avespoir.Core.Language;
 using Avespoir.Core.Modules.Logger;
 using Avespoir.Core.Modules.Utils;
+using Avespoir.Core.Modules.Voice;
 using DSharpPlus.Entities;
 using DSharpPlus.VoiceNext;
 using System;
@@ -29,55 +30,37 @@ namespace Avespoir.Core.Modules.Commands.PublicCommands {
 			{ Database.Enums.Language.en_US, "Template" }
 		};
 
-		internal override async Task Execute(CommandObject Command_Object) {
-			string[] msgs = Command_Object.CommandArgs.Remove(0);
-			if (msgs.Length == 0) {
-				await Command_Object.Channel.SendMessageAsync("何も入力されていません");
-				return;
+		internal override Task Execute(CommandObject Command_Object)
+			=> JoinExecute(Command_Object);
+
+		internal static async Task<bool> JoinExecute(CommandObject Command_Object) {
+			VoiceNextConnection Connection = Client.Bot.GetVoiceNext().GetConnection(Command_Object.Guild);
+			if (!(Connection is null)) {
+				await Command_Object.Channel.SendMessageAsync("すでに入っています").ConfigureAwait(false);
+				return false;
 			}
 
 			DiscordChannel VoiceChannel = Command_Object.Member.VoiceState?.Channel;
 
 			if (VoiceChannel is null) {
-				await Command_Object.Channel.SendMessageAsync("入ってません");
+				await Command_Object.Channel.SendMessageAsync("入ってません").ConfigureAwait(false);
 
-				return;
+				return false;
 			}
 
+			return await JoinVC(VoiceChannel, Command_Object.Guild.Id);
+		}
+
+		internal static async Task<bool> JoinVC(DiscordChannel VoiceChannel, ulong GuildID) {
 			try {
-				VoiceNextConnection Connection = await VoiceChannel.ConnectAsync();
-
-				using var voiceroid = new AITalk.Voiceroid2(@"C:/Program Files (x86)/AHS/VOICEROID2", "ORXJC6AIWAUKDpDbH2al");
-				var Param = new AITalk.SpeakParameter {
-					Text = msgs[0]
-				};
-
-				byte[] VoiceBytes = voiceroid.KanaToDiscordPCM(Param, "ffmpeg");
-				if (VoiceBytes is null) {
-					await Command_Object.Channel.SendMessageAsync("nullでした");
-					Client.Bot.GetVoiceNext().GetConnection(Command_Object.Guild).Disconnect();
-					return;
-				}
-
-				VoiceTransmitSink Transmit = Connection.GetTransmitSink();
-
-				await Transmit.WriteAsync(VoiceBytes).ConfigureAwait(false);
-				//await VoiceStream.CopyToAsync(Transmit);
-				await Transmit.FlushAsync().ConfigureAwait(false);
-
-				await Connection.WaitForPlaybackFinishAsync();
-
-				Client.Bot.GetVoiceNext().GetConnection(Command_Object.Guild).Disconnect();
+				await VoiceChannel.ConnectAsync();
+				new VoiceStatus(GuildID, VoiceChannel.Id);
+				return true;
 			}
 			catch (Exception error) {
 				Log.Error(error);
+				return false;
 			}
-
-			//Stream TextVoice = new MemoryStream(Voicebyte);
-
-
-
-			await Task.Delay(0);
 		}
 	}
 }

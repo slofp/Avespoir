@@ -10,6 +10,12 @@ namespace Avespoir.Core.Configs {
 
 		internal static ulong BotownerId { get; set; } = 0;
 
+		internal static string FFmpegPath => "./ffmpeg";
+
+		internal static string VoiceroidDirectoryPath { get; set; }
+
+		internal static string VoiceroidAuthSeed { get; set; }
+
 		internal static DiscordConfiguration WebSocketConfig() => new DiscordConfiguration() {
 			Intents = DiscordIntents.All,
 			TokenType = TokenType.Bot,

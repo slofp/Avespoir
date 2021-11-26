@@ -6,7 +6,8 @@ namespace Avespoir.Core.Modules.Utils {
 
 		static readonly string URLPattern = @"(http|https?)://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+";
 
-		static readonly string IDPattern = @"<(@!|@&|#|a:[\S]+:|:[\S]+:)([0-9]+)>";
+		// a:([\S]+): がわからない
+		static readonly string IDPattern = @"<(@!|@&|#|:([\S]+):)([0-9]+)>";
 
 		static readonly string CodePattern = @"```(.|\s)+```";
 
@@ -43,7 +44,21 @@ namespace Avespoir.Core.Modules.Utils {
 			=> Regex.Replace(Text, IDPattern, Replacement);
 
 		internal static string ExtructID(string Text)
-			=> Regex.Match(Text, IDPattern).Groups[2].Value.Trim();
+			=> Regex.Match(Text, IDPattern).Groups[3].Value.Trim();
+
+		// 考える
+		internal static string ReplaceToEmojiName(string Text) {
+			MatchCollection Matches = Regex.Matches(Text, IDPattern);
+			if (Matches.Count == 0) return Text;
+
+			string ResText = Text;
+			for (int i = 0; i < Matches.Count; i++) {
+				Match TextMatch = Matches[i];
+				ResText = Regex.Replace(ResText, TextMatch.Groups[0].Value.Trim(), TextMatch.Groups[2].Value.Trim());
+			}
+
+			return ResText;
+		}
 
 		internal static string ReplaceCode(string Text, string Replacement)
 			=> Regex.Replace(Text, CodePattern, Replacement);

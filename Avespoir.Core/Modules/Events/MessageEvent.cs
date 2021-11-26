@@ -9,6 +9,7 @@ using DSharpPlus.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Avespoir.Core.Modules.Voice;
 
 namespace Avespoir.Core.Modules.Events {
 
@@ -26,6 +27,8 @@ namespace Avespoir.Core.Modules.Events {
 			MessageObject Message_Object = new MessageObject(Message);
 
 			MessageLog.Main(Message_Object).ConfigureAwait(false);
+
+			Task.Run(() => MessageSpeak.Load(Message_Object)).ConfigureAwait(false);
 
 			AwaitMessageProcess(Message_Object).ConfigureAwait(false);
 

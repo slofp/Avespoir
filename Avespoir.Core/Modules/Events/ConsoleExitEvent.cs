@@ -32,6 +32,9 @@ namespace Avespoir.Core.Modules.Events {
 			Client.Bot.Dispose();
 			Log.Info("Bot Disposed.");
 
+			Client.Voiceroid.Dispose();
+			Log.Info("Voiceroid Disposed.");
+
 			MongoDBClient.DeleteDBAccess();
 			Log.Info("Database Disconnected.");
 

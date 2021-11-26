@@ -37,5 +37,26 @@ namespace Avespoir.Core.JsonScheme {
 			}
 		}
 		#endregion
+
+		#region Voiceroid Config
+
+		public string VoiceroidDirectoryPath {
+			get {
+				return Configs.ClientConfig.VoiceroidDirectoryPath;
+			}
+			set {
+				Configs.ClientConfig.VoiceroidDirectoryPath = value;
+			}
+		}
+
+		public string VoiceroidAuthSeed {
+			get {
+				return Configs.ClientConfig.VoiceroidAuthSeed;
+			}
+			set {
+				Configs.ClientConfig.VoiceroidAuthSeed = value;
+			}
+		}
+		#endregion
 	}
 }

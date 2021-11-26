@@ -6,8 +6,10 @@ using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using Avespoir.Core.Database.Schemas;
 using Avespoir.Core.Database.DatabaseMethods;
+using DSharpPlus.VoiceNext;
 
 namespace Avespoir.Core.Modules.Events {
 
@@ -28,14 +30,37 @@ namespace Avespoir.Core.Modules.Events {
 			if (Bot.ShardId == 0) {
 				Bot.UpdateStatusAsync(StartingAct, UserStatus.DoNotDisturb).ConfigureAwait(false);
 
-				/*foreach (DiscordGuild Guild in Bot.Guilds.Values) {
-					foreach (SocketVoiceChannel VoiceChannel in Guild.VoiceStates.) {
-						Log.Debug($"UserCount: {VoiceChannel.Users.Count}");
-						foreach (SocketGuildUser User in VoiceChannel.Users) {
-							if (User.Id == Bot.CurrentUser.Id) {
-								Log.Info("Found Bot Connection");
-								VoiceChannel.ConnectAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-								VoiceChannel.DisconnectAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+				/* 自動切断できない...
+				foreach (ulong GuildID in Bot.Guilds.Keys) {
+					Log.Debug($"Guildid: {GuildID}");
+
+					DiscordGuild Guild = Bot.GetGuildAsync(GuildID).ConfigureAwait(false).GetAwaiter().GetResult();
+					Log.Debug($"Guild: {Guild.Name}");
+
+					IReadOnlyCollection<DiscordMember> Guild_Members =
+						Guild.GetAllMembersAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+
+					foreach (DiscordChannel Channel in Guild.GetChannelsAsync().ConfigureAwait(false).GetAwaiter().GetResult()) {
+						Log.Debug($"Channel: {Channel.Name}, {Channel.Type}");
+
+						if (Channel.Type == ChannelType.Voice) {
+							List<DiscordMember> Channel_Users =
+								(from x in Guild_Members
+								 where x.VoiceState?.Channel.Id == Channel.Id
+								 select x).ToList();
+
+							Log.Debug($"VC Member (Count: {Channel_Users.Count})");
+							foreach (DiscordMember VCinMember in Channel_Users) {
+								Log.Debug($"  {VCinMember.DisplayName}");
+
+								if (VCinMember.Id == Bot.CurrentUser.Id) {
+									Log.Info("found VC with bot in it!");
+									Log.Info("Connect and Disconnecting...");
+
+									Channel.ConnectAsync().ConfigureAwait(false).GetAwaiter().GetResult().Disconnect();
+
+									Log.Info("Disconnected!");
+								}
 							}
 						}
 					}
